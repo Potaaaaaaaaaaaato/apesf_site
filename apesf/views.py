@@ -300,8 +300,3 @@ def partners(request):
     partners = Partner.objects.all()
     return render(request, 'partenaires.html', {'page': page, 'partners': partners})
 
-
-
-
-
-
