@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Accueil{% endblock %}
 {% block content %}
-<!-- Style personnalisé pour réduire la taille des flèches -->
+<!-- Style personnalisé pour réduire la taille des flèches (ne pas supprimer sinon le HTML bug)-->
 <style>
     .swiper-button-prev, .swiper-button-next {
         width: 30px; /* Réduire la largeur */
@@ -10,7 +10,7 @@
         background-size: 30px; /* Ajuster la taille de l'icône */
     }
     .swiper-button-prev:after, .swiper-button-next:after {
-        font-size: 20px; /* Réduire la taille de l'icône (si Swiper utilise des pseudo-éléments) */
+        font-size: 20px; /* Réduire la taille de l'icône (si Swiper utilise des pseudo-éléments / pareil, pas supprimer) */
     }
 </style>
 
@@ -70,6 +70,18 @@
         <a href="{% url 'dons' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">
             Vous souhaitez nous soutenir ?
         </a>
+    </div>
+</section>
+
+<!-- Section Actualités -->
+<section class="py-8 text-center">
+    <div class="container mx-auto px-6">
+        <h2 class="text-2xl font-semibold text-primary-500 mb-4">
+            Découvrez les actualités récentes des maisons d'enfants
+        </h2>
+        <p class="text-lg text-neutral-600 max-w-2xl mx-auto">
+            Restez informé des dernières nouvelles et événements de nos unités Marmousets et Angélus à Saint-Étienne.
+        </p>
     </div>
 </section>
 
