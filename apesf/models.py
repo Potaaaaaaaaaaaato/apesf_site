@@ -107,3 +107,14 @@ class Partner(models.Model):
             except Exception as e:
                 print(f"Erreur lors du redimensionnement de l'image {self.logo.name} : {e}")
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.logo:
+            img_path = self.logo.path
+            try:
+                img = Image.open(img_path)
+                output_size = (60, 60)  # Changé de (80, 80) à (60, 60)
+                img.thumbnail(output_size, Image.Resampling.LANCZOS)
+                img.save(img_path, quality=85)
+            except Exception as e:
+                print(f"Erreur lors du redimensionnement de l'image {self.logo.name} : {e}")
