@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Nos actions{% endblock %}
+{% block content %}
+<!-- Titre principal et phrase explicative -->
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Nos actions</h1>
+    <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto">
+        Découvrez les initiatives et projets que nous menons pour soutenir les enfants et leurs familles au quotidien.
+    </p>
+</div>
+
+<!-- Sections dynamiques -->
+{% if page %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% for section in page.sections.all %}
+            <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
+                <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
+                <p class="text-neutral-600 mb-4">{{ section.content }}</p>
+                {% if section.link %}
+                    <div class="text-center">
+                        <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
+                            En savoir plus
+                        </a>
+                    </div>
+                {% endif %}
+                {% for image in section.images.all %}
+                    <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center text-neutral-600">
+        <p>Contenu non défini. Veuillez ajouter du contenu via l'interface admin.</p>
+    </div>
+{% endif %}
+{% endblock %}

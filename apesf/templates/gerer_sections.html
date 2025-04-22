@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Gérer les sections - {{ page.title }}{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Gérer les sections de la page : {{ page.title }}</h1>
+</div>
+<div class="section mx-auto max-w-3xl">
+    <p class="text-neutral-600 mb-8">Ajoutez une nouvelle section, modifiez ou supprimez celles que vous ne voulez plus. Attention, la suppression est irréversible.</p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Formulaire pour ajouter une nouvelle section -->
+    <h2 class="text-2xl font-semibold text-primary-500 mb-4">Ajouter une nouvelle section</h2>
+    <form method="post" class="space-y-4 mb-12">
+        {% csrf_token %}
+        <div>
+            <label for="id_title" class="block text-sm font-medium text-neutral-600">Titre</label>
+            {{ form.title }}
+        </div>
+        <div>
+            <label for="id_content" class="block text-sm font-medium text-neutral-600">Contenu</label>
+            {{ form.content }}
+        </div>
+        <div>
+            <label for="id_link" class="block text-sm font-medium text-neutral-600">Lien (optionnel)</label>
+            {{ form.link }}
+        </div>
+        <div>
+            <label for="id_order" class="block text-sm font-medium text-neutral-600">Ordre</label>
+            {{ form.order }}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">Ajouter la section</button>
+        </div>
+    </form>
+
+    <!-- Liste des sections existantes -->
+    <h2 class="text-2xl font-semibold text-primary-500 mb-4">Sections existantes</h2>
+    {% if sections %}
+        <ul class="space-y-4">
+            {% for section in sections %}
+                <li class="bg-white shadow-lg rounded-lg p-4 flex justify-between items-center">
+                    <div class="flex-1">
+                        <strong class="text-primary-500">{{ section.title }}</strong> (Ordre : {{ section.order }})<br>
+                        <p class="text-neutral-600">{{ section.content|truncatewords:20 }}</p>
+                        <!-- Affichage des images associées -->
+                        {% for image in section.images.all %}
+                            <div class="flex items-center gap-2 mt-2">
+                                <img src="{{ image.image.url }}" alt="{{ section.title }}" class="w-16 h-16 object-cover rounded-lg">
+                                <div>
+                                    <p class="text-sm text-gray-500">URL de l'image : <a href="{{ image.image.url }}" class="text-primary-500 hover:underline" target="_blank">{{ image.image.url }}</a></p>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-neutral-600 mt-2">Aucune image associée à cette section.</p>
+                        {% endfor %}
+                    </div>
+                    <div class="flex space-x-2">
+                        <a href="{% url 'modifier_section' section.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Modifier</a>
+                        <form method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette section ?');" class="inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="section_id" value="{{ section.id }}">
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">Supprimer</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-neutral-600 mb-4">Aucune section pour cette page. Ajoutez-en une ci-dessus.</p>
+    {% endif %}
+
+    <div class="text-center mt-8">
+        <a href="{% url 'tableau_de_bord' %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">Retour au tableau de bord</a>
+    </div>
+</div>
+{% endblock %}

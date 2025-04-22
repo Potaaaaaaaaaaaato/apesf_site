@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Panel admin{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Panel admin</h1>
+</div>
+<div class="section mx-auto max-w-3xl">
+    <p class="text-neutral-600 mb-4">
+        Accédez à l’interface d’administration de Django pour gérer les utilisateurs, les pages, et les sections.
+    </p>
+    <div class="text-center">
+        <a href="{% url 'admin:index' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">
+            Accéder au panel admin
+        </a>
+    </div>
+</div>
+{% endblock %}

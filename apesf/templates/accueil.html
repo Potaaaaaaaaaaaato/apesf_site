@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+<!-- Style personnalisé pour réduire la taille des flèches -->
+<style>
+    .swiper-button-prev, .swiper-button-next {
+        width: 30px; /* Réduire la largeur */
+        height: 30px; /* Réduire la hauteur */
+        background-size: 30px; /* Ajuster la taille de l'icône */
+    }
+    .swiper-button-prev:after, .swiper-button-next:after {
+        font-size: 20px; /* Réduire la taille de l'icône (si Swiper utilise des pseudo-éléments) */
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="py-2 text-center">
+    <div class="container mx-auto px-6">
+        <h1 class="text-4xl md:text-5xl font-bold text-primary-500 mb-4">
+            Bienvenue sur le site de l’Association Pour l'Enfant et Sa Famille
+        </h1>
+        <p class="text-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
+            Nous œuvrons pour le bien-être des enfants et leurs familles, en leur offrant soutien et accompagnement.
+        </p>
+    </div>
+</section>
+
+<!-- Carrousel (Swiper) -->
+<div id="carouselAccueil" class="swiper mb-12">
+    <!-- Wrapper des slides -->
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <img src="{% static 'images/carousel-image-1.jpg' %}" alt="Image 1">
+        </div>
+        <div class="swiper-slide">
+            <img src="{% static 'images/carousel-image-2.jpg' %}" alt="Image 2">
+        </div>
+        <div class="swiper-slide">
+            <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Image 3">
+        </div>
+        <div class="swiper-slide">
+            <img src="{% static 'images/carousel-image-4.jpg' %}" alt="Image 4">
+        </div>
+        <div class="swiper-slide">
+            <img src="{% static 'images/carousel-image-5.jpg' %}" alt="Image 5">
+        </div>
+    </div>
+    
+    <!-- Flèches de navigation -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+
+    <!-- Pagination (dots) -->
+    <div class="swiper-pagination"></div>
+</div>
+
+<!-- Texte de présentation -->
+<section class="py-8 text-center">
+    <div class="container mx-auto px-6">
+        <p class="text-lg text-neutral-600 leading-loose max-w-3xl mx-auto">
+            Depuis 2005, l’APESF accompagne les enfants de 0 à 18 ans et leurs familles dans leurs démarches quotidiennes. Nous favorisons leur épanouissement à travers nos unités Marmousets et Angélus, situées à Saint-Étienne. Nos équipes éducatives mettent tout en œuvre pour maintenir les fratries et soutenir l’autonomie des jeunes. Rejoignez-nous pour contribuer à un avenir meilleur pour ces enfants et leurs familles !
+        </p>
+    </div>
+</section>
+
+<!-- Bouton de don -->
+<section class="py-8 text-center">
+    <div class="container mx-auto px-6">
+        <a href="{% url 'dons' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">
+            Vous souhaitez nous soutenir ?
+        </a>
+    </div>
+</section>
+
+<!-- Sections dynamiques -->
+{% if page %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+        {% for section in page.sections.all %}
+            <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
+                <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
+                <p class="text-neutral-600 mb-4">{{ section.content }}</p>
+                {% if section.link %}
+                    <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
+                        En savoir plus
+                    </a>
+                {% endif %}
+                {% for image in section.images.all %}
+                    <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center text-neutral-600 mt-12">
+        <p>Contenu non défini. Veuillez ajouter du contenu via l'interface admin.</p>
+    </div>
+{% endif %}
+{% endblock %}

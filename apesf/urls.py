@@ -1,0 +1,27 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.accueil, name='accueil'),
+    path('qui-sommes-nous/', views.qui_sommes_nous, name='qui_sommes_nous'),
+    path('nos-actions/', views.nos_actions, name='nos_actions'),
+    path('partenaires/', views.partenaires, name='partenaires'),
+    path('contact/', views.contact, name='contact'),
+    path('dons/', views.dons, name='dons'),
+    path('connexion/', views.connexion, name='connexion'),
+    path('deconnexion/', views.deconnexion, name='deconnexion'),
+    path('tableau-de-bord/', views.tableau_de_bord, name='tableau_de_bord'),
+    path('ajouter-page/', views.ajouter_page, name='ajouter_page'),
+    path('modifier-page/<int:page_id>/', views.modifier_page, name='modifier_page'),
+    path('ajouter-section/<int:page_id>/', views.ajouter_section, name='ajouter_section'),
+    path('modifier-section/<int:section_id>/', views.modifier_section, name='modifier_section'),
+    path('telecharger-image/', views.telecharger_image, name='telecharger_image'),
+    path('marquer-message-lu/<int:message_id>/', views.mark_message_as_read, name='mark_message_as_read'),
+    path('gerer-sections/<int:page_id>/', views.gerer_sections, name='gerer_sections'),
+    path('supprimer-message/<int:message_id>/', views.supprimer_message, name='supprimer_message'),
+    path('modifier-image/<int:image_id>/', views.modifier_image, name='modifier_image'),
+    path('supprimer-image/<int:image_id>/', views.supprimer_image, name='supprimer_image'),
+    path('mentions-legales/', views.mentions_legales, name='mentions_legales'),
+    path('credits/', views.credits, name='credits'),
+    path('panel-admin/', views.panel_admin, name='panel_admin'),
+]

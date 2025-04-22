@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Uploader une image{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Uploader une image</h1>
+</div>
+<div class="section mx-auto max-w-md">
+    <p class="text-neutral-600 mb-8">Téléchargez une image et associez-la à une section spécifique.</p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label for="id_image" class="block text-sm font-medium text-neutral-600">Image</label>
+            {{ form.image }}
+        </div>
+        <div>
+            <label for="id_section" class="block text-sm font-medium text-neutral-600">Section</label>
+            {{ form.section }}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">Uploader</button>
+        </div>
+    </form>
+    <div class="text-center mt-8">
+        <a href="{% url 'tableau_de_bord' %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">Retour au tableau de bord</a>
+    </div>
+</div>
+{% endblock %}

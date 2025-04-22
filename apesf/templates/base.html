@@ -1,0 +1,192 @@
+{% load static %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Association Pour l'Enfant et Sa Famille{% endblock %}</title>
+    <!-- Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Swiper.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Tailwind CSS -->
+    {% tailwind_css %}
+    <!-- Styles personnalisés -->
+    <style>
+        /* Forcer l'affichage de la navbar */
+        header {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background-color: #ffffff !important;
+        }
+
+        /* S'assurer que le body n'a pas d'overflow: hidden */
+        body {
+            overflow: visible !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Ajuster le main pour éviter chevauchement avec la navbar */
+        main {
+            margin-top: 60px !important;
+        }
+
+        /* Styles pour Swiper */
+        .swiper {
+            width: 100%;
+            max-height: 360px; /* Réduit de 400px à 360px (10 % de réduction) */
+        }
+        .swiper-slide img {
+            width: 100%;
+            max-height: 360px; /* Réduit de 400px à 360px */
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        .swiper-button-prev,
+        .swiper-button-next {
+            color: #60A5FA;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .swiper-button-prev:hover,
+        .swiper-button-next:hover {
+            color: #FDBA74;
+        }
+        .swiper-pagination-bullet {
+            background-color: #60A5FA;
+            width: 12px;
+            height: 12px;
+            opacity: 0.5;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: #FDBA74;
+            opacity: 1;
+        }
+
+        /* Forcer la visibilité de la navbar sur toutes les tailles d'écran */
+        #nav-links {
+            display: flex !important;
+            flex-direction: row;
+            gap: 1.5rem; /* space-x-6 */
+        }
+    </style>
+</head>
+<body class="font-poppins antialiased text-neutral-600 bg-neutral-50">
+    <!-- Header -->
+    <header class="bg-white shadow fixed top-0 left-0 w-full z-10">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <a href="{% url 'accueil' %}">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo APESF" class="h-12">
+                </a>
+            </div>
+
+            <!-- Menu de navigation -->
+            <ul id="nav-links">
+                <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
+                <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Qui sommes-nous ?</a></li>
+                <li><a href="{% url 'nos_actions' %}" class="hover:text-primary-600 transition-colors">Nos actions</a></li>
+                <li><a href="{% url 'partenaires' %}" class="hover:text-primary-600 transition-colors">Partenaires</a></li>
+                <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
+                <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Faire un don</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'tableau_de_bord' %}" class="hover:text-primary-600 transition-colors">Tableau de bord</a></li>
+                    <li><a href="{% url 'deconnexion' %}" class="hover:text-primary-600 transition-colors">Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{% url 'connexion' %}" class="hover:text-primary-600 transition-colors">Connexion</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main content -->
+    <main class="container mx-auto px-6 py-24">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-neutral-100 py-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-stretch gap-8 text-left">
+                <!-- Colonne 1 : à gauche -->
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold mb-4 text-primary-500">Liens utiles</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
+                        <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Qui sommes-nous ?</a></li>
+                        <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+    
+                <!-- Colonne 2 : au centre -->
+                <div class="flex-1 text-center">
+                    <h3 class="text-lg font-semibold mb-4 text-primary-500">Contact</h3>
+                    <p>1 Rue du Dr Paul Michelon, 42100 Saint-Étienne</p>
+                    <p>04 77 25 37 15</p>
+                    <p>Retrouvez-nous sur :</p>
+                    <p class="mt-2">
+                        <a href="https://linkedin.com" class="hover:text-primary-600 transition-colors">LinkedIn</a> &
+                        <a href="https://instagram.com" class="hover:text-primary-600 transition-colors">Instagram</a>
+                    </p>
+                </div>
+    
+                <!-- Colonne 3 : à droite -->
+                <div class="flex-1 text-right">
+                    <h3 class="text-lg font-semibold mb-4 text-primary-500">Soutenez-nous</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Faire un don</a></li>
+                        <li><a href="{% url 'nos_actions' %}" class="hover:text-primary-600 transition-colors">Nos actions</a></li>
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- Liens supplémentaires -->
+            <div class="text-center mt-8">
+                <ul class="flex justify-center space-x-6">
+                    <li><a href="{% url 'mentions_legales' %}" class="hover:text-primary-600 transition-colors">Mentions légales</a></li>
+                    <li><a href="{% url 'credits' %}" class="hover:text-primary-600 transition-colors">Crédits</a></li>
+                    <li><a href="{% url 'panel_admin' %}" class="hover:text-primary-600 transition-colors">Panel admin</a></li>
+                </ul>
+            </div>
+    
+            <!-- Copyright -->
+            <p class="text-center mt-4 text-neutral-600">© 2025 - Association Pour l'Enfant et Sa Famille. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Swiper.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Script pour initialiser Swiper -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const swiper = new Swiper('#carouselAccueil', {
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    reverseDirection: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                slidesPerView: 1,
+                spaceBetween: 0,
+            });
+        });
+    </script>
+</body>
+</html>

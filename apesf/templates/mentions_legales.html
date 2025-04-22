@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Mentions légales{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Mentions légales</h1>
+</div>
+<div class="section mx-auto max-w-3xl">
+    <p class="text-neutral-600 mb-4">
+        Ce site est édité par l’Association pour l'Enfant et sa Famille (APESF), située au 42000 Saint-Étienne.
+    </p>
+    <p class="text-neutral-600 mb-4">
+        Directeur de la publication : [Nom du directeur].
+    </p>
+    <p class="text-neutral-600 mb-4">
+        Hébergement : [Nom de l’hébergeur], [Adresse de l’hébergeur].
+    </p>
+    <p class="text-neutral-600 mb-4">
+        Pour toute question, veuillez nous contacter via la page <a href="{% url 'contact' %}" class="text-primary-500 hover:text-primary-600 transition-colors">Contact</a>.
+    </p>
+</div>
+{% endblock %}
