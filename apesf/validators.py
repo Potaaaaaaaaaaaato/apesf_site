@@ -7,13 +7,13 @@ class ComplexPasswordValidator:
         # Vérifie la présence d'au moins une majuscule
         if not re.search(r'[A-Z]', password):
             raise ValidationError(
-                _("Le mot de passe doit contenir au moins une lettre majuscule."),
+                _("Le mot de passe doit contenir au moins une lettre majuscule (sans accent)."),
                 code='password_no_upper',
             )
         # Vérifie la présence d'au moins une minuscule
         if not re.search(r'[a-z]', password):
             raise ValidationError(
-                _("Le mot de passe doit contenir au moins une lettre minuscule."),
+                _("Le mot de passe doit contenir au moins une lettre minuscule (sans accent)."),
                 code='password_no_lower',
             )
         # Vérifie la présence d'au moins un chiffre
