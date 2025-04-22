@@ -94,27 +94,12 @@ class Partner(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Enregistrer d'abord l'image pour accéder à son chemin
-
-        # Redimensionner l'image après l'enregistrement
         if self.logo:
             img_path = self.logo.path
             try:
                 img = Image.open(img_path)
-                # Redimensionner à 80x80 pixels (taille cible pour l'affichage)
-                output_size = (80, 80)
+                output_size = (90, 90)  # Augmenté de (60, 60) à (120, 120)
                 img.thumbnail(output_size, Image.Resampling.LANCZOS)  # Redimensionner tout en préservant les proportions
-                img.save(img_path, quality=85)  # Sauvegarder l'image redimensionnée avec une qualité optimisée
-            except Exception as e:
-                print(f"Erreur lors du redimensionnement de l'image {self.logo.name} : {e}")
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.logo:
-            img_path = self.logo.path
-            try:
-                img = Image.open(img_path)
-                output_size = (60, 60)  # Changé de (80, 80) à (60, 60)
-                img.thumbnail(output_size, Image.Resampling.LANCZOS)
-                img.save(img_path, quality=85)
+                img.save(img_path, quality=85)  # Sauvegarder l'image redimensionnée
             except Exception as e:
                 print(f"Erreur lors du redimensionnement de l'image {self.logo.name} : {e}")
