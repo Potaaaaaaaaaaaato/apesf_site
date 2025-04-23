@@ -175,7 +175,14 @@ def modifier_section(request, section_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Section modifiée avec succès !")
-            return redirect('gerer_sections', page_id=section.page.id if section.page else redirect('tableau_de_bord'))
+            # Rediriger en fonction de si la section est associée à une page ou une unité
+            if section.page and isinstance(section.page, PageContent):
+                return redirect('gerer_sections', page_id=section.page.id)
+            elif section.unit:
+                return redirect('gerer_sections_unite', unit=section.unit)
+            else:
+                messages.warning(request, "La section n'est associée ni à une page ni à une unité. Redirection vers le tableau de bord.")
+                return redirect('tableau_de_bord')
     else:
         form = SectionForm(instance=section)
     return render(request, 'modifier_section.html', {'form': form, 'section': section})
