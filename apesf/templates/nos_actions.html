@@ -5,7 +5,7 @@
 <div class="text-center mb-12">
     <h1 class="text-4xl font-bold text-primary-500">Nos actions</h1>
     <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto">
-        Découvrez sur cette page les actions que nous mettons en place pour accompagner au quotidien les enfants et leurs familles.
+        Découvrez les initiatives de l’Association Pour l’Enfant et Sa Famille pour soutenir les enfants et leurs familles à travers nos maisons d'enfants l'Angélus et Les Marmousets.
     </p>
 </div>
 
@@ -24,14 +24,23 @@
                     </div>
                 {% endif %}
                 {% for image in section.images.all %}
-                    <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
+                    <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg max-h-32 max-w-32 mx-auto object-contain">
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
 {% else %}
     <div class="text-center text-neutral-600">
-        <p>Contenu non défini. Veuillez ajouter du contenu via l'interface admin.</p>
+        <p>Contenu non défini. Veuillez ajouter du contenu via l'interface admin, par exemple :</p>
     </div>
 {% endif %}
+
+<!-- Appel à l’action -->
+<section class="py-8 text-center">
+    <div class="container mx-auto px-6">
+        <a href="{% url 'dons' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">
+            Contribuez à nos actions
+        </a>
+    </div>
+</section>
 {% endblock %}
