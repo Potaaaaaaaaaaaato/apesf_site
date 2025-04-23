@@ -23,7 +23,17 @@ def qui_sommes_nous(request):
         page = PageContent.objects.get(slug='qui-sommes-nous')
     except PageContent.DoesNotExist:
         page = None
-    return render(request, 'qui_sommes_nous.html', {'page': page})
+    
+    marmousets_sections = Section.objects.filter(unit='marmousets')
+    angelus_sections = Section.objects.filter(unit='angelus')
+    service_sections = Section.objects.filter(unit='service_externalise')
+    
+    return render(request, 'qui_sommes_nous.html', {
+        'page': page,
+        'marmousets_sections': marmousets_sections,
+        'angelus_sections': angelus_sections,
+        'service_sections': service_sections,
+    })
 
 # Page "Nos actions"
 def nos_actions(request):
@@ -299,4 +309,3 @@ def partners(request):
     # Récupérer tous les partenaires
     partners = Partner.objects.all()
     return render(request, 'partenaires.html', {'page': page, 'partners': partners})
-

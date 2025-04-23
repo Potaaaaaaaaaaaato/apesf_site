@@ -19,7 +19,15 @@ class PageContent(models.Model):
 
 # Modèle pour une section dans une page
 class Section(models.Model):
-    page = models.ForeignKey(PageContent, on_delete=models.CASCADE, related_name='sections', verbose_name="Page associée")
+    UNIT_CHOICES = [
+        ('marmousets', 'Marmousets'),
+        ('angelus', 'Angélus'),
+        ('service_externalise', 'Service externalisé'),
+        ('', 'Aucune unité'),  # Option pour les sections générales
+    ]
+    
+    page = models.ForeignKey(PageContent, on_delete=models.CASCADE, related_name='sections', verbose_name="Page associée", null=True, blank=True)
+    unit = models.CharField(max_length=50, choices=UNIT_CHOICES, default='', verbose_name="Unité associée", blank=True)
     title = models.CharField(max_length=200, verbose_name="Titre")
     content = models.TextField(verbose_name="Contenu")
     link = models.URLField(blank=True, null=True, verbose_name="Lien (optionnel)")
@@ -33,7 +41,9 @@ class Section(models.Model):
         verbose_name_plural = "Sections"
 
     def __str__(self):
-        return f"{self.title} (Section de {self.page.title})"
+        if self.page:
+            return f"{self.title} (Section de {self.page.title})"
+        return f"{self.title} (Unité: {self.get_unit_display() or 'Aucune unité'})"
 
 # Modèle pour les images uploadées (associées à une section)
 class UploadedImage(models.Model):
@@ -98,7 +108,7 @@ class Partner(models.Model):
             img_path = self.logo.path
             try:
                 img = Image.open(img_path)
-                output_size = (90, 90)  # Augmenté de (60, 60) à (120, 120)
+                output_size = (90, 90)  # Taille actuelle selon ton fichier
                 img.thumbnail(output_size, Image.Resampling.LANCZOS)  # Redimensionner tout en préservant les proportions
                 img.save(img_path, quality=85)  # Sauvegarder l'image redimensionnée
             except Exception as e:
