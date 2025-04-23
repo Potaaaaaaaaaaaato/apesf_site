@@ -175,7 +175,7 @@ def modifier_section(request, section_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Section modifiée avec succès !")
-            return redirect('gerer_sections', page_id=section.page.id)
+            return redirect('gerer_sections', page_id=section.page.id if section.page else redirect('tableau_de_bord'))
     else:
         form = SectionForm(instance=section)
     return render(request, 'modifier_section.html', {'form': form, 'section': section})
@@ -247,6 +247,49 @@ def gerer_sections(request, page_id):
         form = SectionForm()
 
     return render(request, 'gerer_sections.html', {'page': page, 'sections': sections, 'form': form})
+
+# Nouvelle vue pour gérer les sections par unité
+@login_required
+def gerer_sections_unite(request, unit):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour accéder à cette page.")
+        return redirect('tableau_de_bord')
+
+    # Vérifier que l'unité est valide
+    valid_units = ['marmousets', 'angelus', 'service_externalise']
+    if unit not in valid_units:
+        messages.error(request, "Unité invalide.")
+        return redirect('tableau_de_bord')
+
+    sections = Section.objects.filter(unit=unit)
+
+    if request.method == 'POST':
+        # Gestion de la suppression
+        if 'section_id' in request.POST:
+            section_id = request.POST.get('section_id')
+            section = get_object_or_404(Section, id=section_id, unit=unit)
+            section.delete()
+            messages.success(request, "Section supprimée avec succès !")
+            return redirect('gerer_sections_unite', unit=unit)
+        # Gestion de la création
+        else:
+            form = SectionForm(request.POST)
+            if form.is_valid():
+                section = form.save(commit=False)
+                section.unit = unit  # Associer la section à l'unité
+                section.save()
+                messages.success(request, "Section ajoutée avec succès !")
+                return redirect('gerer_sections_unite', unit=unit)
+
+    else:
+        form = SectionForm()
+
+    return render(request, 'gerer_sections_unite.html', {
+        'unit': unit,
+        'sections': sections,
+        'form': form,
+        'unit_display': dict(Section.UNIT_CHOICES).get(unit, 'Unité inconnue')
+    })
 
 # Supprimer un message de contact
 @login_required

@@ -18,6 +18,7 @@ urlpatterns = [
     path('telecharger-image/', views.telecharger_image, name='telecharger_image'),
     path('marquer-message-lu/<int:message_id>/', views.mark_message_as_read, name='mark_message_as_read'),
     path('gerer-sections/<int:page_id>/', views.gerer_sections, name='gerer_sections'),
+    path('gerer-sections-unite/<str:unit>/', views.gerer_sections_unite, name='gerer_sections_unite'),  # Nouvelle route
     path('supprimer-message/<int:message_id>/', views.supprimer_message, name='supprimer_message'),
     path('modifier-image/<int:image_id>/', views.modifier_image, name='modifier_image'),
     path('supprimer-image/<int:image_id>/', views.supprimer_image, name='supprimer_image'),

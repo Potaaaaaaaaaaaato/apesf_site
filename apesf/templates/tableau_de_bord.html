@@ -33,6 +33,26 @@
         <a href="{% url 'ajouter_page' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all mb-8">Ajouter une page</a>
     </div>
 
+    <!-- Gestion des sections par unité -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des sections par unité</h2>
+        <p class="text-neutral-600 mb-4">Gérez les sections spécifiques aux unités (Marmousets, Angélus, Service externalisé) qui apparaissent sur la page "Qui sommes-nous ?".</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a href="{% url 'gerer_sections_unite' 'marmousets' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
+                <h3 class="text-xl font-semibold text-primary-500">Marmousets</h3>
+                <p class="text-neutral-600">Gérer les sections pour les Marmousets</p>
+            </a>
+            <a href="{% url 'gerer_sections_unite' 'angelus' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
+                <h3 class="text-xl font-semibold text-primary-500">Angélus</h3>
+                <p class="text-neutral-600">Gérer les sections pour l’Angélus</p>
+            </a>
+            <a href="{% url 'gerer_sections_unite' 'service_externalise' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
+                <h3 class="text-xl font-semibold text-primary-500">Service externalisé</h3>
+                <p class="text-neutral-600">Gérer les sections pour le Service externalisé</p>
+            </a>
+        </div>
+    </div>
+
     <!-- Gestion des images -->
     <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des images</h2>
     <p class="text-neutral-600 mb-4">Vous pouvez uploader des images et les associer à une section spécifique. Cliquez sur "Uploader une image" pour commencer.</p>

@@ -6,10 +6,9 @@ class PageContentForm(forms.ModelForm):
         model = PageContent
         fields = ['title', 'slug']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'slug': forms.TextInput(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
+            'slug': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
         }
-        # Ajout de labels en français pour plus de clarté dans les templates
         labels = {
             'title': 'Titre',
             'slug': 'Slug (URL)',
@@ -18,19 +17,20 @@ class PageContentForm(forms.ModelForm):
 class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['title', 'content', 'link', 'order']
+        fields = ['title', 'content', 'link', 'order', 'unit']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
-            'link': forms.URLInput(attrs={'class': 'form-control'}),
-            'order': forms.NumberInput(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
+            'content': forms.Textarea(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'rows': 5}),
+            'link': forms.URLInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
+            'order': forms.NumberInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
+            'unit': forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
         }
-        # Ajout de labels en français pour plus de clarté dans les templates
         labels = {
             'title': 'Titre',
             'content': 'Contenu',
             'link': 'Lien (optionnel)',
             'order': 'Ordre d’affichage',
+            'unit': 'Unité associée',
         }
 
 class UploadedImageForm(forms.ModelForm):
@@ -38,24 +38,22 @@ class UploadedImageForm(forms.ModelForm):
         model = UploadedImage
         fields = ['image', 'section']
         widgets = {
-            'image': forms.FileInput(attrs={'class': 'form-control'}),
-            'section': forms.Select(attrs={'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg'}),
+            'section': forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
         }
-        # Ajout de labels en français pour plus de clarté dans les templates
         labels = {
             'image': 'Image',
             'section': 'Section associée',
         }
 
-# Formulaire pour le message de contact
 class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactMessage
         fields = ['name', 'email', 'message']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Votre nom'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Votre email'}),
-            'message': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Votre message'}),
+            'name': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Votre nom'}),
+            'email': forms.EmailInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Votre email'}),
+            'message': forms.Textarea(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'rows': 5, 'placeholder': 'Votre message'}),
         }
         labels = {
             'name': 'Nom',
