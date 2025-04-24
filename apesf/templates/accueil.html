@@ -25,16 +25,17 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         padding: 10px;
         border-radius: 0 10px 10px 0;
+        z-index: 10; /* Assure que la barre est au-dessus du carrousel */
     }
     .social-bar a {
         display: block;
         margin: 10px 0;
-        color: #000000; /* Couleur des icônes (noir comme Sauvegarde 42) */
+        color: #000000 !important; /* Forcer la couleur des icônes */
         font-size: 1.5rem; /* Taille des icônes */
         transition: color 0.3s ease;
     }
     .social-bar a:hover {
-        color: #E84C3D; /* Couleur au survol (inspirée de ta palette) */
+        color: #E84C3D !important;
     }
     @media (max-width: 768px) {
         .social-bar {
@@ -55,42 +56,55 @@
     </div>
 </section>
 
-<!-- Carrousel (Swiper) avec barre d'icônes -->
-<div class="carousel-container">
-    <!-- Barre d'icônes réseaux sociaux -->
-    <div class="social-bar">
-        <a href="#" target="_blank" title="Flux RSS"><i class="bi bi-rss"></i></a>
-        <a href="mailto:contact@apesf.fr" title="Nous envoyer un email"><i class="bi bi-envelope"></i></a>
-        <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
-        <a href="https://twitter.com" target="_blank" title="Twitter"><i class="bi bi-twitter-x"></i></a>
-        <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
-        <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
-    </div>
+<!-- Section Carrousel et futur carrousel d'actualités -->
+<section class="container mx-auto px-6 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Carrousel (Swiper) avec barre d'icônes -->
+        <div class="carousel-container">
+            <!-- Barre d'icônes réseaux sociaux -->
+            <div class="social-bar">
+                <a href="#" target="_blank" title="Flux RSS"><i class="bi bi-rss"></i></a>
+                <a href="mailto:contact@apesf.fr" title="Nous envoyer un email"><i class="bi bi-envelope"></i></a>
+                <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                <a href="https://twitter.com" target="_blank" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+                <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+            </div>
 
-    <!-- Carrousel (Swiper) -->
-    <div id="carouselAccueil" class="swiper mb-12">
-        <div class="swiper-wrapper">
-            <div class="swiper-slide">
-                <img src="{% static 'images/carousel-image-1.jpg' %}" alt="Activités avec les enfants">
-            </div>
-            <div class="swiper-slide">
-                <img src="{% static 'images/carousel-image-2.jpg' %}" alt="Moments partagés en famille">
-            </div>
-            <div class="swiper-slide">
-                <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Les Marmousets">
-            </div>
-            <div class="swiper-slide">
-                <img src="{% static 'images/carousel-image-4.jpg' %}" alt="L’Angélus">
-            </div>
-            <div class="swiper-slide">
-                <img src="{% static 'images/carousel-image-5.jpg' %}" alt="Soutien éducatif">
+            <!-- Carrousel (Swiper) -->
+            <div id="carouselAccueil" class="swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="{% static 'images/carousel-image-1.jpg' %}" alt="Activités avec les enfants">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="{% static 'images/carousel-image-2.jpg' %}" alt="Moments partagés en famille">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Les Marmousets">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="{% static 'images/carousel-image-4.jpg' %}" alt="L’Angélus">
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="{% static 'images/carousel-image-5.jpg' %}" alt="Soutien éducatif">
+                    </div>
+                </div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
             </div>
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-pagination"></div>
+
+        <!-- Espace pour le futur carrousel d'actualités -->
+        <div class="hidden md:block">
+            <!-- Placeholder pour le carrousel d'actualités (sera ajouté plus tard) -->
+            <div class="text-center text-neutral-600">
+                <p>[Carrousel d'actualités à venir]</p>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 <!-- Texte de présentation -->
 <section class="py-8 text-center">
