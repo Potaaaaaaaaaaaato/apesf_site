@@ -12,7 +12,7 @@
             {% for job in job_offers %}
                 <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
                     <h2 class="text-2xl font-semibold text-primary-500 mb-2">{{ job.title }}</h2>
-                    <p class="text-neutral-600 mb-4">{{ job.description }}</p>
+                    <div class="text-neutral-600 mb-4">{{ job.description|linebreaks }}</div>
                     <p class="text-sm text-gray-500 mb-2">Publié le : {{ job.posted_date }}</p>
                     {% if job.document %}
                         <p class="text-sm text-gray-500 mb-2">
