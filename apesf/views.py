@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import ContactMessage, PageContent, Partner, Section, UploadedImage
-from .forms import ContactForm, PageContentForm, SectionForm, UploadedImageForm
+from .models import ContactMessage, PageContent, Partner, Section, UploadedImage, News
+from .forms import ContactForm, PageContentForm, SectionForm, UploadedImageForm, NewsForm
 
 # Page d'accueil
 def accueil(request):
@@ -15,7 +15,10 @@ def accueil(request):
     # Récupérer les 5 dernières images uploadées pour le carrousel
     carousel_images = UploadedImage.objects.all().order_by('-uploaded_at')[:5]
     
-    return render(request, 'accueil.html', {'page': page, 'carousel_images': carousel_images})
+    # Récupérer les 5 dernières actualités pour le carrousel d'actualités
+    news_items = News.objects.all().order_by('-date')[:5]
+    
+    return render(request, 'accueil.html', {'page': page, 'carousel_images': carousel_images, 'news_items': news_items})
 
 # Page "Qui sommes-nous ?"
 def qui_sommes_nous(request):
@@ -104,8 +107,26 @@ def tableau_de_bord(request):
 
     pages = PageContent.objects.all()
     messages_contact = ContactMessage.objects.all()
-    images = UploadedImage.objects.all()  # Récupère toutes les images uploadées
-    return render(request, 'tableau_de_bord.html', {'pages': pages, 'messages_contact': messages_contact, 'images': images})
+    images = UploadedImage.objects.all()
+    news_items = News.objects.all()
+
+    # Gestion de l'ajout d'une actualité
+    if request.method == 'POST' and 'add_news' in request.POST:
+        news_form = NewsForm(request.POST, request.FILES)
+        if news_form.is_valid():
+            news_form.save()
+            messages.success(request, "Actualité ajoutée avec succès !")
+            return redirect('tableau_de_bord')
+    else:
+        news_form = NewsForm()
+
+    return render(request, 'tableau_de_bord.html', {
+        'pages': pages,
+        'messages_contact': messages_contact,
+        'images': images,
+        'news_items': news_items,
+        'news_form': news_form,
+    })
 
 # Ajouter une nouvelle page
 @login_required
@@ -339,6 +360,54 @@ def supprimer_image(request, image_id):
     image.delete()
     messages.success(request, "Image supprimée avec succès !")
     return redirect('tableau_de_bord')
+
+# Nouvelle vue pour gérer les actualités (suppression et création)
+@login_required
+def gerer_actualites(request):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour accéder à cette page.")
+        return redirect('tableau_de_bord')
+
+    news_items = News.objects.all()
+
+    if request.method == 'POST':
+        # Gestion de la suppression
+        if 'news_id' in request.POST:
+            news_id = request.POST.get('news_id')
+            news = get_object_or_404(News, id=news_id)
+            news.delete()
+            messages.success(request, "Actualité supprimée avec succès !")
+            return redirect('gerer_actualites')
+        # Gestion de la création
+        else:
+            form = NewsForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Actualité ajoutée avec succès !")
+                return redirect('gerer_actualites')
+
+    else:
+        form = NewsForm()
+
+    return render(request, 'gerer_actualites.html', {'news_items': news_items, 'form': form})
+
+# Modifier une actualité
+@login_required
+def modifier_actualite(request, news_id):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour modifier une actualité.")
+        return redirect('tableau_de_bord')
+
+    news = get_object_or_404(News, id=news_id)
+    if request.method == 'POST':
+        form = NewsForm(request.POST, request.FILES, instance=news)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Actualité modifiée avec succès !")
+            return redirect('gerer_actualites')
+    else:
+        form = NewsForm(instance=news)
+    return render(request, 'modifier_actualite.html', {'form': form, 'news': news})
 
 # Page "Mentions légales"
 def mentions_legales(request):

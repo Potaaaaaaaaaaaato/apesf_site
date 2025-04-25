@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Gérer les actualités{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Gérer les actualités</h1>
+</div>
+<div class="section mx-auto max-w-3xl">
+    <p class="text-neutral-600 mb-8">Ajoutez une nouvelle actualité, modifiez ou supprimez celles que vous ne voulez plus. Attention, la suppression est irréversible.</p>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Formulaire pour ajouter une nouvelle actualité -->
+    <h2 class="text-2xl font-semibold text-primary-500 mb-4">Ajouter une nouvelle actualité</h2>
+    <form method="post" enctype="multipart/form-data" class="space-y-4 mb-12">
+        {% csrf_token %}
+        <div>
+            <label for="id_title" class="block text-sm font-medium text-neutral-600">Titre</label>
+            {{ form.title }}
+        </div>
+        <div>
+            <label for="id_content" class="block text-sm font-medium text-neutral-600">Contenu</label>
+            {{ form.content }}
+        </div>
+        <div>
+            <label for="id_date" class="block text-sm font-medium text-neutral-600">Date</label>
+            {{ form.date }}
+        </div>
+        <div>
+            <label for="id_image" class="block text-sm font-medium text-neutral-600">Image (optionnelle)</label>
+            {{ form.image }}
+        </div>
+        <div>
+            <label for="id_document" class="block text-sm font-medium text-neutral-600">Pièce jointe (optionnelle, PDF, DOCX, TXT, etc.)</label>
+            {{ form.document }}
+        </div>
+        <div class="text-center">
+            <button type="submit" class="bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">Ajouter l'actualité</button>
+        </div>
+    </form>
+
+    <!-- Liste des actualités existantes -->
+    <h2 class="text-2xl font-semibold text-primary-500 mb-4">Actualités existantes</h2>
+    {% if news_items %}
+        <ul class="space-y-4">
+            {% for news in news_items %}
+                <li class="bg-white shadow-lg rounded-lg p-4 flex justify-between items-center">
+                    <div class="flex-1">
+                        <strong class="text-primary-500">{{ news.title }}</strong> (Date : {{ news.date }})<br>
+                        <p class="text-neutral-600">{{ news.content|truncatewords:20 }}</p>
+                        {% if news.image %}
+                            <p class="text-sm text-gray-500">Image : <a href="{{ news.image.url }}" class="text-primary-500 hover:underline" target="_blank">{{ news.image.url }}</a></p>
+                        {% endif %}
+                        {% if news.document %}
+                            <p class="text-sm text-gray-500">Pièce jointe : <a href="{{ news.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ news.document.name }}</a></p>
+                        {% endif %}
+                    </div>
+                    <div class="flex space-x-2">
+                        <a href="{% url 'modifier_actualite' news.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Modifier</a>
+                        <form method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');" class="inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="news_id" value="{{ news.id }}">
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">Supprimer</button>
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-neutral-600 mb-4">Aucune actualité pour le moment. Ajoutez-en une ci-dessus.</p>
+    {% endif %}
+
+    <div class="text-center mt-8">
+        <a href="{% url 'tableau_de_bord' %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">Retour au tableau de bord</a>
+    </div>
+</div>
+{% endblock %}

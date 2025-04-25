@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ContactMessage, PageContent, Section, UploadedImage, UserProfile, Partner
+from .models import ContactMessage, News, PageContent, Section, UploadedImage, UserProfile, Partner
 
 # Inline pour gérer les sections dans l'édition d'une page
 class SectionInline(admin.TabularInline):
@@ -162,6 +162,36 @@ class PartnerAdmin(admin.ModelAdmin):
     verbose_name_plural = "Partenaires"
 
     # Seuls les superusers et admins peuvent gérer les partenaires
+    def has_view_or_change_permission(self, request, obj=None):
+        if not request.user.is_authenticated:
+            return False
+        if request.user.is_superuser:
+            return True
+        try:
+            profile = request.user.userprofile
+            return profile.role in ['superuser', 'admin']
+        except UserProfile.DoesNotExist:
+            return False
+
+    def has_add_permission(self, request):
+        return self.has_view_or_change_permission(request)
+
+    def has_delete_permission(self, request, obj=None):
+        return self.has_view_or_change_permission(request)
+    
+# Administration du modèle News
+@admin.register(News)
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date', 'created_at')  # Champs dans la liste
+    list_filter = ('date', 'created_at')  # Filtres par date
+    search_fields = ('title', 'content')  # Recherche par titre ou contenu
+    ordering = ('-date',)  # Trie par date décroissante
+
+    # Noms en français pour l'interface admin
+    verbose_name = "Actualité"
+    verbose_name_plural = "Actualités"
+
+    # Seuls les superusers et admins peuvent gérer les actualités
     def has_view_or_change_permission(self, request, obj=None):
         if not request.user.is_authenticated:
             return False

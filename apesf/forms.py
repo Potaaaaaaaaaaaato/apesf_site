@@ -1,5 +1,5 @@
 from django import forms
-from .models import PageContent, Section, UploadedImage, ContactMessage
+from .models import News, PageContent, Section, UploadedImage, ContactMessage
 
 class PageContentForm(forms.ModelForm):
     class Meta:
@@ -59,4 +59,17 @@ class ContactForm(forms.ModelForm):
             'name': 'Nom',
             'email': 'Adresse email',
             'message': 'Message',
+        }
+
+# Formulaire pour ajouter une actualité
+class NewsForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ['title', 'content', 'date', 'image', 'document']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'w-full p-2 border rounded'}),
+            'content': forms.Textarea(attrs={'class': 'w-full p-2 border rounded', 'rows': 5}),
+            'date': forms.DateInput(attrs={'class': 'w-full p-2 border rounded', 'type': 'date'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
+            'document': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
         }

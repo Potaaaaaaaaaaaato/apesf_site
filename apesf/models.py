@@ -113,3 +113,20 @@ class Partner(models.Model):
                 img.save(img_path, quality=85)  # Sauvegarder l'image redimensionnée
             except Exception as e:
                 print(f"Erreur lors du redimensionnement de l'image {self.logo.name} : {e}")
+
+# Modèle pour les actualités
+class News(models.Model):
+    title = models.CharField(max_length=200, verbose_name="Titre")
+    content = models.TextField(verbose_name="Contenu")
+    date = models.DateField(verbose_name="Date")
+    image = models.ImageField(upload_to='news_images/', blank=True, null=True, verbose_name="Image (optionnelle)")
+    document = models.FileField(upload_to='news_documents/', blank=True, null=True, verbose_name="Pièce jointe (PDF, DOCX, TXT, etc.)")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
+
+    class Meta:
+        ordering = ['-date']  # Trie par date, les plus récentes en premier
+        verbose_name = "Actualité"
+        verbose_name_plural = "Actualités"
+
+    def __str__(self):
+        return self.title

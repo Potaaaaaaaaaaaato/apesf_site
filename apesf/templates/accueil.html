@@ -14,7 +14,7 @@
     }
     /* Style pour la barre d'icônes réseaux sociaux */
     .carousel-container {
-        position: relative; /* Conteneur relatif pour positionner la barre */
+        position: relative;
     }
     .social-bar {
         position: absolute;
@@ -25,13 +25,13 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         padding: 10px;
         border-radius: 0 10px 10px 0;
-        z-index: 10; /* Assure que la barre est au-dessus du carrousel */
+        z-index: 10;
     }
     .social-bar a {
         display: block;
         margin: 10px 0;
-        color: #000000 !important; /* Forcer la couleur des icônes */
-        font-size: 1.5rem; /* Taille des icônes */
+        color: #000000 !important;
+        font-size: 1.5rem;
         transition: color 0.3s ease;
     }
     .social-bar a:hover {
@@ -39,8 +39,26 @@
     }
     @media (max-width: 768px) {
         .social-bar {
-            display: none; /* Cache la barre sur mobile pour éviter un encombrement */
+            display: none;
         }
+    }
+    /* Style pour le carrousel d'actualités */
+    .news-carousel .swiper-slide {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        height: 100%;
+    }
+    .news-carousel .swiper-slide img {
+        max-width: 100%;
+        max-height: 150px;
+        object-fit: cover;
+        margin-bottom: 15px;
     }
 </style>
 
@@ -56,7 +74,7 @@
     </div>
 </section>
 
-<!-- Section Carrousel et futur carrousel d'actualités -->
+<!-- Section Carrousel et carrousel d'actualités -->
 <section class="container mx-auto px-6 mb-12">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Carrousel (Swiper) avec barre d'icônes -->
@@ -96,11 +114,31 @@
             </div>
         </div>
 
-        <!-- Espace pour le futur carrousel d'actualités -->
-        <div class="hidden md:block">
-            <!-- Placeholder pour le carrousel d'actualités (sera ajouté plus tard) -->
-            <div class="text-center text-neutral-600">
-                <p>Mettre le carrousel d'actualités</p>
+        <!-- Carrousel d'actualités -->
+        <div class="news-carousel">
+            <div id="carouselNews" class="swiper">
+                <div class="swiper-wrapper">
+                    {% for news in news_items %}
+                        <div class="swiper-slide">
+                            {% if news.image %}
+                                <img src="{{ news.image.url }}" alt="{{ news.title }}">
+                            {% endif %}
+                            <h3 class="text-lg font-semibold text-primary-500 mb-2">{{ news.title }}</h3>
+                            <p class="text-neutral-600 mb-2">{{ news.content|truncatewords:20 }}</p>
+                            <p class="text-sm text-neutral-500 mb-2">{{ news.date }}</p>
+                            {% if news.document %}
+                                <a href="{{ news.document.url }}" class="text-primary-500 hover:underline" target="_blank">Télécharger la pièce jointe</a>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="swiper-slide">
+                            <p class="text-neutral-600">Aucune actualité disponible pour le moment.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-pagination"></div>
             </div>
         </div>
     </div>
@@ -159,4 +197,43 @@
         <p>Contenu non défini. Veuillez ajouter du contenu via l'interface admin, par exemple :</p>
     </div>
 {% endif %}
+
+<!-- Script pour initialiser les carrousels -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialisation du carrousel d'images
+        const carouselAccueil = new Swiper('#carouselAccueil', {
+            loop: true,
+            autoplay: {
+                delay: 5000, // 5 secondes par slide
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        // Initialisation du carrousel d'actualités
+        const carouselNews = new Swiper('#carouselNews', {
+            loop: true,
+            autoplay: {
+                delay: 5000, // 5 secondes par slide
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    });
+</script>
 {% endblock %}

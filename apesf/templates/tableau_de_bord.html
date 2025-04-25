@@ -53,6 +53,44 @@
         </div>
     </div>
 
+    <!-- Gestion des actualités -->
+    <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des actualités</h2>
+    <p class="text-neutral-600 mb-4">Gérez les actualités affichées sur la page d'accueil. Cliquez ci-dessous pour ajouter, modifier ou supprimer des actualités.</p>
+    <div class="text-center">
+        <a href="{% url 'gerer_actualites' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all mb-8">Gérer les actualités</a>
+    </div>
+
+    <!-- Liste des actualités -->
+    <h3 class="text-xl font-semibold text-primary-500 mb-4">Actualités récentes</h3>
+    <p class="text-neutral-600 mb-4">Voici un aperçu des actualités actuellement enregistrées.</p>
+    {% if news_items %}
+        <ul id="news-list" class="space-y-4 mb-8">
+            {% for news in news_items %}
+                <li class="news-item bg-white shadow-lg rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="flex-1">
+                        <p class="text-gray-800 font-medium">{{ news.title }}</p>
+                        <p class="text-neutral-600">{{ news.content }}</p>
+                        <p class="text-sm text-gray-500">Date : {{ news.date }}</p>
+                        {% if news.image %}
+                            <p class="text-sm text-gray-500">Image : <a href="{{ news.image.url }}" class="text-primary-500 hover:underline" target="_blank">{{ news.image.url }}</a></p>
+                        {% endif %}
+                        {% if news.document %}
+                            <p class="text-sm text-gray-500">Pièce jointe : <a href="{{ news.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ news.document.name }}</a></p>
+                        {% endif %}
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
+                        <a href="{% url 'modifier_actualite' news.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors text-center">Modifier</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="text-center">
+            <button id="toggle-news" class="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">Voir plus</button>
+        </div>
+    {% else %}
+        <p class="text-neutral-600 mb-4">Aucune actualité pour le moment. Ajoutez-en via la page de gestion.</p>
+    {% endif %}
+
     <!-- Gestion des images -->
     <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des images</h2>
     <p class="text-neutral-600 mb-4">Vous pouvez uploader des images et les associer à une section spécifique. Cliquez sur "Uploader une image" pour commencer.</p>
@@ -125,4 +163,34 @@
         </div>
     {% endif %}
 </div>
+
+<!-- Script pour "Voir plus" / "Voir moins" -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const newsItems = document.querySelectorAll('.news-item');
+        const toggleButton = document.getElementById('toggle-news');
+        let showingAll = false;
+
+        // Afficher seulement les 3 premières actualités par défaut
+        function updateVisibility() {
+            newsItems.forEach((item, index) => {
+                if (!showingAll && index >= 3) {
+                    item.style.display = 'none';
+                } else {
+                    item.style.display = 'flex';
+                }
+            });
+            toggleButton.textContent = showingAll ? 'Voir moins' : 'Voir plus';
+        }
+
+        // Initialiser l'affichage
+        updateVisibility();
+
+        // Gérer le clic sur le bouton
+        toggleButton.addEventListener('click', function () {
+            showingAll = !showingAll;
+            updateVisibility();
+        });
+    });
+</script>
 {% endblock %}
