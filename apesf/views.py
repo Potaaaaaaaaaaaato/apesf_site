@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import ContactMessage, PageContent, Partner, Section, UploadedImage, News
-from .forms import ContactForm, PageContentForm, SectionForm, UploadedImageForm, NewsForm
+from .models import ContactMessage, JobOffer, PageContent, Partner, Section, UploadedImage, News
+from .forms import ContactForm, JobOfferForm, PageContentForm, SectionForm, UploadedImageForm, NewsForm
 
 # Page d'accueil
 def accueil(request):
@@ -428,3 +428,61 @@ def partners(request):
     # Récupérer tous les partenaires
     partners = Partner.objects.all()
     return render(request, 'partenaires.html', {'page': page, 'partners': partners})
+
+# Page "Offres d'emplois"
+def offres_emplois(request):
+    try:
+        page = PageContent.objects.get(slug='offres-emplois')
+    except PageContent.DoesNotExist:
+        page = None
+    
+    job_offers = JobOffer.objects.all()
+    return render(request, 'offres_emplois.html', {'page': page, 'job_offers': job_offers})
+
+# Nouvelle vue pour gérer les offres d'emploi (suppression et création)
+@login_required
+def gerer_offres_emplois(request):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour accéder à cette page.")
+        return redirect('tableau_de_bord')
+
+    job_offers = JobOffer.objects.all()
+
+    if request.method == 'POST':
+        # Gestion de la suppression
+        if 'job_id' in request.POST:
+            job_id = request.POST.get('job_id')
+            job = get_object_or_404(JobOffer, id=job_id)
+            job.delete()
+            messages.success(request, "Offre d'emploi supprimée avec succès !")
+            return redirect('gerer_offres_emplois')
+        # Gestion de la création
+        else:
+            form = JobOfferForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Offre d'emploi ajoutée avec succès !")
+                return redirect('gerer_offres_emplois')
+
+    else:
+        form = JobOfferForm()
+
+    return render(request, 'gerer_offres_emplois.html', {'job_offers': job_offers, 'form': form})
+
+# Modifier une offre d'emploi
+@login_required
+def modifier_offre_emploi(request, job_id):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour modifier une offre d'emploi.")
+        return redirect('tableau_de_bord')
+
+    job = get_object_or_404(JobOffer, id=job_id)
+    if request.method == 'POST':
+        form = JobOfferForm(request.POST, request.FILES, instance=job)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Offre d'emploi modifiée avec succès !")
+            return redirect('gerer_offres_emplois')
+    else:
+        form = JobOfferForm(instance=job)
+    return render(request, 'modifier_offre_emploi.html', {'form': form, 'job': job})

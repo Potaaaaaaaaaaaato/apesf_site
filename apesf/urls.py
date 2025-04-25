@@ -27,4 +27,7 @@ urlpatterns = [
     path('panel-admin/', views.panel_admin, name='panel_admin'),
     path('gerer-actualites/', views.gerer_actualites, name='gerer_actualites'),
     path('modifier-actualite/<int:news_id>/', views.modifier_actualite, name='modifier_actualite'),
+    path('offres-emplois/', views.offres_emplois, name='offres_emplois'),
+    path('gerer-offres-emplois/', views.gerer_offres_emplois, name='gerer_offres_emplois'),
+    path('modifier-offre-emploi/<int:job_id>/', views.modifier_offre_emploi, name='modifier_offre_emploi'),
 ]

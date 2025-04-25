@@ -1,5 +1,5 @@
 from django import forms
-from .models import News, PageContent, Section, UploadedImage, ContactMessage
+from .models import JobOffer, News, PageContent, Section, UploadedImage, ContactMessage
 
 class PageContentForm(forms.ModelForm):
     class Meta:
@@ -71,5 +71,17 @@ class NewsForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class': 'w-full p-2 border rounded', 'rows': 5}),
             'date': forms.DateInput(attrs={'class': 'w-full p-2 border rounded', 'type': 'date'}),
             'image': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
+            'document': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
+        }
+
+# Formulaire pour les offres d'emploi
+class JobOfferForm(forms.ModelForm):
+    class Meta:
+        model = JobOffer
+        fields = ['title', 'description', 'email_contact', 'document']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'w-full p-2 border rounded'}),
+            'description': forms.Textarea(attrs={'class': 'w-full p-2 border rounded', 'rows': 5}),
+            'email_contact': forms.EmailInput(attrs={'class': 'w-full p-2 border rounded'}),
             'document': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
         }

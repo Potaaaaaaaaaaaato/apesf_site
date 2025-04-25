@@ -130,3 +130,17 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
+    
+# Nouveau modèle pour les offres d'emploi
+class JobOffer(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    posted_date = models.DateField(auto_now_add=True)
+    email_contact = models.EmailField()  # Email pour postuler
+    document = models.FileField(upload_to='job_documents/', blank=True, null=True)  # Document joint (PDF, DOCX, etc.)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-posted_date']

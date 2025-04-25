@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Offres d'emplois{% endblock %}
+{% block content %}
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Offres d'emplois</h1>
+</div>
+<div class="section mx-auto max-w-4xl">
+    <p class="text-neutral-600 mb-8 text-center">Rejoignez notre équipe ! Découvrez nos offres d’emploi et postulez directement en envoyant votre candidature par email.</p>
+
+    {% if job_offers %}
+        <ul class="space-y-6">
+            {% for job in job_offers %}
+                <li class="bg-white shadow-lg rounded-lg p-6">
+                    <h2 class="text-2xl font-semibold text-primary-500 mb-2">{{ job.title }}</h2>
+                    <p class="text-neutral-600 mb-4">{{ job.description }}</p>
+                    <p class="text-sm text-gray-500 mb-2">Publié le : {{ job.posted_date }}</p>
+                    {% if job.document %}
+                        <p class="text-sm text-gray-500 mb-2">
+                            Détails de l’offre : 
+                            <a href="{{ job.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ job.document.name }}</a>
+                        </p>
+                    {% endif %}
+                    <div class="text-center mt-4">
+                        <a href="mailto:{{ job.email_contact }}?subject=Candidature pour {{ job.title }}" 
+                           class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">
+                            Postuler à cette offre
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-neutral-600 mb-4 text-center">Aucune offre d’emploi disponible pour le moment. Revenez bientôt !</p>
+    {% endif %}
+</div>
+{% endblock %}

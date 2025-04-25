@@ -91,6 +91,13 @@
         <p class="text-neutral-600 mb-4">Aucune actualité pour le moment. Ajoutez-en via la page de gestion.</p>
     {% endif %}
 
+    <!-- Gestion des offres d'emploi -->
+    <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des offres d'emploi</h2>
+    <p class="text-neutral-600 mb-4">Gérez les offres d’emploi affichées sur la page "Offres d’emplois". Cliquez ci-dessous pour ajouter, modifier ou supprimer des offres.</p>
+    <div class="text-center">
+        <a href="{% url 'gerer_offres_emplois' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all mb-8">Gérer les offres d’emploi</a>
+    </div>
+
     <!-- Gestion des images -->
     <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des images</h2>
     <p class="text-neutral-600 mb-4">Vous pouvez uploader des images et les associer à une section spécifique. Cliquez sur "Uploader une image" pour commencer.</p>
