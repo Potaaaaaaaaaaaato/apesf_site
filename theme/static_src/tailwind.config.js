@@ -8,7 +8,7 @@ module.exports = {
       extend: {
         colors: {
           primary: {
-            500: '#60A5FA', // Bleu doux pour les boutons et liens
+            500: '#015489', // Bleu doux pour les boutons et liens
             600: '#3B82F6',
           },
           secondary: {
