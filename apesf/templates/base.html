@@ -135,9 +135,9 @@
 
     <footer class="bg-neutral-100 py-8">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 md:items-start">
                 <!-- Colonne 1 : Liens utiles -->
-                <div class="flex-1 md:text-left">
+                <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-left">
                     <h3 class="text-lg font-semibold mb-4 text-primary-500">Liens utiles</h3>
                     <ul class="space-y-2 mt-0">
                         <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
@@ -147,7 +147,7 @@
                 </div>
     
                 <!-- Colonne 2 : Contact -->
-                <div class="flex-1 text-center">
+                <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-center">
                     <h3 class="text-lg font-semibold mb-4 text-primary-500">Contact</h3>
                     <div class="space-y-2">
                         <p class="my-0">1 Rue du Dr Paul Michelon, 42100 Saint-Étienne</p>
@@ -163,7 +163,7 @@
                 </div>
     
                 <!-- Colonne 3 : Soutenez-nous -->
-                <div class="flex-1 md:text-right">
+                <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-right">
                     <h3 class="text-lg font-semibold mb-4 text-primary-500">Soutenez-nous</h3>
                     <ul class="space-y-2 mt-0">
                         <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Faire un don</a></li>
