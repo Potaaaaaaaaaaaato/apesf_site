@@ -149,9 +149,10 @@
                     </div>
                     <div class="flex space-x-2">
                         {% if not message.is_read %}
-                            <a href="{% url 'mark_message_as_read' message.id %}" class="btn-mark-read bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition-colors">Marquer comme lu</a>
+                            <a href="{% url 'mark_message_as_read' message.id %}" class="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition-colors">Marquer comme lu</a>
                         {% endif %}
-                        <a href="{% url 'supprimer_message' message.id %}" class="btn-delete bg-red-500 text-black px-4 py-2 rounded hover:bg-red-700 transition-colors" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">Supprimer</a>
+                        <a href="{% url 'supprimer_message' message.id %}" class="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-700 transition-colors" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?');">Supprimer</a>
+                        <a href="mailto:{{ message.email }}?subject=Re: Réponse à votre message" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Répondre par mail <i class="bi bi-envelope-arrow-up"></i></a>
                     </div>
                 </li>
             {% endfor %}

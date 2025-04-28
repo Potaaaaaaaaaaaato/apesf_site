@@ -32,14 +32,10 @@
             </div>
         {% endfor %}
     </div>
-{% else %}
-    <!-- <div class="text-center text-neutral-600 mb-12">
-        <p>Contenu non défini. Veuillez ajouter du contenu via l'interface admin.</p>
-    </div> -->
 {% endif %}
 
 <!-- Formulaire de contact -->
-<div class="section mx-auto max-w-lg bg-white shadow-lg rounded-lg p-10">
+<div class="mx-auto max-w-4xl px-6 bg-white shadow-lg rounded-lg p-10">
     <h2 class="text-2xl font-semibold text-primary-500 mb-8 text-center">Envoyez-nous un message</h2>
     {% if messages %}
         {% for message in messages %}
