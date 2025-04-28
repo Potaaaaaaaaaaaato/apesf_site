@@ -4,7 +4,7 @@
 <div class="text-center mb-12">
     <h1 class="text-4xl font-bold text-primary-500">Offres d'emplois</h1>
 </div>
-<div class="section mx-auto max-w-4xl">
+<div class="container mx-auto px-6">
     <p class="text-neutral-600 mb-8 text-center">Rejoignez notre équipe ! Découvrez nos offres d’emploi et postulez directement en envoyant votre candidature par email.</p>
 
     {% if job_offers %}
@@ -17,7 +17,7 @@
                     {% if job.document %}
                         <p class="text-sm text-gray-500 mb-2 flex items-center">
                             <i class="bi bi-file-earmark mr-2"></i>
-
+                            Détails de l’offre : 
                             <a href="{{ job.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ job.document.name|cut:"job_documents/" }}</a>
                         </p>
                     {% endif %}
