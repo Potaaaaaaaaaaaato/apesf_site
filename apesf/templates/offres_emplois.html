@@ -15,9 +15,10 @@
                     <div class="text-neutral-600 mb-4">{{ job.description|linebreaks }}</div>
                     <p class="text-sm text-gray-500 mb-2">Publié le : {{ job.posted_date }}</p>
                     {% if job.document %}
-                        <p class="text-sm text-gray-500 mb-2">
-                            Détails de l’offre : 
-                            <a href="{{ job.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ job.document.name }}</a>
+                        <p class="text-sm text-gray-500 mb-2 flex items-center">
+                            <i class="bi bi-file-earmark mr-2"></i>
+
+                            <a href="{{ job.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ job.document.name|cut:"job_documents/" }}</a>
                         </p>
                     {% endif %}
                     <div class="text-center mt-4">

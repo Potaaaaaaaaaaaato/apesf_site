@@ -15,36 +15,36 @@
     {% tailwind_css %}
     <!-- Styles personnalisés -->
     <style>
-        /* Force affichage navbar */
+        /* Navbar */
         header {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            z-index: 1000 !important;
-            background-color: #ffffff !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #ffffff;
         }
 
         /* S'assurer que le body n'a pas d'overflow: hidden */
         body {
-            overflow: visible !important;
-            margin: 0 !important;
-            padding: 0 !important;
+            overflow: visible;
+            margin: 0;
+            padding: 0;
         }
 
         /* Ajuster le main pour éviter chevauchement avec la navbar */
         main {
-            margin-top: 60px !important;
+            margin-top: 80px;
         }
 
         /* Styles pour Swiper */
         .swiper {
             width: 100%;
-            max-height: 360px; /* Réduit de 400px à 360px (10 % de réduction) */
+            max-height: 360px;
         }
         .swiper-slide img {
             width: 100%;
-            max-height: 360px; /* Réduit de 400px à 360px */
+            max-height: 360px;
             object-fit: cover;
             border-radius: 0.5rem;
         }
@@ -73,31 +73,29 @@
             background-color: #FDBA74;
             opacity: 1;
         }
-
-        /* Forcer la visibilité de la navbar sur toutes les tailles d'écran */
-        #nav-links {
-            display: flex !important;
-            flex-direction: row;
-            gap: 1.5rem; /* space-x-6 */
-        }
     </style>
 </head>
 <body class="font-poppins antialiased text-neutral-600 bg-neutral-50">
     <!-- Header -->
     <header class="bg-white shadow fixed top-0 left-0 w-full z-10">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
             <div>
                 <a href="{% url 'accueil' %}">
                     <img src="{% static 'images/logo.png' %}" alt="Logo APESF" class="h-12">
                 </a>
             </div>
 
-            <!-- Menu de navigation -->
-            <ul id="nav-links">
+            <!-- Hamburger Button (visible on mobile) -->
+            <button id="menu-toggle" class="md:hidden text-primary-500 focus:outline-none">
+                <i class="bi bi-list text-2xl"></i>
+            </button>
+
+            <!-- Menu de navigation (desktop) -->
+            <ul id="nav-links" class="hidden md:flex items-center gap-6">
                 <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
                 <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Qui sommes-nous ?</a></li>
                 <li><a href="{% url 'nos_actions' %}" class="hover:text-primary-600 transition-colors">Nos actions</a></li>
-                <!--<li><a href="{% url 'partenaires' %}" class="hover:text-primary-600 transition-colors">Partenaires</a></li>-->
                 <li><a href="{% url 'offres_emplois' %}" class="hover:text-primary-600 transition-colors">Offres d'emplois</a></li>
                 <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
                 <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Soutenez-nous</a></li>
@@ -109,6 +107,24 @@
                 {% endif %}
             </ul>
         </nav>
+
+        <!-- Menu mobile (hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <ul class="container mx-auto px-6 py-4 space-y-4">
+                <li><a href="{% url 'accueil' %}" class="block hover:text-primary-600 transition-colors">Accueil</a></li>
+                <li><a href="{% url 'qui_sommes_nous' %}" class="block hover:text-primary-600 transition-colors">Qui sommes-nous ?</a></li>
+                <li><a href="{% url 'nos_actions' %}" class="block hover:text-primary-600 transition-colors">Nos actions</a></li>
+                <li><a href="{% url 'offres_emplois' %}" class="block hover:text-primary-600 transition-colors">Offres d'emplois</a></li>
+                <li><a href="{% url 'contact' %}" class="block hover:text-primary-600 transition-colors">Contact</a></li>
+                <li><a href="{% url 'dons' %}" class="block hover:text-primary-600 transition-colors">Soutenez-nous</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'tableau_de_bord' %}" class="block hover:text-primary-600 transition-colors">Tableau de bord</a></li>
+                    <li><a href="{% url 'deconnexion' %}" class="block hover:text-primary-600 transition-colors">Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{% url 'connexion' %}" class="block hover:text-primary-600 transition-colors">Connexion</a></li>
+                {% endif %}
+            </ul>
+        </div>
     </header>
 
     <!-- Main content -->
@@ -119,43 +135,47 @@
 
     <footer class="bg-neutral-100 py-8">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-stretch gap-8 text-left">
-                <!-- Colonne 1 : à gauche -->
-                <div class="flex-1">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-8 text-center">
+                <!-- Colonne 1 : Liens utiles -->
+                <div class="flex-1 md:text-left">
                     <h3 class="text-lg font-semibold mb-4 text-primary-500">Liens utiles</h3>
-                    <ul class="space-y-2">
+                    <ul class="space-y-2 mt-0">
                         <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
                         <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Qui sommes-nous ?</a></li>
                         <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
                     </ul>
                 </div>
     
-                <!-- Colonne 2 : au centre -->
+                <!-- Colonne 2 : Contact -->
                 <div class="flex-1 text-center">
                     <h3 class="text-lg font-semibold mb-4 text-primary-500">Contact</h3>
-                    <p>1 Rue du Dr Paul Michelon, 42100 Saint-Étienne</p>
-                    <p>04 77 25 37 15</p>
-                    <p>Retrouvez-nous sur :</p>
-                    <p class="mt-2">
-                        <a href="https://linkedin.com" class="hover:text-primary-600 transition-colors">LinkedIn <i class="bi bi-linkedin"></i></a>,
-                        <a href="https://instagram.com" class="hover:text-primary-600 transition-colors">Instagram <i class="bi bi-instagram"></i></a> &
-                        <a href="https://facebook.com" class="hover:text-primary-600 transition-colors">Facebook <i class="bi bi-facebook"></i></a>
-                    </p>
+                    <div class="space-y-2">
+                        <p class="w-full !text-center my-0 !mt-0">1 Rue du Dr Paul Michelon, 42100 Saint-Étienne</p>
+                        <p class="w-full !text-center my-0">04 77 25 37 15</p>
+                        <p class="w-full !text-center my-0">Retrouvez-nous sur :</p>
+                        <div class="flex justify-center gap-4">
+                            <a href="https://linkedin.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-linkedin"></i></a>
+                            <a href="https://instagram.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-instagram"></i></a>
+                            <a href="https://facebook.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-facebook"></i></a>
+                            <a href="mailto:contact@apesf.fr" class="hover:text-primary-600 transition-colors"><i class="bi bi-envelope"></i></a>
+                        </div>
+                    </div>
                 </div>
     
-                <!-- Colonne 3 : à droite -->
-                <div class="flex-1 text-right">
+                <!-- Colonne 3 : Soutenez-nous -->
+                <div class="flex-1 md:text-right md:ml-12">
                     <h3 class="text-lg font-semibold mb-4 text-primary-500">Soutenez-nous</h3>
-                    <ul class="space-y-2">
+                    <ul class="space-y-2 mt-0">
                         <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Faire un don</a></li>
                         <li><a href="{% url 'nos_actions' %}" class="hover:text-primary-600 transition-colors">Nos actions</a></li>
+                        <li><a href="{% url 'offres_emplois' %}" class="hover:text-primary-600 transition-colors">Offres d’emplois</a></li>
                     </ul>
                 </div>
             </div>
     
             <!-- Liens supplémentaires -->
             <div class="text-center mt-8">
-                <ul class="flex justify-center space-x-6">
+                <ul class="flex flex-col md:flex-row justify-center gap-6">
                     <li><a href="{% url 'mentions_legales' %}" class="hover:text-primary-600 transition-colors">Mentions légales</a></li>
                     <li><a href="{% url 'credits' %}" class="hover:text-primary-600 transition-colors">Crédits</a></li>
                     <li><a href="{% url 'panel_admin' %}" class="hover:text-primary-600 transition-colors">Panel admin</a></li>
@@ -169,9 +189,10 @@
     
     <!-- Swiper.js JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <!-- Script pour initialiser Swiper -->
+    <!-- Script pour initialiser Swiper et menu mobile -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Initialiser Swiper
             const swiper = new Swiper('#carouselAccueil', {
                 loop: true,
                 autoplay: {
@@ -188,6 +209,13 @@
                 },
                 slidesPerView: 1,
                 spaceBetween: 0,
+            });
+
+            // Toggle menu mobile
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuToggle.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
             });
         });
     </script>
