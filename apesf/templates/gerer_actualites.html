@@ -59,7 +59,7 @@
                     </div>
                     <div class="flex space-x-2">
                         <a href="{% url 'modifier_actualite' news.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Modifier</a>
-                        <form method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?');" class="inline">
+                        <form method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ? Cette action est irréversible.');" class="inline">
                             {% csrf_token %}
                             <input type="hidden" name="news_id" value="{{ news.id }}">
                             <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">Supprimer</button>
