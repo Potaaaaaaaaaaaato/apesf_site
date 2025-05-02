@@ -179,7 +179,7 @@
         const toggleButton = document.getElementById('toggle-news');
         let showingAll = false;
 
-        // Afficher seulement les 3 premières actualités par défaut
+        // Affiche seulement les 3 premières actualités par défaut
         function updateVisibility() {
             newsItems.forEach((item, index) => {
                 if (!showingAll && index >= 3) {
@@ -191,10 +191,8 @@
             toggleButton.textContent = showingAll ? 'Voir moins' : 'Voir plus';
         }
 
-        // Initialiser l'affichage
         updateVisibility();
 
-        // Gérer le clic sur le bouton
         toggleButton.addEventListener('click', function () {
             showingAll = !showingAll;
             updateVisibility();
