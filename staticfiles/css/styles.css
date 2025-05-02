@@ -1,0 +1,134 @@
+/* Réinitialisation et police générale */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa; /* Fond gris clair pour le site */
+    color: #000000; /* Texte noir */
+}
+
+/* Barre de navigation */
+.navbar {
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: #000000 !important; /* Noir pour le titre */
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    width: 40px; /* Taille raisonnable pour l'icône */
+    height: 40px;
+    margin-right: 10px; /* Espacement entre l'icône et le titre */
+}
+
+.nav-link {
+    color: #000000 !important;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #FFB163 !important; /* Orange clair au survol */
+}
+
+/* Contenu principal */
+.container {
+    max-width: 1200px;
+    padding: 20px 0;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 15px;
+}
+
+p {
+    color: #000000;
+    line-height: 1.6;
+}
+
+/* Sections */
+.section {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 15px; /* Coins légèrement arrondis */
+    margin-bottom: 30px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.section:hover {
+    transform: translateY(-5px); /* Effet de surélévation */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
+}
+
+.section h2 {
+    text-align: center; /* Titre centré */
+}
+
+/* Boutons */
+.btn-primary, .btn-success {
+    background-color: #FFB163; /* Couleur des boutons */
+    border-color: #FFB163;
+    font-weight: 500;
+    border-radius: 25px; /* Boutons arrondis */
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    background-color: #e09b55; /* Légère variation au survol */
+    border-color: #e09b55;
+}
+
+/* Footer */
+footer {
+    background-color: #e9ecef;
+    border-top: 1px solid #dee2e6;
+    padding: 20px 0;
+}
+
+footer p {
+    margin: 0;
+    color: #000000; /* Texte noir */
+}
+
+.social-links a {
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: #000000; /* Texte noir */
+    transition: color 0.3s;
+}
+
+.social-links a i {
+    margin-right: 5px;
+}
+
+.social-links a.text-primary:hover {
+    color: #FFB163 !important; /* Orange clair au survol */
+}
+
+.social-links a.text-danger:hover {
+    color: #FFB163 !important; /* Orange clair au survol */
+}
+
+/* Page 404 */
+.text-center .display-1 {
+    font-size: 6rem;
+    color: #FFB163; /* Orange clair pour le "404" */
+}
+
+.text-center .lead {
+    font-size: 1.25rem;
+    color: #000000; /* Texte noir */
+}
