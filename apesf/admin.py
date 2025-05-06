@@ -217,3 +217,4 @@ class NewsAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return self.has_view_or_change_permission(request)
+    
