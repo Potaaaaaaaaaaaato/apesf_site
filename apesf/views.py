@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import ContactMessage, JobOffer, PageContent, Partner, Section, UploadedImage, News
+from .models import ContactMessage, ContactMessageAttachment, JobOffer, PageContent, Partner, Section, UploadedImage, News
 from .forms import ContactForm, JobOfferForm, PageContentForm, SectionForm, UploadedImageForm, NewsForm
 
 # Page d'accueil
@@ -59,14 +59,22 @@ def contact(request):
     except PageContent.DoesNotExist:
         page = None
 
+    # Récupérer le paramètre 'subject' depuis l'URL
+    initial_subject = request.GET.get('subject', '')
+
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = ContactForm(request.POST, request.FILES, initial_subject=initial_subject)
         if form.is_valid():
-            form.save()
+            # Enregistrer le message de contact
+            contact_message = form.save()
+            # Gérer les pièces jointes
+            files = request.FILES.getlist('attachments')
+            for file in files:
+                ContactMessageAttachment.objects.create(contact_message=contact_message, file=file)
             messages.success(request, "Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.")
             return redirect('contact')
     else:
-        form = ContactForm()
+        form = ContactForm(initial_subject=initial_subject)
 
     return render(request, 'contact.html', {'page': page, 'form': form})
 

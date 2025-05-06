@@ -75,10 +75,23 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role}"
 
+# Modèle pour les pièces jointes des messages de contact
+class ContactMessageAttachment(models.Model):
+    contact_message = models.ForeignKey('ContactMessage', on_delete=models.CASCADE, related_name='attachments', verbose_name="Message de contact")
+    file = models.FileField(upload_to='contact_attachments/', verbose_name="Pièce jointe")
+
+    class Meta:
+        verbose_name = "Pièce jointe de message de contact"
+        verbose_name_plural = "Pièces jointes de messages de contact"
+
+    def __str__(self):
+        return f"Pièce jointe pour {self.contact_message.name} ({self.contact_message.email})"
+
 # Modèle pour les messages de contact
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nom")
     email = models.EmailField(verbose_name="Adresse email")
+    subject = models.CharField(max_length=200, verbose_name="Objet", blank=True, default="")  # Nouveau champ pour l'objet
     message = models.TextField(verbose_name="Message")
     submitted_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d'envoi")
     is_read = models.BooleanField(default=False, verbose_name="Lu")

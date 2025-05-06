@@ -49,19 +49,26 @@ class UploadedImageForm(forms.ModelForm):
 class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactMessage
-        fields = ['name', 'email', 'message']
+        fields = ['name', 'email', 'subject', 'message']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Votre nom'}),
             'email': forms.EmailInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Votre email'}),
+            'subject': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Objet de votre message'}),
             'message': forms.Textarea(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'rows': 5, 'placeholder': 'Votre message'}),
         }
         labels = {
             'name': 'Nom',
             'email': 'Adresse email',
+            'subject': 'Objet',
             'message': 'Message',
         }
 
-# Formulaire pour ajouter une actualité
+    def __init__(self, *args, **kwargs):
+        initial_subject = kwargs.pop('initial_subject', '')
+        super().__init__(*args, **kwargs)
+        if initial_subject:
+            self.fields['subject'].initial = initial_subject
+
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News

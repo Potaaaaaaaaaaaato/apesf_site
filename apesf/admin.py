@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ContactMessage, News, PageContent, Section, UploadedImage, UserProfile, Partner
+from .models import ContactMessage, ContactMessageAttachment, News, PageContent, Section, UploadedImage, UserProfile, Partner
 
 # Inline pour gérer les sections dans l'édition d'une page
 class SectionInline(admin.TabularInline):
@@ -8,6 +8,14 @@ class SectionInline(admin.TabularInline):
     fields = ('title', 'content', 'link', 'order')  # Champs affichés dans l'inline
     verbose_name = "Section"  # Nom en français pour une section individuelle
     verbose_name_plural = "Sections"  # Nom en français pour plusieurs sections
+
+# Inline pour gérer les pièces jointes dans l'édition d'un message de contact
+class ContactMessageAttachmentInline(admin.TabularInline):
+    model = ContactMessageAttachment
+    extra = 1  # Nombre de formulaires vides affichés par défaut
+    fields = ('file',)  # Champs affichés dans l'inline
+    verbose_name = "Pièce jointe"
+    verbose_name_plural = "Pièces jointes"
 
 @admin.register(PageContent)
 class PageContentAdmin(admin.ModelAdmin):
@@ -127,10 +135,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'submitted_at', 'is_read')
+    list_display = ('name', 'email', 'subject', 'submitted_at', 'is_read')  # Ajout de 'subject'
     list_filter = ('is_read', 'submitted_at')
-    search_fields = ('name', 'email', 'message')
+    search_fields = ('name', 'email', 'subject', 'message')  # Ajout de 'subject' dans la recherche
     ordering = ('-submitted_at',)
+    inlines = [ContactMessageAttachmentInline]  # Ajout des pièces jointes en inline
 
     # Seuls les superusers et admins peuvent voir/modifier les messages
     def has_view_or_change_permission(self, request, obj=None):
