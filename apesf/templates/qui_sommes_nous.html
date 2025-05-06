@@ -7,6 +7,7 @@
     .unit-links {
         position: sticky;
         top: 100px; /* S'assure que la liste reste visible lors du scroll */
+        padding-left: 30px; /* Ajout d'un padding à gauche pour pousser les liens plus à droite */
     }
     .unit-links a {
         display: block;
@@ -69,7 +70,7 @@
                                 </a>
                             {% endif %}
                             {% for image in section.images.all %}
-                                <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg max-h-32 max-w-32 mx-auto object-contain">
+                                <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg object-cover">
                             {% endfor %}
                         </div>
                     {% endfor %}
