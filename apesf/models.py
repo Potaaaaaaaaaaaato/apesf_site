@@ -22,7 +22,8 @@ class Section(models.Model):
     UNIT_CHOICES = [
         ('marmousets', 'Marmousets'),
         ('angelus', 'Angélus'),
-        ('service_externalise', 'Service externalisé'),
+        ('placement_modulable', 'Placement modulable'),
+        ('accueil_parental', 'Accueil parental'),
         ('', 'Aucune unité'),  # Option pour les sections générales
     ]
     

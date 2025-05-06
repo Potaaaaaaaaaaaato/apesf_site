@@ -1,151 +1,95 @@
 {% extends 'base.html' %}
-{% block title %}Qui sommes-nous ?{% endblock %}
+{% block title %}Nos établissements & services{% endblock %}
 {% block content %}
-<!-- Titre principal et phrase explicative -->
+<!-- Styles personnalisés pour la page -->
+<style>
+    /* Style pour la liste des liens à droite */
+    .unit-links {
+        position: sticky;
+        top: 100px; /* S'assure que la liste reste visible lors du scroll */
+    }
+    .unit-links a {
+        display: block;
+        padding: 10px 15px;
+        color: #4B5563; /* text-neutral-600 */
+        font-size: 1.125rem; /* 18px */
+        transition: all 0.3s ease;
+        position: relative;
+        border-radius: 8px;
+    }
+    .unit-links a:hover {
+        color: #E84C3D; /* text-primary-500 */
+        transform: scale(1.05);
+        background-color: #F3F4F6; /* Légère surélévation et fond gris clair au survol */
+    }
+    .unit-links a.active {
+        color: #E84C3D; /* text-primary-500 */
+        font-weight: 600;
+    }
+    .unit-links a.active::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #E84C3D;
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+</style>
+
+<!-- Titre principal -->
 <div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-primary-500">Qui sommes-nous ?</h1>
-    <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto">
-        L’APESF est une association dédiée à l’accompagnement des enfants et de leurs familles, en leur offrant un soutien adapté à leurs besoins.
-    </p>
+    <h1 class="text-4xl font-bold text-primary-500">Nos établissements & services</h1>
 </div>
 
-<!-- Section Angélus -->
-<section class="mb-12">
-    <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-semibold text-primary-500 mb-4 text-center">L’Angélus</h2>
-        <p class="text-lg text-neutral-600 mb-8 max-w-3xl mx-auto text-center">
-            L’Angélus est dédié aux enfants de 0 à 14 ans, accueillis dans quatre unités au sein d’un environnement stimulant. Situé dans le quartier Métare à Saint-Étienne, notre établissement dispose d’un parc de 3000 m², de locaux modernes, et d’une équipe de professionnels engagés pour accompagner les enfants et leurs familles, tout en favorisant le maintien des fratries.
-        </p>
-        <!-- Conteneur intermédiaire pour les sous-sections -->
-        <div class="py-8">
-            <!-- Sous-sections dynamiques pour Angélus -->
-            {% if angelus_sections %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {% for section in angelus_sections %}
-                        <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
-                            <h3 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h3>
-                            <p class="text-neutral-600 mb-4">{{ section.content }}</p>
-                            {% if section.link %}
-                                <div class="text-center">
-                                    <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
-                                        En savoir plus
-                                    </a>
-                                </div>
-                            {% endif %}
-                            {% for image in section.images.all %}
-                                <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center text-neutral-600">
-                    <p>Aucune sous-section définie pour l’Angélus. Veuillez ajouter du contenu via l'interface admin.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
-<!-- Section Marmousets -->
-<section class="mb-12">
-    <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-semibold text-primary-500 mb-4 text-center">Les Marmousets</h2>
-        <p class="text-lg text-neutral-600 mb-8 max-w-3xl mx-auto text-center">
-            Les Marmousets accueillent des enfants de 6 à 18 ans dans un cadre favorisant leur épanouissement et leur autonomie. Répartis en trois unités mixtes, nos 30 enfants bénéficient d’un accompagnement personnalisé, d’activités favorisant la parole (boîte à idées, conseil des ados) et d’un soutien familial (conseil des parents, maintien des fratries).
-        </p>
-        <!-- Conteneur intermédiaire pour les sous-sections -->
-        <div class="py-8">
-            <!-- Sous-sections dynamiques pour Marmousets -->
-            {% if marmousets_sections %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {% for section in marmousets_sections %}
-                        <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
-                            <h3 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h3>
-                            <p class="text-neutral-600 mb-4">{{ section.content }}</p>
-                            {% if section.link %}
-                                <div class="text-center">
-                                    <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
-                                        En savoir plus
-                                    </a>
-                                </div>
-                            {% endif %}
-                            {% for image in section.images.all %}
-                                <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center text-neutral-600">
-                    <p>Aucune sous-section définie pour les Marmousets. Veuillez ajouter du contenu via l'interface admin.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
-<!-- Section Service externalisé -->
-<section class="mb-12">
-    <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-semibold text-primary-500 mb-4 text-center">Service externalisé</h2>
-        <p class="text-lg text-neutral-600 mb-8 max-w-3xl mx-auto text-center">
-            Le service externalisé de l’APESF propose un accompagnement des jeunes majeurs dans leur transition vers l’autonomie. À titre expérimental, nous mettons à disposition des studios pour des durées variables, afin de soutenir les adolescents dans leur passage à l’âge adulte.
-        </p>
-        <!-- Conteneur intermédiaire pour les sous-sections -->
-        <div class="py-8">
-            <!-- Sous-sections dynamiques pour Service externalisé -->
-            {% if service_sections %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {% for section in service_sections %}
-                        <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
-                            <h3 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h3>
-                            <p class="text-neutral-600 mb-4">{{ section.content }}</p>
-                            {% if section.link %}
-                                <div class="text-center">
-                                    <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
-                                        En savoir plus
-                                    </a>
-                                </div>
-                            {% endif %}
-                            {% for image in section.images.all %}
-                                <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="text-center text-neutral-600">
-                    <p>Aucune sous-section définie pour le Service externalisé. Veuillez ajouter du contenu via l'interface admin.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
-<!-- Sections dynamiques générales -->
-{% if page %}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% for section in page.sections.all %}
-            <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
-                <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
-                <p class="text-neutral-600 mb-4">{{ section.content }}</p>
-                {% if section.link %}
-                    <div class="text-center">
-                        <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
-                            En savoir plus
-                        </a>
-                    </div>
-                {% endif %}
-                {% for image in section.images.all %}
-                    <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
-                {% endfor %}
+<!-- Conteneur principal avec disposition 75%/25% -->
+<div class="container mx-auto px-6 flex flex-col md:flex-row gap-8">
+    <!-- Partie gauche (75%) : Sections dynamiques -->
+    <div class="md:w-3/4">
+        {% if not selected_unit %}
+            <!-- Section par défaut -->
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-primary-500 mb-4">Découvrez nos établissements et services</h2>
+                <p class="text-neutral-600 mb-4">
+                    Bienvenue sur la page de présentation de nos établissements et services. Sélectionnez une option à droite pour découvrir nos unités et services à Saint-Étienne.
+                </p>
             </div>
-        {% endfor %}
+        {% else %}
+            <!-- Sections dynamiques pour l'unité sélectionnée -->
+            {% if sections %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {% for section in sections %}
+                        <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
+                            <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
+                            <p class="text-neutral-600 mb-4">{{ section.content }}</p>
+                            {% if section.link %}
+                                <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
+                                    En savoir plus
+                                </a>
+                            {% endif %}
+                            {% for image in section.images.all %}
+                                <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg max-h-32 max-w-32 mx-auto object-contain">
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center text-neutral-600">
+                    <p>Aucune section définie pour cet établissement/service. Veuillez ajouter du contenu via le tableau de bord.</p>
+                </div>
+            {% endif %}
+        {% endif %}
     </div>
-{% else %}
-    <div class="text-center text-neutral-600">
-        <p>Contenu non défini. Veuillez ajouter du contenu via l'interface admin.</p>
+
+    <!-- Partie droite (25%) : Liste des liens cliquables -->
+    <div class="md:w-1/4">
+        <div class="unit-links">
+            <a href="?unit=angelus" class="{% if selected_unit == 'angelus' %}active{% endif %}">Angélus</a>
+            <a href="?unit=marmousets" class="{% if selected_unit == 'marmousets' %}active{% endif %}">Marmousets</a>
+            <a href="?unit=placement_modulable" class="{% if selected_unit == 'placement_modulable' %}active{% endif %}">Placement modulable</a>
+            <a href="?unit=accueil_parental" class="{% if selected_unit == 'accueil_parental' %}active{% endif %}">Accueil parental</a>
+        </div>
     </div>
-{% endif %}
+</div>
 {% endblock %}

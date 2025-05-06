@@ -20,31 +20,29 @@ def accueil(request):
     
     return render(request, 'accueil.html', {'page': page, 'carousel_images': carousel_images, 'news_items': news_items})
 
-# Page "Qui sommes-nous ?"
+# Page "Nos établissements & services"
 def qui_sommes_nous(request):
-    try:
-        page = PageContent.objects.get(slug='qui-sommes-nous')
-    except PageContent.DoesNotExist:
-        page = None
+    # Récupérer le paramètre 'unit' depuis l'URL
+    selected_unit = request.GET.get('unit', '')
     
-    marmousets_sections = Section.objects.filter(unit='marmousets')
-    angelus_sections = Section.objects.filter(unit='angelus')
-    service_sections = Section.objects.filter(unit='service_externalise')
+    # Liste des unités disponibles
+    valid_units = ['marmousets', 'angelus', 'placement_modulable', 'accueil_parental']
+    
+    # Vérifier si l'unité sélectionnée est valide
+    if selected_unit not in valid_units:
+        selected_unit = ''
+    
+    # Récupérer les sections pour l'unité sélectionnée
+    if selected_unit:
+        sections = Section.objects.filter(unit=selected_unit)
+    else:
+        sections = None
     
     return render(request, 'qui_sommes_nous.html', {
-        'page': page,
-        'marmousets_sections': marmousets_sections,
-        'angelus_sections': angelus_sections,
-        'service_sections': service_sections,
+        'selected_unit': selected_unit,
+        'sections': sections,
+        'valid_units': valid_units,
     })
-
-# Page "Nos actions"
-def nos_actions(request):
-    try:
-        page = PageContent.objects.get(slug='nos-actions')
-    except PageContent.DoesNotExist:
-        page = None
-    return render(request, 'nos_actions.html', {'page': page})
 
 # Page "Partenaires"
 def partenaires(request):
@@ -284,7 +282,7 @@ def gerer_sections_unite(request, unit):
         return redirect('tableau_de_bord')
 
     # Vérifier que l'unité est valide
-    valid_units = ['marmousets', 'angelus', 'service_externalise']
+    valid_units = ['marmousets', 'angelus', 'placement_modulable', 'accueil_parental']
     if unit not in valid_units:
         messages.error(request, "Unité invalide.")
         return redirect('tableau_de_bord')

@@ -30,7 +30,7 @@ class SectionForm(forms.ModelForm):
             'content': 'Contenu',
             'link': 'Lien (optionnel)',
             'order': 'Ordre d’affichage',
-            'unit': 'Unité associée',
+            'unit': 'Établissement/Service associé',
         }
 
 class UploadedImageForm(forms.ModelForm):

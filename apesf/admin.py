@@ -41,8 +41,8 @@ class PageContentAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'page', 'order', 'created_at', 'updated_at')  # Champs dans la liste
-    list_filter = ('page', 'created_at', 'updated_at')  # Filtres par page et dates
+    list_display = ('title', 'page', 'unit', 'order', 'created_at', 'updated_at')  # Ajout de 'unit' dans la liste
+    list_filter = ('page', 'unit', 'created_at', 'updated_at')  # Filtres par page, unité et dates
     search_fields = ('title', 'content')  # Recherche par titre ou contenu
     list_select_related = ('page',)  # Optimise les requêtes SQL pour la page associée
     ordering = ('order',)  # Trie par ordre d’affichage
@@ -150,7 +150,7 @@ class ContactMessageAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return self.has_view_or_change_permission(request)
 
-# Administration du modèle Partner (ajouté)
+# Administration du modèle Partner
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
     list_display = ('name',)  # Champs dans la liste
