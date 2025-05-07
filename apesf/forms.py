@@ -92,3 +92,4 @@ class JobOfferForm(forms.ModelForm):
             'email_contact': forms.EmailInput(attrs={'class': 'w-full p-2 border rounded'}),
             'document': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
         }
+
