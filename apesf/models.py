@@ -46,18 +46,23 @@ class Section(models.Model):
             return f"{self.title} (Section de {self.page.title})"
         return f"{self.title} (Unité: {self.get_unit_display() or 'Aucune unité'})"
 
-# Modèle pour les images uploadées (associées à une section)
+# Modèle pour les images uploadées (associées à une section ou une actualité)
 class UploadedImage(models.Model):
     image = models.ImageField(upload_to='uploads/', verbose_name="Image")
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d’upload")
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='images', null=True, blank=True, verbose_name="Section associée")
+    news = models.ForeignKey('News', on_delete=models.CASCADE, related_name='images', null=True, blank=True, verbose_name="Actualité associée")
 
     class Meta:
         verbose_name = "Image uploadée"
         verbose_name_plural = "Images uploadées"
 
     def __str__(self):
-        return f"Image pour {self.section.title if self.section else 'Aucune section'}"
+        if self.section:
+            return f"Image pour {self.section.title}"
+        elif self.news:
+            return f"Image pour l'actualité {self.news.title}"
+        return "Image non associée"
 
 # Modèle pour les rôles utilisateurs
 class UserProfile(models.Model):
@@ -91,7 +96,7 @@ class ContactMessageAttachment(models.Model):
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nom")
     email = models.EmailField(verbose_name="Adresse email")
-    subject = models.CharField(max_length=200, verbose_name="Objet", blank=True, default="")  # Nouveau champ pour l'objet
+    subject = models.CharField(max_length=200, verbose_name="Objet", blank=True, default="")
     message = models.TextField(verbose_name="Message")
     submitted_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d'envoi")
     is_read = models.BooleanField(default=False, verbose_name="Lu")
@@ -133,7 +138,7 @@ class News(models.Model):
     title = models.CharField(max_length=200, verbose_name="Titre")
     content = models.TextField(verbose_name="Contenu")
     date = models.DateField(verbose_name="Date")
-    image = models.ImageField(upload_to='news_images/', blank=True, null=True, verbose_name="Image (optionnelle)")
+    image = models.ImageField(upload_to='news_images/', blank=True, null=True, verbose_name="Image principale (optionnelle)")
     document = models.FileField(upload_to='news_documents/', blank=True, null=True, verbose_name="Pièce jointe (PDF, DOCX, TXT, etc.)")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
 

@@ -302,6 +302,8 @@
                             {% if news.document %}
                                 <a href="{{ news.document.url }}" target="_blank">Télécharger la pièce jointe</a>
                             {% endif %}
+                            <!-- Débogage : Afficher les URLs des images associées -->
+                            <p style="display: none;" class="debug-images">Images associées : {% for image in news.images.all %}{{ image.image.url }}|{% endfor %}</p>
                         </div>
                     {% empty %}
                         <div class="swiper-slide">
@@ -320,12 +322,14 @@
 <!-- Modal pour afficher les détails de l'actualité -->
 <div id="newsModal" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span class="close">×</span>
         <h3 id="modalTitle"></h3>
         <p id="modalContent"></p>
         <p id="modalDate"></p>
         <div id="modalDocument"></div>
         <div id="modalImages" class="modal-images"></div>
+        <!-- Zone pour les messages de débogage -->
+        <p id="debugMessage" style="color: red;"></p>
     </div>
 </div>
 
@@ -391,6 +395,7 @@
         const modalDate = document.getElementById('modalDate');
         const modalDocument = document.getElementById('modalDocument');
         const modalImages = document.getElementById('modalImages');
+        const debugMessage = document.getElementById('debugMessage');
         const closeModal = document.querySelector('.modal .close');
 
         // Gestion du clic sur une actualité
@@ -414,14 +419,21 @@
                 // Gestion des images
                 const images = this.getAttribute('data-images');
                 modalImages.innerHTML = '';
+                debugMessage.textContent = ''; // Réinitialiser le message de débogage
                 if (images) {
                     const imageArray = images.split('|').filter(url => url); // Sépare les URLs et ignore les vides
-                    imageArray.forEach(url => {
-                        const img = document.createElement('img');
-                        img.src = url;
-                        img.alt = 'Image associée à l’actualité';
-                        modalImages.appendChild(img);
-                    });
+                    if (imageArray.length > 0) {
+                        imageArray.forEach(url => {
+                            const img = document.createElement('img');
+                            img.src = url;
+                            img.alt = 'Image associée à l’actualité';
+                            modalImages.appendChild(img);
+                        });
+                    } else {
+                        debugMessage.textContent = 'Aucune image associée trouvée.';
+                    }
+                } else {
+                    debugMessage.textContent = 'Aucune image associée à cette actualité.';
                 }
 
                 // Afficher le modal
@@ -450,3 +462,4 @@
     });
 </script>
 {% endblock %}
+

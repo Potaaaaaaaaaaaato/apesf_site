@@ -78,10 +78,10 @@ class SectionAdmin(admin.ModelAdmin):
 
 @admin.register(UploadedImage)
 class UploadedImageAdmin(admin.ModelAdmin):
-    list_display = ('image', 'section', 'uploaded_at')  # Champs dans la liste
-    list_filter = ('uploaded_at', 'section')  # Filtres par date et section
+    list_display = ('image', 'section', 'news', 'uploaded_at')  # Ajout de 'news'
+    list_filter = ('uploaded_at', 'section', 'news')  # Filtres par date, section et actualité
     search_fields = ('image',)  # Recherche par nom de fichier
-    list_select_related = ('section',)  # Optimise les requêtes SQL pour la section associée
+    list_select_related = ('section', 'news')  # Optimise les requêtes SQL
     ordering = ('-uploaded_at',)  # Trie par date d’upload décroissante
 
     # Noms en français pour l'interface admin
@@ -135,13 +135,12 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'subject', 'submitted_at', 'is_read')  # Ajout de 'subject'
+    list_display = ('name', 'email', 'subject', 'submitted_at', 'is_read')
     list_filter = ('is_read', 'submitted_at')
-    search_fields = ('name', 'email', 'subject', 'message')  # Ajout de 'subject' dans la recherche
+    search_fields = ('name', 'email', 'subject', 'message')
     ordering = ('-submitted_at',)
-    inlines = [ContactMessageAttachmentInline]  # Ajout des pièces jointes en inline
+    inlines = [ContactMessageAttachmentInline]
 
-    # Seuls les superusers et admins peuvent voir/modifier les messages
     def has_view_or_change_permission(self, request, obj=None):
         if not request.user.is_authenticated:
             return False
@@ -159,18 +158,15 @@ class ContactMessageAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return self.has_view_or_change_permission(request)
 
-# Administration du modèle Partner
 @admin.register(Partner)
 class PartnerAdmin(admin.ModelAdmin):
-    list_display = ('name',)  # Champs dans la liste
-    search_fields = ('name',)  # Recherche par nom du partenaire
-    ordering = ('name',)  # Trie par nom
+    list_display = ('name',)
+    search_fields = ('name',)
+    ordering = ('name',)
 
-    # Noms en français pour l'interface admin
     verbose_name = "Partenaire"
     verbose_name_plural = "Partenaires"
 
-    # Seuls les superusers et admins peuvent gérer les partenaires
     def has_view_or_change_permission(self, request, obj=None):
         if not request.user.is_authenticated:
             return False
@@ -187,20 +183,17 @@ class PartnerAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return self.has_view_or_change_permission(request)
-    
-# Administration du modèle News
+
 @admin.register(News)
 class NewsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'date', 'created_at')  # Champs dans la liste
-    list_filter = ('date', 'created_at')  # Filtres par date
-    search_fields = ('title', 'content')  # Recherche par titre ou contenu
-    ordering = ('-date',)  # Trie par date décroissante
+    list_display = ('title', 'date', 'created_at')
+    list_filter = ('date', 'created_at')
+    search_fields = ('title', 'content')
+    ordering = ('-date',)
 
-    # Noms en français pour l'interface admin
     verbose_name = "Actualité"
     verbose_name_plural = "Actualités"
 
-    # Seuls les superusers et admins peuvent gérer les actualités
     def has_view_or_change_permission(self, request, obj=None):
         if not request.user.is_authenticated:
             return False

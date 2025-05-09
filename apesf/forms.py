@@ -36,14 +36,16 @@ class SectionForm(forms.ModelForm):
 class UploadedImageForm(forms.ModelForm):
     class Meta:
         model = UploadedImage
-        fields = ['image', 'section']
+        fields = ['image', 'section', 'news']
         widgets = {
             'image': forms.FileInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg'}),
             'section': forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
+            'news': forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
         }
         labels = {
             'image': 'Image',
             'section': 'Section associée',
+            'news': 'Actualité associée',
         }
 
 class ContactForm(forms.ModelForm):
@@ -92,4 +94,3 @@ class JobOfferForm(forms.ModelForm):
             'email_contact': forms.EmailInput(attrs={'class': 'w-full p-2 border rounded'}),
             'document': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
         }
-
