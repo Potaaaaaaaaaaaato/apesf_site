@@ -1,12 +1,133 @@
 {% extends 'base.html' %}
 {% block title %}Page non trouvée{% endblock %}
 {% block content %}
-<div class="text-center mt-5">
-    <h1 class="display-1">404</h1>
-    <h2>Oups ! Page non trouvée</h2>
-    <p class="lead">Désolé, la page que vous cherchez n'existe pas ou a été déplacée.</p>
-    <p>Vous pouvez retourner à l'accueil ou essayer une autre page.</p>
-    <a href="{% url 'accueil' %}" class="btn btn-primary mt-3">Retour à l'accueil</a>
+<style>
+    /* Style pour la page 404 */
+    .error-page {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); /* Dégradé de fond doux */
+        text-align: center;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Effet de fond subtil (optionnel) */
+    .error-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 70%);
+        opacity: 0.5;
+    }
+
+    /* Conteneur du contenu */
+    .error-content {
+        position: relative;
+        z-index: 1;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Style pour le titre 404 */
+    .error-title {
+        font-size: 10rem;
+        font-weight: 900;
+        color: #1B4F72; /* Couleur primaire */
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+        animation: bounce 1.5s ease-in-out infinite; /* Animation de rebond */
+        margin-bottom: 0;
+    }
+
+    /* Style pour le sous-titre */
+    .error-subtitle {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #4B5563; /* Couleur neutre */
+        margin-bottom: 1rem;
+    }
+
+    /* Style pour le texte descriptif */
+    .error-text {
+        font-size: 1.2rem;
+        color: #6B7280; /* Gris plus clair */
+        margin-bottom: 1.5rem;
+    }
+
+    /* Style pour le bouton */
+    .btn-return {
+        display: inline-block;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #fff;
+        background-color: #1B4F72; /* Couleur primaire */
+        border-radius: 50px; /* Bouton arrondi */
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(27, 79, 114, 0.2); /* Ombre douce */
+    }
+
+    .btn-return:hover {
+        background-color: #14405c; /* Couleur primaire plus foncée au survol */
+        transform: translateY(-3px); /* Effet de soulèvement */
+        box-shadow: 0 6px 20px rgba(27, 79, 114, 0.3);
+    }
+
+    /* Animation de rebond pour le titre 404 */
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-15px);
+        }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .error-title {
+            font-size: 6rem; /* Réduit la taille sur mobile */
+        }
+        .error-subtitle {
+            font-size: 1.8rem;
+        }
+        .error-text {
+            font-size: 1rem;
+        }
+        .btn-return {
+            padding: 10px 25px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .error-title {
+            font-size: 4rem;
+        }
+        .error-subtitle {
+            font-size: 1.5rem;
+        }
+        .error-text {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<!-- Contenu de la page 404 -->
+<div class="error-page">
+    <div class="error-content">
+        <h1 class="error-title">404</h1>
+        <h2 class="error-subtitle">Oups ! Page non trouvée</h2>
+        <p class="error-text">Désolé, la page que vous cherchez n'existe pas ou a été déplacée.</p>
+        <p class="error-text">Vous pouvez retourner à l'accueil ou essayer une autre page.</p>
+        <a href="{% url 'accueil' %}" class="btn-return">Retour à l'accueil</a>
+    </div>
 </div>
 {% endblock %}
-
