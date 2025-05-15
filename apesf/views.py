@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import ContactMessage, ContactMessageAttachment, JobOffer, PageContent, Partner, Section, UploadedImage, News
 from .forms import ContactForm, JobOfferForm, PageContentForm, SectionForm, UploadedImageForm, NewsForm
@@ -492,3 +493,46 @@ def modifier_offre_emploi(request, job_id):
     else:
         form = JobOfferForm(instance=job)
     return render(request, 'modifier_offre_emploi.html', {'form': form, 'job': job})
+
+# Nouvelle vue pour transférer un message
+@login_required
+def transfert_message(request, message_id):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour effectuer cette action.")
+        return redirect('tableau_de_bord')
+
+    message = get_object_or_404(ContactMessage, id=message_id)
+    # Vérifier que l'utilisateur a le droit de voir ce message
+    if message.transferred_to and message.transferred_to != request.user:
+        messages.error(request, "Vous n'êtes pas autorisé à accéder à ce message.")
+        return redirect('tableau_de_bord')
+
+    # Récupérer la liste des utilisateurs à qui on peut transférer (admins ou superusers, sauf l'utilisateur actuel)
+    allowed_recipients = User.objects.filter(
+        userprofile__role__in=['superuser', 'admin'],
+        is_active=True
+    ).exclude(id=request.user.id)
+
+    if request.method == 'POST':
+        new_recipient_id = request.POST.get('new_recipient')
+        if not new_recipient_id:
+            messages.error(request, "Veuillez sélectionner un utilisateur pour le transfert.")
+            return redirect('tableau_de_bord')
+
+        try:
+            new_recipient = User.objects.get(id=new_recipient_id)
+        except User.DoesNotExist:
+            messages.error(request, "Utilisateur invalide.")
+            return redirect('tableau_de_bord')
+
+        # Mettre à jour le message pour indiquer qu'il a été transféré
+        message.transferred_to = new_recipient
+        message.save()
+
+        messages.success(request, f"Le message a été transféré à {new_recipient.username}.")
+        return redirect('tableau_de_bord')
+
+    return render(request, 'apesf/transfert_message.html', {
+        'message': message,
+        'allowed_recipients': allowed_recipients,
+    })

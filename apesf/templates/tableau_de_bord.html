@@ -144,8 +144,8 @@
         <ul class="space-y-4 mb-8">
             {% for message in messages_contact %}
                 <li class="bg-white shadow-lg rounded-lg p-4 flex flex-col gap-4">
-                    <div class="flex justify-between items-center">
-                        <div>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="flex-1">
                             <strong>{{ message.name }}</strong> ({{ message.email }}) - {{ message.submitted_at }}<br>
                             <p class="text-gray-800 font-medium mt-2">Objet : {{ message.subject|default:"(Aucun objet)" }}</p>
                             <p class="text-neutral-600 mt-2">{{ message.message }}</p>
@@ -164,13 +164,17 @@
                             <span class="inline-block mt-2 px-2 py-1 text-sm rounded {% if message.is_read %}bg-green-100 text-green-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
                                 {% if message.is_read %}Lu{% else %}Non lu{% endif %}
                             </span>
+                            {% if message.transferred_to %}
+                                <p class="text-sm text-gray-500 mt-2">Transféré à : {{ message.transferred_to.username }}</p>
+                            {% endif %}
                         </div>
-                        <div class="flex space-x-2">
+                        <div class="flex flex-wrap gap-2">
                             {% if not message.is_read %}
                                 <a href="{% url 'mark_message_as_read' message.id %}" class="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition-colors">Marquer comme lu</a>
                             {% endif %}
                             <a href="{% url 'supprimer_message' message.id %}" class="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-700 transition-colors" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.');">Supprimer</a>
                             <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject|default:'Réponse à votre message' }}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Répondre par mail <i class="bi bi-envelope-arrow-up"></i></a>
+                            <a href="{% url 'transfert_message' message.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Transférer</a>
                         </div>
                     </div>
                 </li>
