@@ -100,7 +100,6 @@ class ContactMessage(models.Model):
     message = models.TextField(verbose_name="Message")
     submitted_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d'envoi")
     is_read = models.BooleanField(default=False, verbose_name="Lu")
-    transferred_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='transferred_messages', verbose_name="Transféré à")
 
     class Meta:
         verbose_name = "Message de contact"
