@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
@@ -94,9 +95,19 @@ class ContactMessageAttachment(models.Model):
 
 # Modèle pour les messages de contact
 class ContactMessage(models.Model):
+    SUBJECT_CHOICES = [
+        ('question', 'Question générale'),
+        ('partenariat', 'Demande de partenariat'),
+        ('adhesion', 'Adhésion à l’association'),
+        ('don', 'Faire un don'),
+        ('stage', 'Demande de stage'),
+        ('candidature', 'Candidature spontanée'),
+        ('evenement', 'Participer à un événement'),
+        ('autre', 'Autre'),
+    ]
     name = models.CharField(max_length=100, verbose_name="Nom")
     email = models.EmailField(verbose_name="Adresse email")
-    subject = models.CharField(max_length=200, verbose_name="Objet", blank=True, default="")
+    subject = models.CharField(max_length=200, choices=SUBJECT_CHOICES, verbose_name="Objet", blank=True, default="")
     message = models.TextField(verbose_name="Message")
     submitted_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d'envoi")
     is_read = models.BooleanField(default=False, verbose_name="Lu")

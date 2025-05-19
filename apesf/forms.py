@@ -55,7 +55,6 @@ class ContactForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Votre nom'}),
             'email': forms.EmailInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Votre email'}),
-            'subject': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'placeholder': 'Objet de votre message'}),
             'message': forms.Textarea(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'rows': 5, 'placeholder': 'Votre message'}),
         }
         labels = {
@@ -64,6 +63,25 @@ class ContactForm(forms.ModelForm):
             'subject': 'Objet',
             'message': 'Message',
         }
+
+    SUBJECT_CHOICES = [
+        ('', 'Choisissez un sujet'),
+        ('question', 'Question générale'),
+        ('partenariat', 'Demande de partenariat'),
+        ('adhesion', 'Adhésion à l’association'),
+        ('don', 'Faire un don'),
+        ('stage', 'Demande de stage'),
+        ('candidature', 'Candidature spontanée'),
+        ('evenement', 'Participer à un événement'),
+        ('autre', 'Autre'),
+    ]
+
+    subject = forms.ChoiceField(
+        choices=SUBJECT_CHOICES,
+        widget=forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
+        label='Objet',
+        required=True
+    )
 
     def __init__(self, *args, **kwargs):
         initial_subject = kwargs.pop('initial_subject', '')

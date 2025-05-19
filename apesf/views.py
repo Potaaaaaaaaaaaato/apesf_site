@@ -492,3 +492,25 @@ def modifier_offre_emploi(request, job_id):
     else:
         form = JobOfferForm(instance=job)
     return render(request, 'modifier_offre_emploi.html', {'form': form, 'job': job})
+
+# Nouveau modèle pour les contacts
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Enregistrer le message
+            contact_message = form.save()
+            # Gérer les pièces jointes
+            for key, file in request.FILES.items():
+                if key.startswith('attachment_'):
+                    ContactMessageAttachment.objects.create(
+                        contact_message=contact_message,
+                        file=file
+                    )
+            messages.success(request, 'Votre message a été envoyé avec succès !')
+            return redirect('contact')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs dans le formulaire.')
+    else:
+        form = ContactForm()
+    return render(request, 'contact.html', {'form': form})
