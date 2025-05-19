@@ -5,14 +5,16 @@
     <h1 class="text-4xl font-bold text-primary-500">Offres d'emplois</h1>
     <!-- Boutons pour Candidature spontanée et Demande de stage -->
     <div class="mt-10 flex justify-center gap-4">
-        <a href="{% url 'contact' %}?subject=Candidature%20spontanée" 
-           class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all">
-            Candidature spontanée
-        </a>
-        <a href="{% url 'contact' %}?subject=Demande%20de%20stage" 
-           class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all">
-            Demande de stage
-        </a>
+        <div class="flex flex-row gap-4">
+            <a href="{% url 'contact' %}?subject=Candidature%20spontanée" 
+               class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all button-equal-size">
+                Candidature spontanée
+            </a>
+            <a href="{% url 'contact' %}?subject=Demande%20de%20stage" 
+               class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all button-equal-size">
+                Demande de stage
+            </a>
+        </div>
     </div>
 </div>
 <div class="container mx-auto px-6">
