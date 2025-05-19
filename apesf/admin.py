@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import ContactMessage, ContactMessageAttachment, News, PageContent, Section, UploadedImage, UserProfile, Partner
 
 # Inline pour gérer les sections dans l'édition d'une page
@@ -13,9 +14,16 @@ class SectionInline(admin.TabularInline):
 class ContactMessageAttachmentInline(admin.TabularInline):
     model = ContactMessageAttachment
     extra = 1  # Nombre de formulaires vides affichés par défaut
-    fields = ('file',)  # Champs affichés dans l'inline
+    fields = ('file', 'file_link')  # Ajoute un champ pour le lien cliquable
+    readonly_fields = ('file_link',)  # Le lien est en lecture seule
     verbose_name = "Pièce jointe"
     verbose_name_plural = "Pièces jointes"
+
+    def file_link(self, obj):
+        if obj.file:
+            return format_html('<a href="{}" target="_blank">Ouvrir</a>', obj.file.url)
+        return "-"
+    file_link.short_description = "Lien"
 
 @admin.register(PageContent)
 class PageContentAdmin(admin.ModelAdmin):
@@ -136,10 +144,16 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'subject', 'submitted_at', 'is_read')
-    list_filter = ('is_read', 'submitted_at')
+    list_filter = ('is_read', 'submitted_at', 'subject')
     search_fields = ('name', 'email', 'subject', 'message')
     ordering = ('-submitted_at',)
     inlines = [ContactMessageAttachmentInline]
+    actions = ['mark_as_read']
+
+    def mark_as_read(self, request, queryset):
+        queryset.update(is_read=True)
+        self.message_user(request, "Les messages sélectionnés ont été marqués comme lus.")
+    mark_as_read.short_description = "Marquer comme lu"
 
     def has_view_or_change_permission(self, request, obj=None):
         if not request.user.is_authenticated:
@@ -210,3 +224,19 @@ class NewsAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return self.has_view_or_change_permission(request)
+
+@admin.register(ContactMessageAttachment)
+class ContactMessageAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('contact_message', 'file_name', 'file_link')
+    search_fields = ('contact_message__name', 'contact_message__email', 'file')
+    list_filter = ('contact_message__submitted_at',)
+
+    def file_name(self, obj):
+        return obj.file.name.split('/')[-1]
+    file_name.short_description = "Nom du fichier"
+
+    def file_link(self, obj):
+        if obj.file:
+            return format_html('<a href="{}" target="_blank">Ouvrir</a>', obj.file.url)
+        return "-"
+    file_link.short_description = "Lien"
