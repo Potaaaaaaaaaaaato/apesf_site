@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Accueil{% endblock %}
+{% block extra_head %}
+    <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d’enfants, Les Marmousets et L’Angélus.">
+    <meta name="keywords" content="APESF, association, enfants, familles, Saint-Étienne, Marmousets, Angélus, protection enfance, accompagnement">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Association Pour l'Enfant et Sa Famille">
+    <meta property="og:title" content="Accueil - Association Pour l'Enfant et Sa Famille">
+    <meta property="og:description" content="Découvrez l'APESF, une association dédiée à l'accompagnement des enfants et familles à Saint-Étienne depuis 1934.">
+    <meta property="og:url" content="https://www.tristan-devaux.fr/">
+    <meta property="og:type" content="website">
+{% endblock %}
 {% block content %}
 <!-- Style personnalisé pour les carrousels, le modal et le bouton de pause -->
 <style>
