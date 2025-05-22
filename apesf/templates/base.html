@@ -200,36 +200,5 @@
     
     <!-- Swiper.js JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <!-- Script pour initialiser Swiper et menu mobile -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialiser Swiper
-            const swiper = new Swiper('#carouselAccueil', {
-                loop: true,
-                autoplay: {
-                    delay: 5000,
-                    reverseDirection: true,
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-                slidesPerView: 1,
-                spaceBetween: 0,
-            });
-
-            // Toggle menu mobile
-            const menuToggle = document.getElementById('menu-toggle');
-            const mobileMenu = document.getElementById('mobile-menu');
-            menuToggle.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
-            });
-        });
-    </script>
 </body>
 </html>
-

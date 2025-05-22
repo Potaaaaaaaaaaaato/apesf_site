@@ -16,9 +16,13 @@ def accueil(request):
     carousel_images = UploadedImage.objects.all().order_by('-uploaded_at')[:5]
     
     # Récupérer les 5 dernières actualités pour le carrousel d'actualités
-    news_items = News.objects.all().order_by('-date')[:5]
+    news_items = News.objects.prefetch_related('images').all().order_by('-date')[:5]
     
-    return render(request, 'accueil.html', {'page': page, 'carousel_images': carousel_images, 'news_items': news_items})
+    return render(request, 'accueil.html', {
+        'page': page, 
+        'carousel_images': carousel_images, 
+        'news_items': news_items
+    })
 
 # Page "Nos établissements & services"
 def qui_sommes_nous(request):
