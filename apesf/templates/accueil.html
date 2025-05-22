@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tz %}
 {% block title %}Accueil{% endblock %}
 {% block extra_head %}
     <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d’enfants, Les Marmousets et L’Angélus.">
@@ -101,19 +102,6 @@
         font-weight: 600;
         display: none; /* Masqué par défaut */
         z-index: 15; /* Au-dessus du contenu du slide */
-    }
-
-    /* Style pour l'indication "À VENIR" dans le modal */
-    .modal-upcoming-badge {
-        display: none; /* Masqué par défaut */
-        background-color: #E84C3D;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem; /* 12px */
-        font-weight: 600;
-        margin-left: 8px;
-        vertical-align: middle;
     }
 
     /* Style pour les flèches de navigation */
@@ -293,7 +281,7 @@
             bottom: 5px;
             left: 5px;
         }
-        .upcoming-badge, .modal-upcoming-badge {
+        .upcoming-badge {
             top: 5px;
             right: 5px;
             font-size: 0.625rem; /* 10px sur mobile */
@@ -318,7 +306,6 @@
             gap: 12px;
             margin-top: 12px;
         }
-
         .modal-content .modal-images img {
             max-width: 100%;
             max-height: 200px;
@@ -326,11 +313,9 @@
             border-radius: 4px;
             transition: transform 0.3s ease;
         }
-
         .modal-content .modal-images img:hover {
             transform: scale(1.05);
         }
-
         @media (max-width: 768px) {
             .modal-content .modal-images img {
                 max-height: 150px;
@@ -358,7 +343,6 @@
         <div class="social-bar-container">
             <!-- Barre d'icônes réseaux sociaux -->
             <div class="social-bar">
-                <a href="mailto:contact@apesf.fr" title="Nous envoyer un email"><i class="bi bi-envelope"></i></a>
                 <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
                 <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
                 <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
@@ -396,27 +380,29 @@
             <div id="carouselNews" class="swiper">
                 <div class="swiper-wrapper">
                     {% for news in news_items %}
+                        {% now "Y-m-d" as current_date %}
                         <div class="swiper-slide" 
-                        data-news-id="{{ news.id }}" 
-                        data-title="{{ news.title }}" 
-                        data-content="{{ news.content }}" 
-                        data-date="{{ news.date|date:'Y-m-d' }}" 
-                        data-document="{% if news.document %}{{ news.document.url }}{% endif %}"
-                        data-images="{% for image in news.images.all %}{{ image.image.url }}|{% endfor %}">
-                        <div class="upcoming-badge">À VENIR</div>
-                        {% if news.image %}
-                            <img src="{{ news.image.url }}" alt="{{ news.title }}">
-                        {% endif %}
-                        {% for image in news.images.all %}
-                            <img src="{{ image.image.url }}" alt="Image associée à {{ news.title }}">
-                        {% endfor %}
-                        <h3>{{ news.title }}</h3>
-                        <p>{{ news.content }}</p>
-                        <p>{{ news.date }}</p>
-                        {% if news.document %}
-                            <a href="{{ news.document.url }}" target="_blank">Télécharger la pièce jointe</a>
-                        {% endif %}
-                    </div>
+                             data-news-id="{{ news.id }}" 
+                             data-title="{{ news.title }}" 
+                             data-content="{{ news.content }}" 
+                             data-date="{{ news.date|date:'Y-m-d' }}" 
+                             data-document="{% if news.document %}{{ news.document.url }}{% endif %}"
+                             data-images="{% for image in news.images.all %}{{ image.image.url }}|{% endfor %}"
+                             data-is-upcoming="{% if news.date|date:'Y-m-d' > current_date %}true{% else %}false{% endif %}">
+                            <div class="upcoming-badge">À VENIR</div>
+                            {% if news.image %}
+                                <img src="{{ news.image.url }}" alt="{{ news.title }}">
+                            {% endif %}
+                            {% for image in news.images.all %}
+                                <img src="{{ image.image.url }}" alt="Image associée à {{ news.title }}">
+                            {% endfor %}
+                            <h3>{{ news.title }}</h3>
+                            <p>{{ news.content }}</p>
+                            <p>{{ news.date }}</p>
+                            {% if news.document %}
+                                <a href="{{ news.document.url }}" target="_blank">Télécharger la pièce jointe</a>
+                            {% endif %}
+                        </div>
                     {% empty %}
                         <div class="swiper-slide">
                             <p class="text-neutral-600">Aucune actualité disponible pour le moment.</p>
@@ -439,11 +425,12 @@
 <div id="newsModal" class="modal">
     <div class="modal-content">
         <span class="close">×</span>
-        <h3 id="modalTitle"></h3><span id="modalUpcomingBadge" class="modal-upcoming-badge">À VENIR</span>
+        <h3 id="modalTitle"></h3>
         <p id="modalContent"></p>
         <p id="modalDate"></p>
         <div id="modalDocument"></div>
         <div id="modalImages" class="modal-images"></div>
+        <p id="noImagesMessage" style="color: #4B5563; display: none;">Aucune image associée à cette actualité.</p>
     </div>
 </div>
 
@@ -533,11 +520,22 @@
         const modalDocument = document.getElementById('modalDocument');
         const modalImages = document.getElementById('modalImages');
         const closeModal = document.querySelector('.modal .close');
+        const noImagesMessage = document.getElementById('noImagesMessage');
 
         document.querySelectorAll('.news-carousel .swiper-slide').forEach(slide => {
+            // Afficher le badge "À VENIR" dans le carrousel si l'actualité est future
+            const isUpcoming = slide.getAttribute('data-is-upcoming') === 'true';
+            const upcomingBadge = slide.querySelector('.upcoming-badge');
+            if (isUpcoming && upcomingBadge) {
+                upcomingBadge.style.display = 'block';
+            }
+
             slide.addEventListener('click', function () {
                 const newsId = this.getAttribute('data-news-id');
-                if (!newsId) return;
+                if (!newsId) {
+                    console.log('Erreur : Aucun ID d\'actualité trouvé');
+                    return;
+                }
 
                 modalTitle.textContent = this.getAttribute('data-title');
                 modalContent.textContent = this.getAttribute('data-content');
@@ -551,16 +549,24 @@
 
                 // Gestion des images associées
                 const images = this.getAttribute('data-images');
+                console.log('data-images:', images); // Débogage
                 modalImages.innerHTML = '';
-                if (images) {
+                noImagesMessage.style.display = 'block';
+
+                if (images && images !== '|') {
                     const imageArray = images.split('|').filter(url => url);
-                    imageArray.forEach(url => {
-                        const img = document.createElement('img');
-                        img.src = url;
-                        img.alt = 'Image associée à l\'actualité';
-                        img.className = 'max-w-full h-auto rounded-lg shadow-md';
-                        modalImages.appendChild(img);
-                    });
+                    console.log('Image Array:', imageArray); // Débogage
+                    if (imageArray.length > 0) {
+                        noImagesMessage.style.display = 'none';
+                        imageArray.forEach(url => {
+                            console.log('Ajout de l\'image:', url); // Débogage
+                            const img = document.createElement('img');
+                            img.src = url;
+                            img.alt = 'Image associée à l\'actualité';
+                            img.className = 'max-w-full h-auto rounded-lg shadow-md';
+                            modalImages.appendChild(img);
+                        });
+                    }
                 }
 
                 modal.style.display = 'flex';
