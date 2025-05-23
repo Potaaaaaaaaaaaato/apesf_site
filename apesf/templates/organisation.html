@@ -41,14 +41,13 @@
 
 <!-- Titre principal -->
 <div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-primary-500">Notre Organisation</h1>
+    <h1 class="text-4xl font-bold text-primary-500">Notre organisation</h1>
 </div>
 
 <!-- Conteneur principal avec disposition 50%/50% -->
 <div class="container mx-auto px-6 flex flex-col md:flex-row gap-8 mb-12">
     <!-- Organigramme de la direction (gauche) -->
     <div class="md:w-1/2">
-        <h2 class="text-2xl font-semibold text-primary-500 mb-6">Organigramme de la Direction</h2>
         {% if direction_sections %}
             <div class="grid grid-cols-1 gap-6">
                 {% for section in direction_sections %}

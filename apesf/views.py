@@ -200,11 +200,15 @@ def ajouter_section(request, page_id):
 
     page = get_object_or_404(PageContent, id=page_id)
     if request.method == 'POST':
-        form = SectionForm(request.POST)
+        form = SectionForm(request.POST, request.FILES)
         if form.is_valid():
             section = form.save(commit=False)
             section.page = page
             section.save()
+            # Gérer les images téléchargées
+            images = request.FILES.getlist('images')
+            for image in images:
+                UploadedImage.objects.create(section=section, image=image)
             messages.success(request, "Section ajoutée avec succès ! Les modifications sont visibles sur le site instantanément.")
             return redirect('modifier_page', page_id=page.id)
     else:
@@ -220,9 +224,13 @@ def modifier_section(request, section_id):
 
     section = get_object_or_404(Section, id=section_id)
     if request.method == 'POST':
-        form = SectionForm(request.POST, instance=section)
+        form = SectionForm(request.POST, request.FILES, instance=section)
         if form.is_valid():
             form.save()
+            # Gérer les images téléchargées
+            images = request.FILES.getlist('images')
+            for image in images:
+                UploadedImage.objects.create(section=section, image=image)
             messages.success(request, "Section modifiée avec succès !")
             # Rediriger en fonction de si la section est associée à une page ou une unité
             if section.page and isinstance(section.page, PageContent):
@@ -280,11 +288,15 @@ def gerer_organigrammes(request):
             return redirect('gerer_organigrammes')
         # Gestion de la création
         else:
-            form = SectionForm(request.POST)
+            form = SectionForm(request.POST, request.FILES)
             if form.is_valid():
                 section = form.save(commit=False)
                 section.page = page
                 section.save()
+                # Gérer les images téléchargées
+                images = request.FILES.getlist('images')
+                for image in images:
+                    UploadedImage.objects.create(section=section, image=image)
                 messages.success(request, "Section ajoutée avec succès !")
                 return redirect('gerer_organigrammes')
 
@@ -335,11 +347,15 @@ def gerer_sections(request, page_id):
             return redirect('gerer_sections', page_id=page.id)
         # Gestion de la création
         else:
-            form = SectionForm(request.POST)
+            form = SectionForm(request.POST, request.FILES)
             if form.is_valid():
                 section = form.save(commit=False)
                 section.page = page
                 section.save()
+                # Gérer les images téléchargées
+                images = request.FILES.getlist('images')
+                for image in images:
+                    UploadedImage.objects.create(section=section, image=image)
                 messages.success(request, "Section ajoutée avec succès !")
                 return redirect('gerer_sections', page_id=page.id)
 
@@ -373,11 +389,15 @@ def gerer_sections_unite(request, unit):
             return redirect('gerer_sections_unite', unit=unit)
         # Gestion de la création
         else:
-            form = SectionForm(request.POST)
+            form = SectionForm(request.POST, request.FILES)
             if form.is_valid():
                 section = form.save(commit=False)
                 section.unit = unit  # Associer la section à l'unité
                 section.save()
+                # Gérer les images téléchargées
+                images = request.FILES.getlist('images')
+                for image in images:
+                    UploadedImage.objects.create(section=section, image=image)
                 messages.success(request, "Section ajoutée avec succès !")
                 return redirect('gerer_sections_unite', unit=unit)
 

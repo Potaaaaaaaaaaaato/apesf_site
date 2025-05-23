@@ -18,7 +18,7 @@
     {% endif %}
 
     <h2 class="text-2xl font-semibold text-primary-500 mb-4">Sections des organigrammes</h2>
-    <p class="text-neutral-600 mb-4">Gérez les sections pour les organigrammes de la direction et de la structure. Associez des images via la section "Gestion des images" du tableau de bord.</p>
+    <p class="text-neutral-600 mb-4">Gérez les sections pour les organigrammes de la direction et de la structure. Vous pouvez associer des images directement ici ou via la section "Gestion des images" du tableau de bord.</p>
 
     {% if sections %}
         <ul class="space-y-4 mb-8">
@@ -54,7 +54,7 @@
     {% endif %}
 
     <h2 class="text-2xl font-semibold text-primary-500 mb-4">Ajouter une nouvelle section</h2>
-    <form method="post" class="bg-white shadow-lg rounded-lg p-6 mb-8">
+    <form method="post" enctype="multipart/form-data" class="bg-white shadow-lg rounded-lg p-6 mb-8">
         {% csrf_token %}
         {{ form.as_p }}
         <div class="text-center">

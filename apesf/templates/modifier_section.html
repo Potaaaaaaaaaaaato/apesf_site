@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}Modifier une section{% endblock %}
+{% block extra_head %}
+    <meta name="description" content="Modifier une section dans le tableau de bord administrateur de l'APESF.">
+    <meta name="keywords" content="APESF, section, administration, Saint-Étienne">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="author" content="Association Pour l'Enfant et Sa Famille">
+{% endblock %}
 {% block content %}
 <div class="container mx-auto px-6 py-8">
     <h1 class="text-3xl font-bold text-primary-500 mb-6 text-center">
@@ -19,7 +25,7 @@
 
     <!-- Formulaire pour modifier la section -->
     <div class="bg-white shadow-lg rounded-lg p-6 max-w-2xl mx-auto">
-        <form method="post" class="space-y-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="text-center">
@@ -28,6 +34,23 @@
                 </button>
             </div>
         </form>
+    </div>
+
+    <!-- Gestion des images associées -->
+    <div class="max-w-2xl mx-auto mt-8">
+        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Images associées</h2>
+        {% if section.images.all %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                {% for image in section.images.all %}
+                    <div class="bg-white shadow-lg rounded-lg p-4">
+                        <img src="{{ image.image.url }}" alt="{{ section.title }}" class="w-full h-32 object-cover rounded-lg mb-2">
+                        <a href="{% url 'supprimer_image' image.id %}" class="block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-center" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ? Cette action est irréversible.');">Supprimer</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-neutral-600 mb-4 text-center">Aucune image associée à cette section. Ajoutez-en via le formulaire ci-dessus.</p>
+        {% endif %}
     </div>
 
     <!-- Bouton de retour -->
@@ -41,11 +64,10 @@
                 Retour à la gestion des sections ({{ section.get_unit_display }})
             </a>
         {% else %}
-            <a href="{% url 'tableau_de_bord' %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">
-                Retour au tableau de bord
+            <a href="{% url 'gerer_organigrammes' %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">
+                Retour à la gestion des organigrammes
             </a>
         {% endif %}
     </div>
 </div>
 {% endblock %}
-
