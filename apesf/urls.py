@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.accueil, name='accueil'),
     path('qui-sommes-nous/', views.qui_sommes_nous, name='qui_sommes_nous'),
-    #path('nos-actions/', views.nos_actions, name='nos_actions'),
+    path('organisation/', views.organisation, name='organisation'),
     path('partenaires/', views.partenaires, name='partenaires'),
     path('contact/', views.contact, name='contact'),
     path('dons/', views.dons, name='dons'),
@@ -19,6 +19,7 @@ urlpatterns = [
     path('marquer-message-lu/<int:message_id>/', views.mark_message_as_read, name='mark_message_as_read'),
     path('gerer-sections/<int:page_id>/', views.gerer_sections, name='gerer_sections'),
     path('gerer-sections-unite/<str:unit>/', views.gerer_sections_unite, name='gerer_sections_unite'),
+    path('gerer-organigrammes/', views.gerer_organigrammes, name='gerer_organigrammes'),
     path('supprimer-message/<int:message_id>/', views.supprimer_message, name='supprimer_message'),
     path('modifier-image/<int:image_id>/', views.modifier_image, name='modifier_image'),
     path('supprimer-image/<int:image_id>/', views.supprimer_image, name='supprimer_image'),

@@ -17,13 +17,14 @@ class PageContentForm(forms.ModelForm):
 class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['title', 'content', 'link', 'order', 'unit']
+        fields = ['title', 'content', 'link', 'order', 'unit', 'organigram_type']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
             'content': forms.Textarea(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'rows': 5}),
             'link': forms.URLInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
             'order': forms.NumberInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
             'unit': forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
+            'organigram_type': forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
         }
         labels = {
             'title': 'Titre',
@@ -31,6 +32,7 @@ class SectionForm(forms.ModelForm):
             'link': 'Lien (optionnel)',
             'order': 'Ordre d’affichage',
             'unit': 'Établissement/Service associé',
+            'organigram_type': 'Type d’organigramme',
         }
 
 class UploadedImageForm(forms.ModelForm):

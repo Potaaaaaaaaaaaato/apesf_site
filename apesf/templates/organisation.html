@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Organisation{% endblock %}
+{% block extra_head %}
+    <meta name="description" content="Découvrez l'organisation de l'APESF à Saint-Étienne : organigrammes de la direction et de la structure.">
+    <meta name="keywords" content="APESF, organisation, organigramme, direction, structure, Saint-Étienne">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Association Pour l'Enfant et Sa Famille">
+    <meta property="og:title" content="Organisation - Association Pour l'Enfant et Sa Famille">
+    <meta property="og:description" content="Explorez les organigrammes de la direction et de la structure de l'APESF à Saint-Étienne.">
+    <meta property="og:url" content="https://www.tristan-devaux.fr/organisation/">
+    <meta property="og:type" content="website">
+{% endblock %}
+{% block content %}
+<!-- Styles personnalisés pour la page -->
+<style>
+    .organigram-section {
+        background-color: #ffffff;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    .organigram-section:hover {
+        transform: scale(1.02);
+    }
+    .organigram-section img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+    }
+    .organigram-section p {
+        color: #4B5563; /* text-neutral-600 */
+        margin-top: 12px;
+    }
+    @media (max-width: 768px) {
+        .organigram-section {
+            padding: 16px;
+        }
+    }
+</style>
+
+<!-- Titre principal -->
+<div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-primary-500">Notre Organisation</h1>
+</div>
+
+<!-- Conteneur principal avec disposition 50%/50% -->
+<div class="container mx-auto px-6 flex flex-col md:flex-row gap-8 mb-12">
+    <!-- Organigramme de la direction (gauche) -->
+    <div class="md:w-1/2">
+        <h2 class="text-2xl font-semibold text-primary-500 mb-6">Organigramme de la Direction</h2>
+        {% if direction_sections %}
+            <div class="grid grid-cols-1 gap-6">
+                {% for section in direction_sections %}
+                    <div class="organigram-section">
+                        <h3 class="text-xl font-semibold text-primary-500 mb-4">{{ section.title }}</h3>
+                        <p>{{ section.content }}</p>
+                        {% for image in section.images.all %}
+                            <img src="{{ image.image.url }}" alt="{{ section.title }}" class="mt-4">
+                        {% endfor %}
+                        {% if section.link %}
+                            <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors mt-4">En savoir plus</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center text-neutral-600">
+                <p>Aucun organigramme de la direction défini pour le moment. Veuillez ajouter du contenu via le tableau de bord.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Organigramme de la structure (droite) -->
+    <div class="md:w-1/2">
+        <h2 class="text-2xl font-semibold text-primary-500 mb-6">Organigramme de la Structure</h2>
+        {% if structure_sections %}
+            <div class="grid grid-cols-1 gap-6">
+                {% for section in structure_sections %}
+                    <div class="organigram-section">
+                        <h3 class="text-xl font-semibold text-primary-500 mb-4">{{ section.title }}</h3>
+                        <p>{{ section.content }}</p>
+                        {% for image in section.images.all %}
+                            <img src="{{ image.image.url }}" alt="{{ section.title }}" class="mt-4">
+                        {% endfor %}
+                        {% if section.link %}
+                            <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors mt-4">En savoir plus</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center text-neutral-600">
+                <p>Aucun organigramme de la structure défini pour le moment. Veuillez ajouter du contenu via le tableau de bord.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

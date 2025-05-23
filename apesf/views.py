@@ -48,13 +48,31 @@ def qui_sommes_nous(request):
         'valid_units': valid_units,
     })
 
+# Page "Organisation"
+def organisation(request):
+    try:
+        page = PageContent.objects.get(slug='organisation')
+    except PageContent.DoesNotExist:
+        page = None
+    
+    # Récupérer les sections pour les organigrammes
+    direction_sections = Section.objects.filter(page=page, organigram_type='direction')
+    structure_sections = Section.objects.filter(page=page, organigram_type='structure')
+    
+    return render(request, 'organisation.html', {
+        'page': page,
+        'direction_sections': direction_sections,
+        'structure_sections': structure_sections,
+    })
+
 # Page "Partenaires"
 def partenaires(request):
     try:
         page = PageContent.objects.get(slug='partenaires')
     except PageContent.DoesNotExist:
         page = None
-    return render(request, 'partenaires.html', {'page': page})
+    partners = Partner.objects.all()
+    return render(request, 'partenaires.html', {'page': page, 'partners': partners})
 
 # Page "Contact"
 def contact(request):
@@ -211,8 +229,10 @@ def modifier_section(request, section_id):
                 return redirect('gerer_sections', page_id=section.page.id)
             elif section.unit:
                 return redirect('gerer_sections_unite', unit=section.unit)
+            elif section.organigram_type:
+                return redirect('gerer_organigrammes')
             else:
-                messages.warning(request, "La section n'est associée ni à une page ni à une unité. Redirection vers le tableau de bord.")
+                messages.warning(request, "La section n'est associée ni à une page ni à une unité ni à un organigramme. Redirection vers le tableau de bord.")
                 return redirect('tableau_de_bord')
     else:
         form = SectionForm(instance=section)
@@ -234,6 +254,48 @@ def telecharger_image(request):
     else:
         form = UploadedImageForm()
     return render(request, 'telecharger_image.html', {'form': form})
+
+# Gestion des organigrammes
+@login_required
+def gerer_organigrammes(request):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour accéder à cette page.")
+        return redirect('tableau_de_bord')
+
+    try:
+        page = PageContent.objects.get(slug='organisation')
+    except PageContent.DoesNotExist:
+        messages.error(request, "La page 'Organisation' n'existe pas. Veuillez la créer d'abord.")
+        return redirect('tableau_de_bord')
+
+    sections = Section.objects.filter(page=page)
+
+    if request.method == 'POST':
+        # Gestion de la suppression
+        if 'section_id' in request.POST:
+            section_id = request.POST.get('section_id')
+            section = get_object_or_404(Section, id=section_id, page=page)
+            section.delete()
+            messages.success(request, "Section supprimée avec succès !")
+            return redirect('gerer_organigrammes')
+        # Gestion de la création
+        else:
+            form = SectionForm(request.POST)
+            if form.is_valid():
+                section = form.save(commit=False)
+                section.page = page
+                section.save()
+                messages.success(request, "Section ajoutée avec succès !")
+                return redirect('gerer_organigrammes')
+
+    else:
+        form = SectionForm()
+
+    return render(request, 'gerer_organigrammes.html', {
+        'page': page,
+        'sections': sections,
+        'form': form,
+    })
 
 # Gestionnaire d'erreur 404
 def erreur_404(request, exception):
@@ -430,14 +492,6 @@ def credits(request):
 # Page "Panel admin"
 def panel_admin(request):
     return render(request, 'panel_admin.html')
-
-# Page "Partenaires"
-def partners(request):
-    # Récupérer la page "Partenaires"
-    page = get_object_or_404(PageContent, slug='partenaires')
-    # Récupérer tous les partenaires
-    partners = Partner.objects.all()
-    return render(request, 'partenaires.html', {'page': page, 'partners': partners})
 
 # Page "Offres d'emplois"
 def offres_emplois(request):

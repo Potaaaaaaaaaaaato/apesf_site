@@ -28,8 +28,15 @@ class Section(models.Model):
         ('', 'Aucune unité'),  # Option pour les sections générales
     ]
     
+    ORGANIGRAM_TYPE_CHOICES = [
+        ('', 'Aucun'),
+        ('direction', 'Direction'),
+        ('structure', 'Structure'),
+    ]
+    
     page = models.ForeignKey(PageContent, on_delete=models.CASCADE, related_name='sections', verbose_name="Page associée", null=True, blank=True)
     unit = models.CharField(max_length=50, choices=UNIT_CHOICES, default='', verbose_name="Unité associée", blank=True)
+    organigram_type = models.CharField(max_length=50, choices=ORGANIGRAM_TYPE_CHOICES, default='', verbose_name="Type d'organigramme", blank=True)
     title = models.CharField(max_length=200, verbose_name="Titre")
     content = models.TextField(verbose_name="Contenu")
     link = models.URLField(blank=True, null=True, verbose_name="Lien (optionnel)")
@@ -45,6 +52,8 @@ class Section(models.Model):
     def __str__(self):
         if self.page:
             return f"{self.title} (Section de {self.page.title})"
+        elif self.organigram_type:
+            return f"{self.title} (Organigramme: {self.get_organigram_type_display()})"
         return f"{self.title} (Unité: {self.get_unit_display() or 'Aucune unité'})"
 
 # Modèle pour les images uploadées (associées à une section ou une actualité)

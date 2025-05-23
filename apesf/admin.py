@@ -6,7 +6,7 @@ from .models import ContactMessage, ContactMessageAttachment, News, PageContent,
 class SectionInline(admin.TabularInline):
     model = Section
     extra = 1  # Nombre de formulaires vides affichés par défaut
-    fields = ('title', 'content', 'link', 'order')  # Champs affichés dans l'inline
+    fields = ('title', 'content', 'link', 'order', 'unit', 'organigram_type')  # Ajout de organigram_type
     verbose_name = "Section"  # Nom en français pour une section individuelle
     verbose_name_plural = "Sections"  # Nom en français pour plusieurs sections
 
@@ -57,8 +57,8 @@ class PageContentAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ('title', 'page', 'unit', 'order', 'created_at', 'updated_at')  # Ajout de 'unit' dans la liste
-    list_filter = ('page', 'unit', 'created_at', 'updated_at')  # Filtres par page, unité et dates
+    list_display = ('title', 'page', 'unit', 'organigram_type', 'order', 'created_at', 'updated_at')  # Ajout de 'organigram_type'
+    list_filter = ('page', 'unit', 'organigram_type', 'created_at', 'updated_at')  # Filtres par page, unité, type d'organigramme et dates
     search_fields = ('title', 'content')  # Recherche par titre ou contenu
     list_select_related = ('page',)  # Optimise les requêtes SQL pour la page associée
     ordering = ('order',)  # Trie par ordre d’affichage
