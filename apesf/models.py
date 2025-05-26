@@ -24,6 +24,7 @@ class Section(models.Model):
         ('marmousets', 'Marmousets'),
         ('angelus', 'Angélus'),
         ('placement_modulable', 'Placement modulable'),
+        ('aemo_h', 'AEMO H'),
         ('accueil_parental', 'Accueil parental'),
         ('', 'Aucune unité'),  # Option pour les sections générales
     ]

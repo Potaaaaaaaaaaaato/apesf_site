@@ -30,7 +30,7 @@ def qui_sommes_nous(request):
     selected_unit = request.GET.get('unit', '')
     
     # Liste des unités disponibles
-    valid_units = ['marmousets', 'angelus', 'placement_modulable', 'accueil_parental']
+    valid_units = ['marmousets', 'angelus', 'placement_modulable', 'aemo_h', 'accueil_parental']
     
     # Vérifier si l'unité sélectionnée est valide
     if selected_unit not in valid_units:
@@ -372,7 +372,7 @@ def gerer_sections_unite(request, unit):
         return redirect('tableau_de_bord')
 
     # Vérifier que l'unité est valide
-    valid_units = ['marmousets', 'angelus', 'placement_modulable', 'accueil_parental']
+    valid_units = ['marmousets', 'angelus', 'placement_modulable', 'aemo_h', 'accueil_parental']
     if unit not in valid_units:
         messages.error(request, "Unité invalide.")
         return redirect('tableau_de_bord')

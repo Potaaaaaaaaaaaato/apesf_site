@@ -1,105 +1,107 @@
 {% extends 'base.html' %}
 {% block title %}Nos établissements & services{% endblock %}
 {% block extra_head %}
-    <meta name="description" content="Découvrez les établissements et services de l'APESF à Saint-Étienne : Marmousets, Angélus, Placement modulable, Accueil parental.">
-    <meta name="keywords" content="APESF, établissements, services, Saint-Étienne, Marmousets, Angélus, placement modulable, accueil parental">
+    <meta name="description" content="Découvrez les établissements et services de l'APESF à Saint-Étienne : Marmousets, Angélus, Placement modulable, AEMO H, Accueil parental.">
+    <meta name="keywords" content="APESF, établissements, services, Saint-Étienne, Marmousets, Angélus, placement modulable, AEMO H, accueil parental">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Association Pour l'Enfant et Sa Famille">
     <meta property="og:title" content="Nos établissements & services - Association Pour l'Enfant et Sa Famille">
-    <meta property="og:description" content="Explorez les services de l'APESF à Saint-Étienne, incluant les Marmousets, l'Angélus et plus encore.">
+    <meta property="og:description" content="Explorez les services de l'APESF à Saint-Étienne, incluant les Marmousets, l'Angélus, AEMO H et plus encore.">
     <meta property="og:url" content="https://www.tristan-devaux.fr/nos-etablissements-services/">
     <meta property="og:type" content="website">
 {% endblock %}
 {% block content %}
-<!-- Styles personnalisés pour la page -->
-<style>
-    /* Style pour la liste des liens à droite */
-    .unit-links {
-        position: sticky;
-        top: 100px; /* S'assure que la liste reste visible lors du scroll */
-        padding-left: 30px; /* Ajout d'un padding à gauche pour pousser les liens plus à droite */
-    }
-    .unit-links a {
-        display: block;
-        padding: 10px 15px;
-        color: #4B5563; /* text-neutral-600 */
-        font-size: 1.125rem; /* 18px */
-        transition: all 0.3s ease;
-        position: relative;
-        border-radius: 8px;
-    }
-    .unit-links a:hover {
-        color: #E84C3D; /* text-primary-500 */
-        transform: scale(1.05);
-        background-color: #F3F4F6; /* Légère surélévation et fond gris clair au survol */
-    }
-    .unit-links a.active {
-        color: #E84C3D; /* text-primary-500 */
-        font-weight: 600;
-    }
-    .unit-links a.active::before {
-        content: "•";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #E84C3D;
-        font-size: 1.5rem;
-        line-height: 1;
-    }
-</style>
+    <!-- Styles personnalisés pour la page -->
+    <style>
+        /* Style pour la liste des liens à droite */
+        .unit-links {
+            position: sticky;
+            top: 100px;
+            padding-left: 30px;
+        }
+        .unit-links a {
+            display: block;
+            padding: 10px 15px;
+            color: #4B5563;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 8px;
+        }
+        .unit-links a:hover {
+            color: #E84C3D;
+            transform: scale(1.05);
+            background-color: #F3F4F6;
+        }
+        .unit-links a.active {
+            color: #E84C3D;
+            font-weight: 600;
+        }
+        .unit-links a.active::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #E84C3D;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+    </style>
 
-<!-- Titre principal -->
-<div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-primary-500">Nos établissements & services</h1>
-</div>
+    <!-- Titre principal -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-primary-500">Nos établissements & services</h1>
+    </div>
 
-<!-- Conteneur principal avec disposition 75%/25% -->
-<div class="container mx-auto px-6 flex flex-col md:flex-row gap-8">
-    <!-- Partie gauche (75%) : Sections dynamiques -->
-    <div class="md:w-3/4">
-        {% if not selected_unit %}
-            <!-- Section par défaut -->
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <h2 class="text-2xl font-semibold text-primary-500 mb-4">Découvrez nos établissements et services</h2>
-                <p class="text-neutral-600 mb-4">
-                    Bienvenue sur la page dédiée à la présentation de nos établissements et services à Saint-Étienne ! Nous sommes ravis de vous faire découvrir les différentes unités qui composent l’APESF, chacune conçue pour répondre aux besoins spécifiques des enfants, des jeunes majeurs et des familles que nous accompagnons. Que ce soit à travers nos structures d’accueil comme les Marmousets et l’Angélus, ou via des dispositifs innovants tels que le Placement modulable et l’Accueil parental, notre mission est d’offrir un soutien personnalisé et bienveillant. Sélectionnez une option à droite pour explorer nos services et en apprendre davantage sur notre engagement au quotidien.                </p>
-            </div>
-        {% else %}
-            <!-- Sections dynamiques pour l'unité sélectionnée -->
-            {% if sections %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {% for section in sections %}
-                        <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
-                            <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
-                            <p class="text-neutral-600 mb-4">{{ section.content }}</p>
-                            {% if section.link %}
-                                <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
-                                    En savoir plus
-                                </a>
-                            {% endif %}
-                            {% for image in section.images.all %}
-                                <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg object-cover">
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
+    <!-- Conteneur principal avec disposition 75%/25% -->
+    <div class="container mx-auto px-6 flex flex-col md:flex-row gap-8">
+        <!-- Partie gauche (75%) : Sections dynamiques -->
+        <div class="md:w-3/4">
+            {% if not selected_unit %}
+                <!-- Section par défaut -->
+                <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h2 class="text-2xl font-semibold text-primary-500 mb-4">Découvrez nos établissements et services</h2>
+                    <p class="text-neutral-600 mb-4">
+                        Bienvenue sur la page dédiée à la présentation de nos établissements et services à Saint-Étienne ! Nous sommes ravis de vous faire découvrir les différentes unités qui composent l’APESF, chacune conçue pour répondre aux besoins spécifiques des enfants, des jeunes majeurs et des familles que nous accompagnons. Que ce soit à travers nos structures d’accueil comme les Marmousets et l’Angélus, ou via des dispositifs innovants tels que le Placement modulable, l’AEMO H et l’Accueil parental, notre mission est d’offrir un soutien personnalisé et bienveillant. Sélectionnez une option à droite pour explorer nos services et en apprendre davantage sur notre engagement au quotidien.
+                    </p>
                 </div>
             {% else %}
-                <div class="text-center text-neutral-600">
-                    <p>Aucune section définie pour cet établissement/service. Veuillez ajouter du contenu via le tableau de bord.</p>
-                </div>
+                <!-- Sections dynamiques pour l'unité sélectionnée -->
+                {% if sections %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {% for section in sections %}
+                            <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
+                                <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
+                                <p class="text-neutral-600 mb-4">{{ section.content }}</p>
+                                {% if section.link %}
+                                    <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
+                                        En savoir plus
+                                    </a>
+                                {% endif %}
+                                {% for image in section.images.all %}
+                                    <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg object-cover">
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center text-neutral-600">
+                        <p>Aucune section définie pour cet établissement/service. Veuillez ajouter du contenu via le tableau de bord.</p>
+                    </div>
+                {% endif %}
             {% endif %}
-        {% endif %}
-    </div>
+        </div>
 
-    <!-- Partie droite (25%) : Liste des liens cliquables -->
-    <div class="md:w-1/4">
-        <div class="unit-links">
-            <a href="?unit=angelus" class="{% if selected_unit == 'angelus' %}active{% endif %}">Angélus</a>
-            <a href="?unit=marmousets" class="{% if selected_unit == 'marmousets' %}active{% endif %}">Marmousets</a>
-            <a href="?unit=placement_modulable" class="{% if selected_unit == 'placement_modulable' %}active{% endif %}">Placement modulable</a>
-            <a href="?unit=accueil_parental" class="{% if selected_unit == 'accueil_parental' %}active{% endif %}">Accueil parental</a>
+        <!-- Partie droite (25%) : Liste des liens cliquables -->
+        <div class="md:w-1/4">
+            <div class="unit-links">
+                <a href="?unit=angelus" class="{% if selected_unit == 'angelus' %}active{% endif %}">Angélus</a>
+                <a href="?unit=marmousets" class="{% if selected_unit == 'marmousets' %}active{% endif %}">Marmousets</a>
+                <a href="?unit=placement_modulable" class="{% if selected_unit == 'placement_modulable' %}active{% endif %}">Placement modulable</a>
+                <a href="?unit=aemo_h" class="{% if selected_unit == 'aemo_h' %}active{% endif %}">AEMO H</a>
+                <a href="?unit=accueil_parental" class="{% if selected_unit == 'accueil_parental' %}active{% endif %}">Accueil parental</a>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
