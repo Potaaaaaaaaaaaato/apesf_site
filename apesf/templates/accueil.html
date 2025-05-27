@@ -18,287 +18,208 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 {% endblock %}
 {% block content %}
-<!-- Style personnalisé pour les carrousels, le modal et le bouton de pause -->
-<style>
-    /* Conteneurs des carrousels */
-    .carousel-container, .news-carousel {
-        position: relative;
-        width: 100%;
-    }
-
-    /* Taille fixe pour les carrousels */
-    .swiper {
-        width: 100%;
-        height: 400px; /* Taille fixe pour les deux carrousels */
-        position: relative;
-    }
-
-    /* Style pour le carrousel d'images */
-    #carouselAccueil .swiper-slide {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    #carouselAccueil .swiper-slide img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* S'assure que l'image remplit le conteneur sans déformation */
-    }
-
-    /* Style pour le carrousel d'actualités */
-    .news-carousel .swiper-slide {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 20px 60px; /* Augmente le padding latéral pour laisser de l'espace aux flèches */
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        height: 100%;
-        overflow: hidden; /* Empêche le contenu de dépasser */
-        cursor: pointer; /* Indique que le slide est cliquable */
-        position: relative; /* Nécessaire pour positionner l'encadré "À VENIR" */
-    }
-    .news-carousel .swiper-slide img {
-        max-width: 100%;
-        max-height: 150px;
-        object-fit: cover;
-        margin-bottom: 15px;
-    }
-    .news-carousel .swiper-slide h3 {
-        font-size: 1.125rem; /* 18px */
-        font-weight: 600;
-        color: #1B4F72; /* Couleur primaire */
-        margin-bottom: 8px;
-    }
-    .news-carousel .swiper-slide p {
-        font-size: 0.875rem; /* 14px */
-        color: #4B5563; /* Couleur neutre */
-        margin-bottom: 8px;
-        max-height: 80px; /* Limite la hauteur du texte */
-        overflow: hidden;
-        text-overflow: ellipsis; /* Ajoute "..." si le texte dépasse */
-        display: -webkit-box;
-        -webkit-line-clamp: 6; /* Limite à 4 lignes */
-        -webkit-box-orient: vertical;
-    }
-    .news-carousel .swiper-slide a {
-        font-size: 0.875rem; /* 14px */
-        color: #1B4F72;
-        text-decoration: underline;
-    }
-
-    /* Style pour l'encadré "À VENIR" */
-    .upcoming-badge {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #E84C3D; /* Couleur rouge pour attirer l'attention */
-        color: white;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.75rem; /* 12px */
-        font-weight: 600;
-        display: none; /* Masqué par défaut */
-        z-index: 15; /* Au-dessus du contenu du slide */
-    }
-
-    /* Style pour les flèches de navigation */
-    .swiper-button-prev, .swiper-button-next {
-        width: 24px; /* Réduit la taille des flèches */
-        height: 24px;
-        background-size: 24px;
-        color: #1B4F72;
-        top: 50%;
-        transform: translateY(-50%);
-        margin-top: 0;
-        z-index: 10; /* S'assure qu'elles sont au-dessus des autres éléments */
-        background-color: rgba(255, 255, 255, 0.8); /* Fond blanc semi-transparent */
-        border-radius: 50%; /* Rend les flèches rondes */
-    }
-    .swiper-button-prev {
-        left: 15px; /* Position ajustée à l'intérieur, mais avec assez d'espace */
-    }
-    .swiper-button-next {
-        right: 15px; /* Position ajustée à l'intérieur, mais avec assez d'espace */
-    }
-    .swiper-button-prev:after, .swiper-button-next:after {
-        font-size: 16px; /* Réduit la taille de l'icône */
-    }
-
-    /* Style pour la pagination */
-    .swiper-pagination {
-        bottom: 10px !important; /* Positionne à l'intérieur du carrousel */
-        z-index: 10;
-    }
-    .swiper-pagination-bullet {
-        background: #1B4F72;
-        opacity: 0.5;
-    }
-    .swiper-pagination-bullet-active {
-        opacity: 1;
-    }
-
-    /* Style pour la barre d'icônes réseaux sociaux */
-    .social-bar-container {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-    .social-bar {
-        position: absolute;
-        top: 50%;
-        left: -80px; /* Déplace encore plus à gauche */
-        transform: translateY(-50%);
-        z-index: 10;
-    }
-    .social-bar a {
-        display: block;
-        margin: 10px 0;
-        color: #000000 !important;
-        font-size: 1.5rem;
-        transition: color 0.3s ease;
-    }
-    .social-bar a:hover {
-        color: #E84C3D !important;
-    }
-
-    /* Style pour le bouton de pause/lecture commun */
-    .carousel-control-btn {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        z-index: 20;
-        width: 40px;
-        height: 40px;
-        background-color: rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        color: #1B4F72;
-        font-size: 1.25rem;
-        transition: background-color 0.3s ease;
-    }
-    .carousel-control-btn:hover {
-        background-color: rgba(255, 255, 255, 1);
-    }
-
-    /* Style pour le modal */
-    .modal {
-        display: none; /* Caché par défaut */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
-        z-index: 50;
-        justify-content: center;
-        align-items: center;
-    }
-    .modal-content {
-        background-color: #fff;
-        padding: 24px;
-        border-radius: 8px;
-        max-width: 600px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto; /* Permet de faire défiler si le contenu est trop long */
-        position: relative;
-    }
-    .modal-content h3 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #1B4F72;
-        margin-bottom: 12px;
-        display: inline-block; /* Pour aligner avec l'indication "À VENIR" */
-    }
-    .modal-content p {
-        font-size: 1rem;
-        color: #4B5563;
-        margin-bottom: 12px;
-    }
-    .modal-content .modal-images {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 12px;
-    }
-    .modal-content .modal-images img {
-        max-width: 100%;
-        max-height: 200px;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-    .modal-content a {
-        color: #1B4F72;
-        text-decoration: underline;
-    }
-    .modal-content .close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 1.5rem;
-        color: #4B5563;
-        cursor: pointer;
-    }
-
-    @media (max-width: 768px) {
-        .social-bar {
-            display: none;
+    <!-- Style personnalisé pour les carrousels, le modal et le bouton de pause -->
+    <style>
+        /* Conteneurs des carrousels */
+        .carousel-container, .news-carousel {
+            position: relative;
+            width: 100%;
         }
-        /* Ajustements pour les flèches sur mobile */
+
+        /* Taille fixe pour les carrousels */
+        .swiper {
+            width: 100%;
+            height: 400px; /* Taille fixe pour les deux carrousels */
+            position: relative;
+        }
+
+        /* Style pour le carrousel d'images */
+        #carouselAccueil .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #carouselAccueil .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* S'assure que l'image remplit le conteneur sans déformation */
+        }
+
+        /* Style pour le carrousel d'actualités */
+        .news-carousel .swiper-slide {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px 60px; /* Augmente le padding latéral pour laisser de l'espace aux flèches */
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            height: 100%;
+            overflow: hidden; /* Empêche le contenu de dépasser */
+            cursor: pointer; /* Indique que le slide est cliquable */
+            position: relative; /* Nécessaire pour positionner l'encadré "À VENIR" */
+        }
+        .news-carousel .swiper-slide img {
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        .news-carousel .swiper-slide h3 {
+            font-size: 1.125rem; /* 18px */
+            font-weight: 600;
+            color: #1B4F72; /* Couleur primaire */
+            margin-bottom: 8px;
+        }
+        .news-carousel .swiper-slide p {
+            font-size: 0.875rem; /* 14px */
+            color: #4B5563; /* Couleur neutre */
+            margin-bottom: 8px;
+            max-height: 80px; /* Limite la hauteur du texte */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Ajoute "..." si le texte dépasse */
+            display: -webkit-box;
+            -webkit-line-clamp: 6; /* Limite à 4 lignes */
+            -webkit-box-orient: vertical;
+        }
+        .news-carousel .swiper-slide a {
+            font-size: 0.875rem; /* 14px */
+            color: #1B4F72;
+            text-decoration: underline;
+        }
+
+        /* Style pour l'encadré "À VENIR" */
+        .upcoming-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #E84C3D; /* Couleur rouge pour attirer l'attention */
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem; /* 12px */
+            font-weight: 600;
+            display: none; /* Masqué par défaut */
+            z-index: 15; /* Au-dessus du contenu du slide */
+        }
+
+        /* Style pour les flèches de navigation */
+        .swiper-button-prev, .swiper-button-next {
+            width: 24px; /* Réduit la taille des flèches */
+            height: 24px;
+            background-size: 24px;
+            color: #1B4F72;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-top: 0;
+            z-index: 10; /* S'assure qu'elles sont au-dessus des autres éléments */
+            background-color: rgba(255, 255, 255, 0.8); /* Fond blanc semi-transparent */
+            border-radius: 50%; /* Rend les flèches rondes */
+        }
         .swiper-button-prev {
-            left: 5px;
+            left: 15px; /* Position ajustée à l'intérieur, mais avec assez d'espace */
         }
         .swiper-button-next {
-            right: 5px;
-        }
-        .swiper {
-            height: 300px; /* Réduit la hauteur sur mobile */
-        }
-        .swiper-pagination {
-            bottom: 5px !important;
-        }
-        .news-carousel .swiper-slide {
-            padding: 20px 40px; /* Réduit le padding sur mobile */
-        }
-        .swiper-button-prev, .swiper-button-next {
-            width: 20px; /* Taille encore plus petite sur mobile */
-            height: 20px;
-            background-size: 20px;
+            right: 15px; /* Position ajustée à l'intérieur, mais avec assez d'espace */
         }
         .swiper-button-prev:after, .swiper-button-next:after {
-            font-size: 14px;
+            font-size: 16px; /* Réduit la taille de l'icône */
         }
+
+        /* Style pour la pagination */
+        .swiper-pagination {
+            bottom: 10px !important; /* Positionne à l'intérieur du carrousel */
+            z-index: 10;
+        }
+        .swiper-pagination-bullet {
+            background: #1B4F72;
+            opacity: 0.5;
+        }
+        .swiper-pagination-bullet-active {
+            opacity: 1;
+        }
+
+        /* Style pour la barre d'icônes réseaux sociaux */
+        .social-bar-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .social-bar {
+            position: absolute;
+            top: 50%;
+            left: -80px; /* Déplace encore plus à gauche */
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+        .social-bar a {
+            display: block;
+            margin: 10px 0;
+            color: #000000 !important;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        .social-bar a:hover {
+            color: #E84C3D !important;
+        }
+
+        /* Style pour le bouton de pause/lecture commun */
         .carousel-control-btn {
-            width: 32px;
-            height: 32px;
-            font-size: 1rem;
-            bottom: 5px;
-            left: 5px;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 20;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #1B4F72;
+            font-size: 1.25rem;
+            transition: background-color 0.3s ease;
         }
-        .upcoming-badge {
-            top: 5px;
-            right: 5px;
-            font-size: 0.625rem; /* 10px sur mobile */
-            padding: 3px 6px;
+        .carousel-control-btn:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        /* Style pour le modal */
+        .modal {
+            display: none; /* Caché par défaut */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+            z-index: 50;
+            justify-content: center;
+            align-items: center;
         }
         .modal-content {
-            width: 95%;
-            padding: 16px;
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto; /* Permet de faire défiler si le contenu est trop long */
+            position: relative;
         }
         .modal-content h3 {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1B4F72;
+            margin-bottom: 12px;
+            display: inline-block; /* Pour aligner avec l'indication "À VENIR" */
         }
         .modal-content p {
-            font-size: 0.875rem;
-        }
-        .modal-content .modal-images img {
-            max-height: 150px;
+            font-size: 1rem;
+            color: #4B5563;
+            margin-bottom: 12px;
         }
         .modal-content .modal-images {
             display: flex;
@@ -311,283 +232,369 @@
             max-height: 200px;
             object-fit: cover;
             border-radius: 4px;
-            transition: transform 0.3s ease;
         }
-        .modal-content .modal-images img:hover {
-            transform: scale(1.05);
+        .modal-content a {
+            color: #1B4F72;
+            text-decoration: underline;
         }
+        .modal-content .return-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1rem;
+            color: #1B4F72;
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            font-weight: 600;
+        }
+        .modal-content .return-btn:hover {
+            color: #E84C3D;
+        }
+
         @media (max-width: 768px) {
+            .social-bar {
+                display: none;
+            }
+            /* Ajustements pour les flèches sur mobile */
+            .swiper-button-prev {
+                left: 5px;
+            }
+            .swiper-button-next {
+                right: 5px;
+            }
+            .swiper {
+                height: 300px; /* Réduit la hauteur sur mobile */
+            }
+            .swiper-pagination {
+                bottom: 5px !important;
+            }
+            .news-carousel .swiper-slide {
+                padding: 20px 40px; /* Réduit le padding sur mobile */
+            }
+            .swiper-button-prev, .swiper-button-next {
+                width: 20px; /* Taille encore plus petite sur mobile */
+                height: 20px;
+                background-size: 20px;
+            }
+            .swiper-button-prev:after, .swiper-button-next:after {
+                font-size: 14px;
+            }
+            .carousel-control-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+                bottom: 5px;
+                left: 5px;
+            }
+            .upcoming-badge {
+                top: 5px;
+                right: 5px;
+                font-size: 0.625rem; /* 10px sur mobile */
+                padding: 3px 6px;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 16px;
+            }
+            .modal-content h3 {
+                font-size: 1.25rem;
+            }
+            .modal-content p {
+                font-size: 0.875rem;
+            }
             .modal-content .modal-images img {
                 max-height: 150px;
             }
+            .modal-content .modal-images {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-top: 12px;
+            }
+            .modal-content .modal-images img {
+                max-width: 100%;
+                max-height: 200px;
+                object-fit: cover;
+                border-radius: 4px;
+                transition: transform 0.3s ease;
+            }
+            .modal-content .modal-images img:hover {
+                transform: scale(1.05);
+            }
+            @media (max-width: 768px) {
+                .modal-content .modal-images img {
+                    max-height: 150px;
+                }
+            }
         }
-    }
-</style>
+    </style>
 
-<!-- Hero Section -->
-<section class="py-2 text-center">
-    <div class="container mx-auto px-6">
-        <h1 class="text-4xl md:text-5xl font-bold text-primary-500 mb-4">
-            Association Pour l'Enfant et Sa Famille
-        </h1>
-        <p class="text-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
-            Depuis 1934, nous accompagnons les enfants et leurs familles à Saint-Étienne, en favorisant leur épanouissement et en protégeant leurs droits à travers nos maisons d’enfants, Les Marmousets et L’Angélus.
-        </p>
-    </div>
-</section>
+    <!-- Hero Section -->
+    <section class="py-2 text-center">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary-500 mb-4">
+                Association Pour l'Enfant et Sa Famille
+            </h1>
+            <p class="text-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
+                Depuis 1934, nous accompagnons les enfants et leurs familles à Saint-Étienne, en favorisant leur épanouissement et en protégeant leurs droits à travers nos maisons d’enfants, Les Marmousets et L’Angélus.
+            </p>
+        </div>
+    </section>
 
-<!-- Section Carrousel et carrousel d'actualités -->
-<section class="container mx-auto px-6 mb-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Conteneur pour la barre d'icônes et le carrousel -->
-        <div class="social-bar-container">
-            <!-- Barre d'icônes réseaux sociaux -->
-            <div class="social-bar">
-                <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
-                <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+    <!-- Section Carrousel et carrousel d'actualités -->
+    <section class="container mx-auto px-6 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Conteneur pour la barre d'icônes et le carrousel -->
+            <div class="social-bar-container">
+                <!-- Barre d'icônes réseaux sociaux -->
+                <div class="social-bar">
+                    <a href="https://facebook.com" target="_blank" title="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="https://linkedin.com" target="_blank" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+                </div>
+
+                <!-- Carrousel (Swiper) -->
+                <div class="carousel-container">
+                    <div id="carouselAccueil" class="swiper">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="{% static 'images/carousel-image-1.jpg' %}" alt="Activités avec les enfants">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'images/carousel-image-2.jpg' %}" alt="Moments partagés en famille">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Les Marmousets">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'images/carousel-image-4.jpg' %}" alt="L’Angélus">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="{% static 'images/carousel-image-5.jpg' %}" alt="Soutien éducatif">
+                            </div>
+                        </div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
             </div>
-            
-            <!-- Carrousel (Swiper) -->
-            <div class="carousel-container">
-                <div id="carouselAccueil" class="swiper">
+
+            <!-- Carrousel d'actualités -->
+            <div class="news-carousel">
+                <div id="carouselNews" class="swiper">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <img src="{% static 'images/carousel-image-1.jpg' %}" alt="Activités avec les enfants">
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="{% static 'images/carousel-image-2.jpg' %}" alt="Moments partagés en famille">
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Les Marmousets">
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="{% static 'images/carousel-image-4.jpg' %}" alt="L’Angélus">
-                        </div>
-                        <div class="swiper-slide">
-                            <img src="{% static 'images/carousel-image-5.jpg' %}" alt="Soutien éducatif">
-                        </div>
+                        {% for news in news_items %}
+                            {% now "Y-m-d" as current_date %}
+                            <div class="swiper-slide"
+                                 data-news-id="{{ news.id }}"
+                                 data-title="{{ news.title }}"
+                                 data-content="{{ news.content }}"
+                                 data-date="{{ news.date|date:'Y-m-d' }}"
+                                 data-document="{% if news.document %}{{ news.document.url }}{% endif %}"
+                                 data-images="{% for image in news.images.all %}{{ image.image.url }}|{% endfor %}"
+                                 data-is-upcoming="{% if news.date|date:'Y-m-d' > current_date %}true{% else %}false{% endif %}">
+                                <div class="upcoming-badge">À VENIR</div>
+                                {% if news.image %}
+                                    <img src="{{ news.image.url }}" alt="{{ news.title }}">
+                                {% endif %}
+                                {% for image in news.images.all %}
+                                    <img src="{{ image.image.url }}" alt="Image associée à {{ news.title }}">
+                                {% endfor %}
+                                <h3>{{ news.title }}</h3>
+                                <p>{{ news.content }}</p>
+                                <p>{{ news.date }}</p>
+                                {% if news.document %}
+                                    <a href="{{ news.document.url }}" target="_blank">Télécharger la pièce jointe</a>
+                                {% endif %}
+                            </div>
+                            {% empty %}
+                            <div class="swiper-slide">
+                                <p class="text-neutral-600">Aucune actualité disponible pour le moment.</p>
+                            </div>
+                        {% endfor %}
                     </div>
                     <div class="swiper-button-prev"></div>
                     <div class="swiper-button-next"></div>
                     <div class="swiper-pagination"></div>
+                    <!-- Bouton de pause/lecture commun -->
+                    <div id="carouselControl" class="carousel-control-btn" title="Pause">
+                        <i class="bi bi-pause-fill"></i>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Carrousel d'actualités -->
-        <div class="news-carousel">
-            <div id="carouselNews" class="swiper">
-                <div class="swiper-wrapper">
-                    {% for news in news_items %}
-                        {% now "Y-m-d" as current_date %}
-                        <div class="swiper-slide" 
-                             data-news-id="{{ news.id }}" 
-                             data-title="{{ news.title }}" 
-                             data-content="{{ news.content }}" 
-                             data-date="{{ news.date|date:'Y-m-d' }}" 
-                             data-document="{% if news.document %}{{ news.document.url }}{% endif %}"
-                             data-images="{% for image in news.images.all %}{{ image.image.url }}|{% endfor %}"
-                             data-is-upcoming="{% if news.date|date:'Y-m-d' > current_date %}true{% else %}false{% endif %}">
-                            <div class="upcoming-badge">À VENIR</div>
-                            {% if news.image %}
-                                <img src="{{ news.image.url }}" alt="{{ news.title }}">
-                            {% endif %}
-                            {% for image in news.images.all %}
-                                <img src="{{ image.image.url }}" alt="Image associée à {{ news.title }}">
-                            {% endfor %}
-                            <h3>{{ news.title }}</h3>
-                            <p>{{ news.content }}</p>
-                            <p>{{ news.date }}</p>
-                            {% if news.document %}
-                                <a href="{{ news.document.url }}" target="_blank">Télécharger la pièce jointe</a>
-                            {% endif %}
-                        </div>
-                    {% empty %}
-                        <div class="swiper-slide">
-                            <p class="text-neutral-600">Aucune actualité disponible pour le moment.</p>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-pagination"></div>
-                <!-- Bouton de pause/lecture commun -->
-                <div id="carouselControl" class="carousel-control-btn" title="Pause">
-                    <i class="bi bi-pause-fill"></i>
-                </div>
-            </div>
+    <!-- Modal pour afficher les détails de l'actualité -->
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <button class="return-btn">Retour</button>
+            <h3 id="modalTitle"></h3>
+            <p id="modalContent"></p>
+            <p id="modalDate"></p>
+            <div id="modalDocument"></div>
+            <div id="modalImages" class="modal-images"></div>
+            <p id="noImagesMessage" style="color: #4B5563; display: none;">Aucune image associée à cette actualité.</p>
         </div>
     </div>
-</section>
 
-<!-- Modal pour afficher les détails de l'actualité -->
-<div id="newsModal" class="modal">
-    <div class="modal-content">
-        <span class="close">×</span>
-        <h3 id="modalTitle"></h3>
-        <p id="modalContent"></p>
-        <p id="modalDate"></p>
-        <div id="modalDocument"></div>
-        <div id="modalImages" class="modal-images"></div>
-        <p id="noImagesMessage" style="color: #4B5563; display: none;">Aucune image associée à cette actualité.</p>
-    </div>
-</div>
+    <!-- Texte de présentation -->
+    <section class="py-8 text-center">
+        <div class="container mx-auto px-6">
+            <p class="text-lg text-neutral-600 leading-loose max-w-3xl mx-auto">
+                L’association Pour l’Enfant et sa Famille accompagne depuis des décennies les enfants et les familles en difficulté, à travers des dispositifs d’accueil souples et adaptés.
+                Nos équipes engagées œuvrent chaque jour pour offrir un environnement sécurisé, bienveillant et respectueux du parcours de chacun.
+                Une mission en constante évolution, portée par l’écoute, l’innovation et la solidarité.
+            </p>
+        </div>
+    </section>
 
-<!-- Texte de présentation -->
-<section class="py-8 text-center">
-    <div class="container mx-auto px-6">
-        <p class="text-lg text-neutral-600 leading-loose max-w-3xl mx-auto">
-            L’association Pour l’Enfant et sa Famille accompagne depuis des décennies les enfants et les familles en difficulté, à travers des dispositifs d’accueil souples et adaptés.
-            Nos équipes engagées œuvrent chaque jour pour offrir un environnement sécurisé, bienveillant et respectueux du parcours de chacun.
-            Une mission en constante évolution, portée par l’écoute, l’innovation et la solidarité.
-        </p>
-    </div>
-</section>
+    <section class="py-8 text-center">
+        <div class="container mx-auto px-6">
+            <a href="{% url 'qui_sommes_nous' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">
+                Découvrez nos établissements & services !
+            </a>
+        </div>
+    </section>
 
-<section class="py-8 text-center">
-    <div class="container mx-auto px-6">
-        <a href="{% url 'qui_sommes_nous' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">
-            Découvrez nos établissements & services !
-        </a>
-    </div>
-</section>
-
-<!-- Script pour initialiser les carrousels et gérer le modal -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Initialisation du carrousel d'images
-        const carouselAccueil = new Swiper('#carouselAccueil', {
-            loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
-
-        // Initialisation du carrousel d'actualités
-        const carouselNews = new Swiper('#carouselNews', {
-            loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
-
-        // Bouton pause/lecture des carrousels
-        const carouselControl = document.getElementById('carouselControl');
-        let carouselsPaused = false;
-
-        if (carouselControl) {
-            carouselControl.addEventListener('click', () => {
-                if (carouselsPaused) {
-                    carouselAccueil.autoplay.start();
-                    carouselNews.autoplay.start();
-                    carouselControl.innerHTML = '<i class="bi bi-pause-fill"></i>';
-                    carouselControl.title = 'Pause';
-                    carouselsPaused = false;
-                } else {
-                    carouselAccueil.autoplay.stop();
-                    carouselNews.autoplay.stop();
-                    carouselControl.innerHTML = '<i class="bi bi-play-fill"></i>';
-                    carouselControl.title = 'Lecture';
-                    carouselsPaused = true;
-                }
+    <!-- Script pour initialiser les carrousels et gérer le modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialisation du carrousel d'images
+            const carouselAccueil = new Swiper('#carouselAccueil', {
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
             });
-        }
 
-        // Gestion du modal
-        const modal = document.getElementById('newsModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalContent = document.getElementById('modalContent');
-        const modalDate = document.getElementById('modalDate');
-        const modalDocument = document.getElementById('modalDocument');
-        const modalImages = document.getElementById('modalImages');
-        const closeModal = document.querySelector('.modal .close');
-        const noImagesMessage = document.getElementById('noImagesMessage');
+            // Initialisation du carrousel d'actualités
+            const carouselNews = new Swiper('#carouselNews', {
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+            });
 
-        document.querySelectorAll('.news-carousel .swiper-slide').forEach(slide => {
-            // Afficher le badge "À VENIR" dans le carrousel si l'actualité est future
-            const isUpcoming = slide.getAttribute('data-is-upcoming') === 'true';
-            const upcomingBadge = slide.querySelector('.upcoming-badge');
-            if (isUpcoming && upcomingBadge) {
-                upcomingBadge.style.display = 'block';
-            }
+            // Bouton pause/lecture des carrousels
+            const carouselControl = document.getElementById('carouselControl');
+            let carouselsPaused = false;
 
-            slide.addEventListener('click', function () {
-                const newsId = this.getAttribute('data-news-id');
-                if (!newsId) {
-                    console.log('Erreur : Aucun ID d\'actualité trouvé');
-                    return;
-                }
-
-                modalTitle.textContent = this.getAttribute('data-title');
-                modalContent.textContent = this.getAttribute('data-content');
-                modalDate.textContent = 'Date : ' + this.getAttribute('data-date');
-
-                const documentUrl = this.getAttribute('data-document');
-                modalDocument.innerHTML = '';
-                if (documentUrl) {
-                    modalDocument.innerHTML = `<p>Pièce jointe : <a href="${documentUrl}" target="_blank">Télécharger</a></p>`;
-                }
-
-                // Gestion des images associées
-                const images = this.getAttribute('data-images');
-                console.log('data-images:', images); // Débogage
-                modalImages.innerHTML = '';
-                noImagesMessage.style.display = 'block';
-
-                if (images && images !== '|') {
-                    const imageArray = images.split('|').filter(url => url);
-                    console.log('Image Array:', imageArray); // Débogage
-                    if (imageArray.length > 0) {
-                        noImagesMessage.style.display = 'none';
-                        imageArray.forEach(url => {
-                            console.log('Ajout de l\'image:', url); // Débogage
-                            const img = document.createElement('img');
-                            img.src = url;
-                            img.alt = 'Image associée à l\'actualité';
-                            img.className = 'max-w-full h-auto rounded-lg shadow-md';
-                            modalImages.appendChild(img);
-                        });
+            if (carouselControl) {
+                carouselControl.addEventListener('click', () => {
+                    if (carouselsPaused) {
+                        carouselAccueil.autoplay.start();
+                        carouselNews.autoplay.start();
+                        carouselControl.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                        carouselControl.title = 'Pause';
+                        carouselsPaused = false;
+                    } else {
+                        carouselAccueil.autoplay.stop();
+                        carouselNews.autoplay.stop();
+                        carouselControl.innerHTML = '<i class="bi bi-play-fill"></i>';
+                        carouselControl.title = 'Lecture';
+                        carouselsPaused = true;
                     }
+                });
+            }
+
+            // Gestion du modal
+            const modal = document.getElementById('newsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const modalDate = document.getElementById('modalDate');
+            const modalDocument = document.getElementById('modalDocument');
+            const modalImages = document.getElementById('modalImages');
+            const returnBtn = document.querySelector('.modal .return-btn');
+            const noImagesMessage = document.getElementById('noImagesMessage');
+
+            document.querySelectorAll('.news-carousel .swiper-slide').forEach(slide => {
+                // Afficher le badge "À VENIR" dans le carrousel si l'actualité est future
+                const isUpcoming = slide.getAttribute('data-is-upcoming') === 'true';
+                const upcomingBadge = slide.querySelector('.upcoming-badge');
+                if (isUpcoming && upcomingBadge) {
+                    upcomingBadge.style.display = 'block';
                 }
 
-                modal.style.display = 'flex';
+                slide.addEventListener('click', function () {
+                    const newsId = this.getAttribute('data-news-id');
+                    if (!newsId) {
+                        console.log('Erreur : Aucun ID d\'actualité trouvé');
+                        return;
+                    }
+
+                    modalTitle.textContent = this.getAttribute('data-title');
+                    modalContent.textContent = this.getAttribute('data-content');
+                    modalDate.textContent = 'Date : ' + this.getAttribute('data-date');
+
+                    const documentUrl = this.getAttribute('data-document');
+                    modalDocument.innerHTML = '';
+                    if (documentUrl) {
+                        modalDocument.innerHTML = `<p>Pièce jointe : <a href="${documentUrl}" target="_blank">Télécharger</a></p>`;
+                    }
+
+                    // Gestion des images associées
+                    const images = this.getAttribute('data-images');
+                    console.log('data-images:', images); // Débogage
+                    modalImages.innerHTML = '';
+                    noImagesMessage.style.display = 'block';
+
+                    if (images && images !== '|') {
+                        const imageArray = images.split('|').filter(url => url);
+                        console.log('Image Array:', imageArray); // Débogage
+                        if (imageArray.length > 0) {
+                            noImagesMessage.style.display = 'none';
+                            imageArray.forEach(url => {
+                                console.log('Ajout de l\'image:', url); // Débogage
+                                const img = document.createElement('img');
+                                img.src = url;
+                                img.alt = 'Image associée à l\'actualité';
+                                img.className = 'max-w-full h-auto rounded-lg shadow-md';
+                                modalImages.appendChild(img);
+                            });
+                        }
+                    }
+
+                    modal.style.display = 'flex';
+                });
+            });
+
+            returnBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    modal.style.display = 'none';
+                }
             });
         });
-
-        closeModal.addEventListener('click', function () {
-            modal.style.display = 'none';
-        });
-
-        modal.addEventListener('click', function (event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                modal.style.display = 'none';
-            }
-        });
-    });
-</script>
+    </script>
 {% endblock %}
