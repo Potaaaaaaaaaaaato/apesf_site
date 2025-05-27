@@ -147,3 +147,13 @@ TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+# Cette partie est à des fins de tests, supprimer au moindre problème
+# IMPORTANT : SI SUPPRESSION DE CETTE PARTIE DU FICHIER, SAUVEGARDER LE MDP D'APPLICATION  !!
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tristandevaux6@gmail.com'  # Remplace par ton adresse Gmail
+EMAIL_HOST_PASSWORD = 'grjp xkes axrn zupj'  # Mot de passe application Gmail
+DEFAULT_FROM_EMAIL = 'tristandevaux6@gmail.com'  # Adresse d'envoi par défaut

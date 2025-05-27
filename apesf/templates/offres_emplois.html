@@ -9,52 +9,224 @@
     <meta property="og:description" content="Rejoignez l'APESF à Saint-Étienne ! Consultez nos offres d'emploi et postulez directement.">
     <meta property="og:url" content="https://www.tristan-devaux.fr/offres-emplois/">
     <meta property="og:type" content="website">
+    <!-- Inclusion de Bootstrap Icons pour l'icône -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 {% endblock %}
 {% block content %}
-<div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-primary-500">Offres d'emplois</h1>
-    <!-- Boutons pour Candidature spontanée et Demande de stage -->
-    <div class="mt-10 flex justify-center gap-4">
-        <div class="flex flex-row gap-4">
-            <a href="{% url 'contact' %}?subject=Candidature%20spontanée" 
-               class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all button-equal-size">
-                Candidature spontanée
-            </a>
-            <a href="{% url 'contact' %}?subject=Demande%20de%20stage" 
-               class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all button-equal-size">
-                Demande de stage
-            </a>
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-primary-500">Offres d'emplois</h1>
+        <!-- Boutons pour Candidature spontanée et Demande de stage -->
+        <div class="mt-10 flex justify-center gap-4">
+            <div class="flex flex-row gap-4">
+                <a href="{% url 'contact' %}?subject=Candidature%20spontanée"
+                   class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all button-equal-size">
+                    Candidature spontanée
+                </a>
+                <a href="{% url 'contact' %}?subject=Demande%20de%20stage"
+                   class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 hover:scale-105 transition-all button-equal-size">
+                    Demande de stage
+                </a>
+            </div>
         </div>
     </div>
-</div>
-<div class="container mx-auto px-6">
-    <p class="text-neutral-600 mb-8 text-center">Rejoignez notre équipe ! Découvrez nos offres d’emploi et postulez directement en envoyant votre candidature par email.</p>
+    <div class="container mx-auto px-6">
+        <p class="text-neutral-600 mb-8 text-center">Rejoignez notre équipe ! Découvrez nos offres d’emploi et postulez directement en envoyant votre candidature par email.</p>
 
-    {% if job_offers %}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {% for job in job_offers %}
-                <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
-                    <h2 class="text-2xl font-semibold text-primary-500 mb-2">{{ job.title }}</h2>
-                    <div class="text-neutral-600 mb-4">{{ job.description|linebreaks }}</div>
-                    <p class="text-sm text-gray-500 mb-2">Publié le : {{ job.posted_date }}</p>
-                    {% if job.document %}
-                        <p class="text-sm text-gray-500 mb-2 flex items-center">
-                            <i class="bi bi-file-earmark mr-2"></i>
-                            Détails de l’offre : 
-                            <a href="{{ job.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ job.document.name|cut:"job_documents/" }}</a>
-                        </p>
-                    {% endif %}
-                    <div class="text-center mt-4">
-                        <a href="mailto:{{ job.email_contact }}?subject=Candidature pour {{ job.title }}" 
-                           class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">
-                            Postuler à cette offre
-                        </a>
+        {% if job_offers %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {% for job in job_offers %}
+                    <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform section-container"
+                         data-title="{{ job.title }}"
+                         data-content="{{ job.description }}"
+                         data-date="{{ job.posted_date }}"
+                         data-document="{% if job.document %}{{ job.document.url }}|{{ job.document.name|cut:'job_documents/' }}{% endif %}"
+                         data-email="{{ job.email_contact }}">
+                        <i class="bi bi-arrows-angle-expand expand-icon"></i>
+                        <h2 class="text-2xl font-semibold text-primary-500 mb-2">{{ job.title }}</h2>
+                        <div class="text-neutral-600 mb-4">{{ job.description|linebreaks }}</div>
+                        <p class="text-sm text-gray-500 mb-2">Publié le : {{ job.posted_date }}</p>
+                        {% if job.document %}
+                            <p class="text-sm text-gray-500 mb-2 flex items-center">
+                                <i class="bi bi-file-earmark mr-2"></i>
+                                Détails de l’offre :
+                                <a href="{{ job.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ job.document.name|cut:"job_documents/" }}</a>
+                            </p>
+                        {% endif %}
+                        <div class="text-center mt-4">
+                            <a href="mailto:{{ job.email_contact }}?subject=Candidature pour {{ job.title }}"
+                               class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">
+                                Postuler à cette offre
+                            </a>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-neutral-600 mb-4 text-center">Aucune offre d’emploi disponible pour le moment. Revenez bientôt !</p>
+        {% endif %}
+    </div>
+
+    <!-- Modal pour afficher les détails de l'offre -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <button class="return-btn">Retour</button>
+            <h3 id="modalTitle"></h3>
+            <p id="modalContent"></p>
+            <p id="modalDate"></p>
+            <div id="modalDocument"></div>
+            <div id="modalApply"></div>
         </div>
-    {% else %}
-        <p class="text-neutral-600 mb-4 text-center">Aucune offre d’emploi disponible pour le moment. Revenez bientôt !</p>
-    {% endif %}
-</div>
+    </div>
+
+    <!-- Styles personnalisés pour la page -->
+    <style>
+        .section-container {
+            position: relative; /* Pour positionner l'icône */
+            cursor: pointer; /* Indique que la section est cliquable */
+        }
+        .section-container .expand-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.25rem;
+            color: #1B4F72;
+            transition: color 0.3s ease;
+        }
+        .section-container .expand-icon:hover {
+            color: #E84C3D;
+        }
+        /* Style pour le modal */
+        .modal {
+            display: none; /* Caché par défaut */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+            z-index: 50;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 800px; /* Augmenté pour accueillir des images plus grandes */
+            width: 90%;
+            max-height: 90vh; /* Légèrement augmenté pour plus d'espace */
+            overflow-y: auto; /* Permet de faire défiler si le contenu est trop long */
+            position: relative;
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1B4F72;
+            margin-bottom: 12px;
+        }
+        .modal-content p {
+            font-size: 1rem;
+            color: #4B5563;
+            margin-bottom: 12px;
+        }
+        .modal-content a {
+            color: #1B4F72;
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 12px;
+        }
+        .modal-content .return-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1rem;
+            color: #1B4F72;
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            font-weight: 600;
+        }
+        .modal-content .return-btn:hover {
+            color: #E84C3D;
+        }
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                padding: 16px;
+            }
+            .modal-content h3 {
+                font-size: 1.25rem;
+            }
+            .modal-content p {
+                font-size: 0.875rem;
+            }
+            .section-container .expand-icon {
+                font-size: 1rem; /* Plus petit sur mobile */
+            }
+        }
+    </style>
+
+    <!-- Script pour gérer le modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('jobModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const modalDate = document.getElementById('modalDate');
+            const modalDocument = document.getElementById('modalDocument');
+            const modalApply = document.getElementById('modalApply');
+            const returnBtn = document.querySelector('.modal .return-btn');
+
+            document.querySelectorAll('.section-container').forEach(section => {
+                section.addEventListener('click', function () {
+                    // Récupérer les données de la section
+                    const title = this.getAttribute('data-title');
+                    const content = this.getAttribute('data-content');
+                    const date = this.getAttribute('data-date');
+                    const documentData = this.getAttribute('data-document');
+                    const email = this.getAttribute('data-email');
+
+                    // Remplir le modal
+                    modalTitle.textContent = title;
+                    modalContent.textContent = content;
+                    modalDate.textContent = 'Publié le : ' + date;
+                    modalDocument.innerHTML = '';
+                    modalApply.innerHTML = '';
+
+                    // Gestion du document
+                    if (documentData) {
+                        const [url, name] = documentData.split('|');
+                        modalDocument.innerHTML = `<p>Détails de l’offre : <a href="${url}" target="_blank" class="text-primary-500 hover:underline">${name}</a></p>`;
+                    }
+
+                    // Gestion du bouton Postuler
+                    if (email) {
+                        modalApply.innerHTML = `<a href="mailto:${email}?subject=Candidature pour ${title}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors">Postuler à cette offre</a>`;
+                    }
+
+                    modal.style.display = 'flex';
+                });
+            });
+
+            // Fermer le modal avec le bouton Retour
+            returnBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // Fermer le modal en cliquant à l'extérieur
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Fermer le modal avec la touche Échap
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
 {% endblock %}
