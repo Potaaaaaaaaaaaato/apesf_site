@@ -1,3 +1,4 @@
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -73,32 +74,6 @@ def partenaires(request):
         page = None
     partners = Partner.objects.all()
     return render(request, 'partenaires.html', {'page': page, 'partners': partners})
-
-# Page "Contact"
-def contact(request):
-    try:
-        page = PageContent.objects.get(slug='contact')
-    except PageContent.DoesNotExist:
-        page = None
-
-    # Récupérer le paramètre 'subject' depuis l'URL
-    initial_subject = request.GET.get('subject', '')
-
-    if request.method == 'POST':
-        form = ContactForm(request.POST, request.FILES, initial_subject=initial_subject)
-        if form.is_valid():
-            # Enregistrer le message de contact
-            contact_message = form.save()
-            # Gérer les pièces jointes
-            files = request.FILES.getlist('attachments')
-            for file in files:
-                ContactMessageAttachment.objects.create(contact_message=contact_message, file=file)
-            messages.success(request, "Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.")
-            return redirect('contact')
-    else:
-        form = ContactForm(initial_subject=initial_subject)
-
-    return render(request, 'contact.html', {'page': page, 'form': form})
 
 # Page "Dons"
 def dons(request):
@@ -571,24 +546,76 @@ def modifier_offre_emploi(request, job_id):
         form = JobOfferForm(instance=job)
     return render(request, 'modifier_offre_emploi.html', {'form': form, 'job': job})
 
-# Nouveau modèle pour les contacts
 def contact_view(request):
+    try:
+        page = PageContent.objects.get(slug='contact')
+    except PageContent.DoesNotExist:
+        page = None
+
+    initial_subject = request.GET.get('subject', '')
+
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = ContactForm(request.POST, request.FILES, initial_subject=initial_subject)
+        print("Formulaire soumis, validation en cours...")  # Log pour confirmer la soumission
         if form.is_valid():
-            # Enregistrer le message
+            print("Formulaire valide, enregistrement du message...")  # Log pour la validation
             contact_message = form.save()
-            # Gérer les pièces jointes
+
             for key, file in request.FILES.items():
                 if key.startswith('attachment_'):
+                    print(f"Enregistrement de la pièce jointe : {key}")  # Log pour les pièces jointes
                     ContactMessageAttachment.objects.create(
                         contact_message=contact_message,
                         file=file
                     )
-            messages.success(request, 'Votre message a été envoyé avec succès !')
+
+            name = form.cleaned_data.get('name')
+            email = form.cleaned_data.get('email')
+            subject = form.cleaned_data.get('subject')
+            message_content = form.cleaned_data.get('message')
+            subject_display = dict(form.fields['subject'].choices).get(subject, subject)
+            print(f"Préparation de l'email - Objet : {subject_display}, Destinataires : {subject}")  # Log pour l'email
+
+            email_body = f"""
+Nouveau message de contact
+
+Nom et prénom : {name}
+Email : {email}
+Objet : {subject_display}
+Message :
+{message_content}
+"""
+
+            recipients = ['tristandevaux6@gmail.com'] if subject in ['partenariat', 'don'] else ['tristandevaux6@gmail.com', 'tristandevaux6@gmail.com']
+            print(f"Destinataires choisis : {recipients}")  # Log pour les destinataires
+
+            email = EmailMessage(
+                subject=f"[APESF] {subject_display}",
+                body=email_body,
+                from_email='ton_email@gmail.com',
+                to=recipients,
+                reply_to=[email],
+            )
+
+            for attachment in contact_message.attachments.all():
+                with attachment.file.open('rb') as f:
+                    print(f"Attachement de : {attachment.file.name}")  # Log pour les pièces jointes
+                    email.attach(attachment.file.name, f.read(), attachment.file.content_type)
+
+            try:
+                print("Tentative d'envoi de l'email...")  # Log avant envoi
+                email.send()
+                print("Email envoyé avec succès aux destinataires : {}".format(recipients))
+                messages.success(request, "Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.")
+            except Exception as e:
+                print(f"Erreur lors de l'envoi de l'email : {str(e)}")
+                messages.error(request, f"Une erreur est survenue lors de l'envoi de votre message : {str(e)}")
+
             return redirect('contact')
         else:
-            messages.error(request, 'Veuillez corriger les erreurs dans le formulaire.')
+            print("Formulaire non valide, erreurs : {}".format(form.errors))  # Log pour les erreurs de validation
+            messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
-        form = ContactForm()
-    return render(request, 'contact.html', {'form': form})
+        form = ContactForm(initial={'subject': initial_subject})
+
+    return render(request, 'contact.html', {'page': page, 'form': form})
