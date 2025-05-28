@@ -1,10 +1,258 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Rejoignez-nous{% endblock %}
+{% block extra_head %}
+    <meta name="description" content="Rejoignez l'APESF à Saint-Étienne et participez à notre mission d'accompagnement des enfants et de leurs familles.">
+    <meta name="keywords" content="APESF, rejoindre, association, Saint-Étienne, bénévolat, engagement, enfants, familles">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Association Pour l'Enfant et Sa Famille">
+    <meta property="og:title" content="Rejoignez-nous - Association Pour l'Enfant et Sa Famille">
+    <meta property="og:description" content="Découvrez pourquoi rejoindre l'APESF et contribuer à notre mission à Saint-Étienne.">
+    <meta property="og:url" content="https://www.tristan-devaux.fr/rejoignez-nous/">
+    <meta property="og:type" content="website">
+    <!-- Inclusion de Bootstrap Icons pour l'icône -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% endblock %}
+{% block content %}
+    <!-- Styles personnalisés pour la page -->
+    <style>
+        .section-container {
+            position: relative; /* Pour positionner l'icône */
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer; /* Indique que la section est cliquable */
+        }
+        .section-container:hover {
+            transform: scale(1.02);
+        }
+        .section-container p {
+            color: #4B5563; /* text-neutral-600 */
+            margin-top: 12px;
+        }
+        .section-container .expand-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.25rem;
+            color: #1B4F72; /* primary-500 */
+            transition: color 0.3s ease;
+        }
+        .section-container .expand-icon:hover {
+            color: #E84C3D; /* secondary-500 */
+        }
+        /* Style pour le modal */
+        .modal {
+            display: none; /* Caché par défaut */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+            z-index: 50;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1B4F72; /* primary-500 */
+            margin-bottom: 12px;
+        }
+        .modal-content p {
+            font-size: 1rem;
+            color: #4B5563; /* text-neutral-600 */
+            margin-bottom: 12px;
+        }
+        .modal-content .modal-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+        .modal-content .modal-images img {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        .modal-content a {
+            color: #1B4F72; /* primary-500 */
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 12px;
+        }
+        .modal-content .return-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1rem;
+            color: #1B4F72; /* primary-500 */
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            font-weight: 600;
+        }
+        .modal-content .return-btn:hover {
+            color: #E84C3D; /* secondary-500 */
+        }
+        @media (max-width: 768px) {
+            .section-container {
+                padding: 16px;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 16px;
+            }
+            .modal-content h3 {
+                font-size: 1.25rem;
+            }
+            .modal-content p {
+                font-size: 0.875rem;
+            }
+            .modal-content .modal-images img {
+                max-height: 300px;
+            }
+            .section-container .expand-icon {
+                font-size: 1rem; /* Plus petit sur mobile */
+            }
+        }
+    </style>
+
+    <!-- Titre principal -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-primary-500">Rejoignez-nous</h1>
+    </div>
+
+    <!-- Sections dynamiques -->
+    {% if page %}
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                {% for section in page.sections.all %}
+                    <div class="section-container"
+                         data-title="{{ section.title }}"
+                         data-content="{{ section.content }}"
+                         data-images="{% for image in section.images.all %}{{ image.image.url }}|{% endfor %}"
+                         data-link="{% if section.link %}{{ section.link }}{% endif %}">
+                        <i class="bi bi-arrows-angle-expand expand-icon"></i>
+                        <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
+                        <p class="text-neutral-600 mb-4">{{ section.content }}</p>
+                        {% for image in section.images.all %}
+                            <img src="{{ image.image.url }}" alt="{{ section.title }}" class="mt-4 w-full rounded-lg">
+                        {% endfor %}
+                        {% if section.link %}
+                            <div class="text-center">
+                                <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
+                                    En savoir plus
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center text-neutral-600">
+            <p>Aucune section définie pour cette page. Veuillez ajouter du contenu via le <a href="{% url 'tableau_de_bord' %}" class="text-primary-500 hover:underline">tableau de bord</a>.</p>
+        </div>
+    {% endif %}
+
+    <!-- Modal pour afficher les détails de la section -->
+    <div id="joinModal" class="modal">
+        <div class="modal-content">
+            <button class="return-btn">Retour</button>
+            <h3 id="modalTitle"></h3>
+            <p id="modalContent"></p>
+            <div id="modalImages" class="modal-images"></div>
+            <p id="noImagesMessage" style="color: #4B5563; display: none;">Aucune image associée à cette section.</p>
+            <div id="modalLink"></div>
+        </div>
+    </div>
+
+    <!-- Script pour gérer le modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('joinModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            const modalImages = document.getElementById('modalImages');
+            const modalLink = document.getElementById('modalLink');
+            const returnBtn = document.querySelector('.modal .return-btn');
+            const noImagesMessage = document.getElementById('noImagesMessage');
+
+            document.querySelectorAll('.section-container').forEach(section => {
+                section.addEventListener('click', function () {
+                    // Récupérer les données de la section
+                    const title = this.getAttribute('data-title');
+                    const content = this.getAttribute('data-content');
+                    const images = this.getAttribute('data-images');
+                    const link = this.getAttribute('data-link');
+
+                    // Remplir le modal
+                    modalTitle.textContent = title;
+                    modalContent.textContent = content;
+                    modalImages.innerHTML = '';
+                    modalLink.innerHTML = '';
+                    noImagesMessage.style.display = 'block';
+
+                    // Gestion des images
+                    if (images && images !== '|') {
+                        const imageArray = images.split('|').filter(url => url);
+                        if (imageArray.length > 0) {
+                            noImagesMessage.style.display = 'none';
+                            imageArray.forEach(url => {
+                                const img = document.createElement('img');
+                                img.src = url;
+                                img.alt = 'Image associée à la section';
+                                img.className = 'max-w-full h-auto rounded-lg shadow-md';
+                                modalImages.appendChild(img);
+                            });
+                        }
+                    }
+
+                    // Gestion du lien
+                    if (link) {
+                        modalLink.innerHTML = `<a href="${link}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">En savoir plus</a>`;
+                    }
+
+                    modal.style.display = 'flex';
+                });
+            });
+
+            // Fermer le modal avec le bouton Retour
+            returnBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // Fermer le modal en cliquant à l'extérieur
+            modal.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Fermer le modal avec la touche Échap
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+{% endblock %}

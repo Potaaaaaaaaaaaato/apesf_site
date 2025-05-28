@@ -19,7 +19,7 @@
         .unit-links {
             position: sticky;
             top: 100px;
-            padding-left: 30px;
+            padding-left: 30px; /* Retour au padding d'origine */
         }
         .unit-links a {
             display: block;
@@ -33,11 +33,14 @@
         .unit-links a:hover {
             color: #E84C3D;
             transform: scale(1.05);
-            background-color: #F3F4F6;
+            background-color: rgba(249, 180, 53, 0.2); /* Fond jaune pâle pour survol */
+            border: 1px solid #F9B435; /* Encadré jaune */
         }
         .unit-links a.active {
             color: #E84C3D;
             font-weight: 600;
+            background-color: rgba(249, 180, 53, 0.2); /* Fond jaune pâle pour actif */
+            border: 1px solid #F9B435; /* Encadré jaune */
         }
         .unit-links a.active::before {
             content: "•";
@@ -51,8 +54,8 @@
         }
         /* Style pour les sections */
         .section-container {
-            position: relative; /* Pour positionner l'icône */
-            cursor: pointer; /* Indique que la section est cliquable */
+            position: relative;
+            cursor: pointer;
         }
         .section-container .expand-icon {
             position: absolute;
@@ -67,13 +70,13 @@
         }
         /* Style pour le modal */
         .modal {
-            display: none; /* Caché par défaut */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Fond semi-transparent */
+            background-color: rgba(0, 0, 0, 0.5);
             z-index: 50;
             justify-content: center;
             align-items: center;
@@ -82,10 +85,10 @@
             background-color: #fff;
             padding: 24px;
             border-radius: 8px;
-            max-width: 800px; /* Augmenté pour accueillir des images plus grandes */
+            max-width: 800px;
             width: 90%;
-            max-height: 90vh; /* Légèrement augmenté pour plus d'espace */
-            overflow-y: auto; /* Permet de faire défiler si le contenu est trop long */
+            max-height: 90vh;
+            overflow-y: auto;
             position: relative;
         }
         .modal-content h3 {
@@ -104,15 +107,15 @@
             flex-wrap: wrap;
             gap: 12px;
             margin-top: 12px;
-            justify-content: center; /* Centre horizontalement */
-            align-items: center; /* Centre verticalement */
+            justify-content: center;
+            align-items: center;
         }
         .modal-content .modal-images img {
             max-width: 100%;
-            max-height: 400px; /* Hauteur augmentée pour des images plus lisibles */
+            max-height: 400px;
             width: auto;
             height: auto;
-            object-fit: contain; /* Évite de couper l'image */
+            object-fit: contain;
             border-radius: 4px;
         }
         .modal-content a {
@@ -151,7 +154,7 @@
                 font-size: 0.875rem;
             }
             .modal-content .modal-images img {
-                max-height: 300px; /* Hauteur augmentée pour mobile */
+                max-height: 300px;
             }
         }
     </style>

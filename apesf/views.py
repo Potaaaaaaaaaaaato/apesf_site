@@ -12,16 +12,16 @@ def accueil(request):
         page = PageContent.objects.get(slug='accueil')
     except PageContent.DoesNotExist:
         page = None
-    
+
     # Récupérer les 5 dernières images uploadées pour le carrousel
     carousel_images = UploadedImage.objects.all().order_by('-uploaded_at')[:5]
-    
+
     # Récupérer les 5 dernières actualités pour le carrousel d'actualités
     news_items = News.objects.prefetch_related('images').all().order_by('-date')[:5]
-    
+
     return render(request, 'accueil.html', {
-        'page': page, 
-        'carousel_images': carousel_images, 
+        'page': page,
+        'carousel_images': carousel_images,
         'news_items': news_items
     })
 
@@ -29,20 +29,20 @@ def accueil(request):
 def qui_sommes_nous(request):
     # Récupérer le paramètre 'unit' depuis l'URL
     selected_unit = request.GET.get('unit', '')
-    
+
     # Liste des unités disponibles
     valid_units = ['marmousets', 'angelus', 'placement_modulable', 'aemo_h', 'accueil_parental']
-    
+
     # Vérifier si l'unité sélectionnée est valide
     if selected_unit not in valid_units:
         selected_unit = ''
-    
+
     # Récupérer les sections pour l'unité sélectionnée
     if selected_unit:
         sections = Section.objects.filter(unit=selected_unit)
     else:
         sections = None
-    
+
     return render(request, 'qui_sommes_nous.html', {
         'selected_unit': selected_unit,
         'sections': sections,
@@ -55,11 +55,11 @@ def organisation(request):
         page = PageContent.objects.get(slug='organisation')
     except PageContent.DoesNotExist:
         page = None
-    
+
     # Récupérer les sections pour les organigrammes
     direction_sections = Section.objects.filter(page=page, organigram_type='direction')
     structure_sections = Section.objects.filter(page=page, organigram_type='structure')
-    
+
     return render(request, 'organisation.html', {
         'page': page,
         'direction_sections': direction_sections,
@@ -82,6 +82,14 @@ def dons(request):
     except PageContent.DoesNotExist:
         page = None
     return render(request, 'dons.html', {'page': page})
+
+# Page "Rejoignez-nous"
+def rejoignez_nous(request):
+    try:
+        page = PageContent.objects.get(slug='rejoignez-nous')
+    except PageContent.DoesNotExist:
+        page = None
+    return render(request, 'rejoignez_nous.html', {'page': page})
 
 # Page de connexion
 def connexion(request):
@@ -494,7 +502,7 @@ def offres_emplois(request):
         page = PageContent.objects.get(slug='offres-emplois')
     except PageContent.DoesNotExist:
         page = None
-    
+
     job_offers = JobOffer.objects.all()
     return render(request, 'offres_emplois.html', {'page': page, 'job_offers': job_offers})
 
@@ -577,12 +585,17 @@ def contact_view(request):
             print(f"Préparation de l'email - Objet : {subject_display}, Destinataires : {subject}")  # Log pour l'email
 
             email_body = f"""
-Nouveau message de contact
+Un message a été transmis via le formulaire de contact du site https://tristan-devaux.fr.
+Pour répondre, utilisez l’adresse e-mail indiquée dans le message.
+Attention : ne répondez pas directement à cet e-mail, votre réponse ne sera pas consultée.
+
+Contenu du message :
 
 Nom et prénom : {name}
-Email : {email}
+Adresse mail : {email}
 Objet : {subject_display}
 Message :
+
 {message_content}
 """
 

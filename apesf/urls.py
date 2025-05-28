@@ -31,4 +31,5 @@ urlpatterns = [
     path('offres-emplois/', views.offres_emplois, name='offres_emplois'),
     path('gerer-offres-emplois/', views.gerer_offres_emplois, name='gerer_offres_emplois'),
     path('modifier-offre-emploi/<int:job_id>/', views.modifier_offre_emploi, name='modifier_offre_emploi'),
+    path('rejoignez-nous/', views.rejoignez_nous, name='rejoignez_nous'),
 ]
