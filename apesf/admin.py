@@ -115,31 +115,23 @@ class UploadedImageAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'role')  # Champs dans la liste
-    list_filter = ('role',)  # Filtre par rôle
-    search_fields = ('user__username',)  # Recherche par nom d’utilisateur
-    ordering = ('user__username',)  # Trie par nom d’utilisateur
+    list_display = ('user', 'role', 'must_change_password', 'first_login_completed')  # Ajout des nouveaux champs
+    list_filter = ('role', 'must_change_password', 'first_login_completed')  # Filtres
+    search_fields = ('user__username',)
+    ordering = ('user__username',)
 
-    # Noms en français pour l'interface admin
-    verbose_name = "Profil utilisateur"
-    verbose_name_plural = "Profils utilisateurs"
+    # Actions personnalisées
+    actions = ['force_password_change', 'remove_password_change_requirement']
 
-    def has_view_or_change_permission(self, request, obj=None):
-        if not request.user.is_authenticated:
-            return False
-        if request.user.is_superuser:
-            return True
-        try:
-            profile = request.user.userprofile
-            return profile.role == 'superuser'  # Seuls les superusers peuvent voir/modifier les profils
-        except UserProfile.DoesNotExist:
-            return False
+    def force_password_change(self, request, queryset):
+        queryset.update(must_change_password=True)
+        self.message_user(request, f"{queryset.count()} utilisateur(s) devront changer leur mot de passe à la prochaine connexion.")
+    force_password_change.short_description = "Forcer le changement de mot de passe"
 
-    def has_add_permission(self, request):
-        return self.has_view_or_change_permission(request)
-
-    def has_delete_permission(self, request, obj=None):
-        return self.has_view_or_change_permission(request)
+    def remove_password_change_requirement(self, request, queryset):
+        queryset.update(must_change_password=False)
+        self.message_user(request, f"Exigence de changement de mot de passe supprimée pour {queryset.count()} utilisateur(s).")
+    remove_password_change_requirement.short_description = "Supprimer l'exigence de changement de mot de passe"
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):

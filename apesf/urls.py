@@ -34,4 +34,5 @@ urlpatterns = [
     path('rejoignez-nous/', views.rejoignez_nous, name='rejoignez_nous'),
     path('download-arborescence/', views.download_arborescence, name='download_arborescence'),
     path('gerer-fichier-arborescence/', views.gerer_fichier_arborescence, name='gerer_fichier_arborescence'),
+    path('forcer-changement-mot-de-passe/', views.forcer_changement_mot_de_passe, name='forcer_changement_mot_de_passe'),
 ]

@@ -28,20 +28,21 @@ class Section(models.Model):
         ('accueil_parental', 'Accueil parental'),
         ('', 'Aucune unité'),  # Option pour les sections générales
     ]
-    
+
     ORGANIGRAM_TYPE_CHOICES = [
         ('', 'Aucun'),
         ('direction', 'Direction'),
         ('structure', 'Structure'),
     ]
-    
+
     page = models.ForeignKey(PageContent, on_delete=models.CASCADE, related_name='sections', verbose_name="Page associée", null=True, blank=True)
     unit = models.CharField(max_length=50, choices=UNIT_CHOICES, default='', verbose_name="Unité associée", blank=True)
     organigram_type = models.CharField(max_length=50, choices=ORGANIGRAM_TYPE_CHOICES, default='', verbose_name="Type d'organigramme", blank=True)
     title = models.CharField(max_length=200, verbose_name="Titre")
     content = models.TextField(verbose_name="Contenu")
+    description = models.TextField(blank=True, null=True, verbose_name="Description pour l'organigramme", help_text="Description affichée dans le modal de l'organigramme entre l'image et le bouton de téléchargement")
     link = models.URLField(blank=True, null=True, verbose_name="Lien (optionnel)")
-    order = models.PositiveIntegerField(default=0, verbose_name="Ordre d’affichage")
+    order = models.PositiveIntegerField(default=0, verbose_name="Ordre d'affichage")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Date de mise à jour")
 
@@ -60,7 +61,7 @@ class Section(models.Model):
 # Modèle pour les images uploadées (associées à une section ou une actualité)
 class UploadedImage(models.Model):
     image = models.ImageField(upload_to='uploads/', verbose_name="Image")
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d’upload")
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d'ajout")
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='images', null=True, blank=True, verbose_name="Section associée")
     news = models.ForeignKey('News', on_delete=models.CASCADE, related_name='images', null=True, blank=True, verbose_name="Actualité associée")
 
@@ -83,6 +84,19 @@ class UserProfile(models.Model):
         ('admin', 'Administrateur (Peut créer, modifier et supprimer du contenu. Aucun accès aux actions irréversibles comme la suppression des utilisateurs.)'),
         ('viewer', 'Lecteur (Accès en lecture et modification mineure du texte. Aucun pouvoir sur la structure ou les utilisateurs.)'),
     ], verbose_name="Rôle")
+
+    # NOUVEAU CHAMP pour forcer le changement de mot de passe
+    must_change_password = models.BooleanField(
+        default=True,
+        verbose_name="Doit changer le mot de passe",
+        help_text="Si coché, l'utilisateur sera obligé de changer son mot de passe à la prochaine connexion"
+    )
+
+    # NOUVEAU CHAMP pour tracer la première connexion
+    first_login_completed = models.BooleanField(
+        default=False,
+        verbose_name="Première connexion effectuée"
+    )
 
     class Meta:
         verbose_name = "Profil utilisateur"

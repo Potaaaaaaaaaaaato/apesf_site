@@ -1,13 +1,15 @@
 from django.core.mail import EmailMessage
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import ContactMessage, ContactMessageAttachment, JobOffer, PageContent, Partner, Section, UploadedImage, News
+from .models import ContactMessage, ContactMessageAttachment, JobOffer, PageContent, Partner, Section, UploadedImage, \
+    News, UserProfile
 from .forms import ContactForm, JobOfferForm, PageContentForm, SectionForm, UploadedImageForm, NewsForm
 from .models import ArborescenceFile
 from .forms import ArborescenceFileForm
+from .forms import ForcePasswordChangeForm
 
 # Page d'accueil
 def accueil(request):
@@ -102,6 +104,18 @@ def connexion(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+
+            # NOUVELLE LOGIQUE : Vérifier si l'utilisateur doit changer son mot de passe
+            try:
+                profile = user.userprofile
+                if profile.must_change_password:
+                    messages.warning(request, "Pour des raisons de sécurité, vous devez changer votre mot de passe avant de continuer.")
+                    return redirect('forcer_changement_mot_de_passe')
+            except UserProfile.DoesNotExist:
+                # Si pas de profil, en créer un avec changement de mot de passe obligatoire
+                UserProfile.objects.create(user=user, role='viewer', must_change_password=True)
+                return redirect('forcer_changement_mot_de_passe')
+
             return redirect('tableau_de_bord')
         else:
             return render(request, 'connexion.html', {'error': 'Identifiants incorrects, veuillez réessayer.'})
@@ -711,3 +725,40 @@ def gerer_fichier_arborescence(request):
         'form': form,
         'arborescence': arborescence
     })
+
+# NOUVELLE VUE : Forcer le changement de mot de passe
+@login_required
+def forcer_changement_mot_de_passe(request):
+    """Vue pour forcer l'utilisateur à changer son mot de passe"""
+
+    # Vérifier si l'utilisateur doit vraiment changer son mot de passe
+    try:
+        profile = request.user.userprofile
+        if not profile.must_change_password:
+            return redirect('tableau_de_bord')
+    except UserProfile.DoesNotExist:
+        # Créer un profil s'il n'existe pas
+        profile = UserProfile.objects.create(
+            user=request.user,
+            role='viewer',
+            must_change_password=True
+        )
+
+    if request.method == 'POST':
+        form = ForcePasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Mettre à jour la session pour éviter la déconnexion
+            update_session_auth_hash(request, user)
+
+            # Marquer que l'utilisateur a changé son mot de passe
+            profile.must_change_password = False
+            profile.first_login_completed = True
+            profile.save()
+
+            messages.success(request, "Votre mot de passe a été changé avec succès ! Vous pouvez maintenant accéder au tableau de bord.")
+            return redirect('tableau_de_bord')
+    else:
+        form = ForcePasswordChangeForm(request.user)
+
+    return render(request, 'forcer_changement_mot_de_passe.html', {'form': form})

@@ -1,6 +1,7 @@
 from django import forms
 from .models import JobOffer, News, PageContent, Section, UploadedImage, ContactMessage, ContactMessageAttachment
 from .models import ArborescenceFile
+from django.contrib.auth.forms import PasswordChangeForm
 
 class PageContentForm(forms.ModelForm):
     class Meta:
@@ -159,3 +160,26 @@ class ArborescenceFileForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Description optionnelle'}),
             'file': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.doc,.docx,.txt'})
         }
+
+class ForcePasswordChangeForm(PasswordChangeForm):
+    """Formulaire pour forcer le changement de mot de passe"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].widget.attrs.update({
+            'class': 'w-full mt-1 p-2 border rounded-lg focus:ring-primary-500 focus:border-primary-500',
+            'placeholder': 'Votre mot de passe actuel'
+        })
+        self.fields['new_password1'].widget.attrs.update({
+            'class': 'w-full mt-1 p-2 border rounded-lg focus:ring-primary-500 focus:border-primary-500',
+            'placeholder': 'Nouveau mot de passe'
+        })
+        self.fields['new_password2'].widget.attrs.update({
+            'class': 'w-full mt-1 p-2 border rounded-lg focus:ring-primary-500 focus:border-primary-500',
+            'placeholder': 'Confirmez le nouveau mot de passe'
+        })
+
+        # Labels en français
+        self.fields['old_password'].label = "Mot de passe actuel"
+        self.fields['new_password1'].label = "Nouveau mot de passe"
+        self.fields['new_password2'].label = "Confirmez le nouveau mot de passe"

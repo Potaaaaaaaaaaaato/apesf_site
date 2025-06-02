@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="container mx-auto px-6">
-        <p class="text-neutral-600 mb-8 text-center">Rejoignez notre équipe ! Découvrez nos offres d’emploi et postulez directement en envoyant votre candidature par email.</p>
+        <p class="text-neutral-600 mb-8 text-center">Rejoignez notre équipe ! Découvrez nos offres d'emploi et postulez directement en envoyant votre candidature par email.</p>
 
         {% if job_offers %}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -48,7 +48,7 @@
                         {% if job.document %}
                             <p class="text-sm text-gray-500 mb-2 flex items-center">
                                 <i class="bi bi-file-earmark mr-2"></i>
-                                Détails de l’offre :
+                                Détails de l'offre :
                                 <a href="{{ job.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ job.document.name|cut:"job_documents/" }}</a>
                             </p>
                         {% endif %}
@@ -62,7 +62,7 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-neutral-600 mb-4 text-center">Aucune offre d’emploi disponible pour le moment. Revenez bientôt !</p>
+            <p class="text-neutral-600 mb-4 text-center">Aucune offre d'emploi disponible pour le moment. Revenez bientôt !</p>
         {% endif %}
     </div>
 
@@ -150,6 +150,21 @@
         .modal-content .return-btn:hover {
             color: #E84C3D;
         }
+        /* Style spécifique pour le bouton Postuler dans le modal */
+        .modal-apply-btn {
+            background-color: #1B4F72 !important;
+            color: white !important;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none !important;
+            display: inline-block;
+            margin-top: 16px;
+            transition: all 0.3s ease;
+        }
+        .modal-apply-btn:hover {
+            background-color: #2C3E50 !important;
+            transform: scale(1.05);
+        }
         @media (max-width: 768px) {
             .modal-content {
                 width: 95%;
@@ -197,12 +212,12 @@
                     // Gestion du document
                     if (documentData) {
                         const [url, name] = documentData.split('|');
-                        modalDocument.innerHTML = `<p>Détails de l’offre : <a href="${url}" target="_blank" class="text-primary-500 hover:underline">${name}</a></p>`;
+                        modalDocument.innerHTML = `<p>Détails de l'offre : <a href="${url}" target="_blank" class="text-primary-500 hover:underline">${name}</a></p>`;
                     }
 
-                    // Gestion du bouton Postuler
+                    // Gestion du bouton Postuler avec la classe CSS spécifique
                     if (email) {
-                        modalApply.innerHTML = `<a href="mailto:${email}?subject=Candidature pour ${title}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors">Postuler à cette offre</a>`;
+                        modalApply.innerHTML = `<a href="mailto:${email}?subject=Candidature pour ${title}" class="modal-apply-btn">Postuler à cette offre</a>`;
                     }
 
                     modal.style.display = 'flex';

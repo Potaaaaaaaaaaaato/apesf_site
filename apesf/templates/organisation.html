@@ -118,19 +118,21 @@
         .modal-content .return-btn:hover {
             color: #E84C3D;
         }
-        /* Style pour le bouton de téléchargement - respecte le design existant */
+        /* Style pour le bouton de téléchargement - respecte le design existant et CENTRÉ */
         .download-btn {
-            display: inline-block;
+            display: block; /* Changé de inline-block à block */
             background-color: #1B4F72; /* Couleur primary-500 du site */
             color: white;
             padding: 12px 24px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 500;
-            margin-top: 16px;
+            margin: 16px auto 0 auto; /* Centrage avec margin auto */
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-align: center; /* Centre le texte dans le bouton */
+            width: fit-content; /* La largeur s'adapte au contenu */
         }
         .download-btn:hover {
             background-color: #15406b; /* Couleur primary-600 du site */
