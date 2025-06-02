@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Gérer le fichier d'arborescence{% endblock %}
+{% block content %}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-primary-500">Gérer le fichier d'arborescence</h1>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-primary-500 mb-4">
+                {% if arborescence %}Modifier le fichier existant{% else %}Ajouter un nouveau fichier{% endif %}
+            </h2>
+
+            {% if arborescence %}
+                <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-4">
+                    <p><strong>Fichier actuel :</strong> {{ arborescence.title }}</p>
+                    <p><strong>Uploadé le :</strong> {{ arborescence.uploaded_at|date:"d/m/Y à H:i" }}</p>
+                    {% if arborescence.description %}
+                        <p><strong>Description :</strong> {{ arborescence.description }}</p>
+                    {% endif %}
+                    <a href="{{ arborescence.file.url }}" class="text-primary-500 hover:underline" target="_blank">
+                        <i class="bi bi-download"></i> Télécharger le fichier actuel
+                    </a>
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Titre</label>
+                    {{ form.title }}
+                </div>
+                <div class="mb-4">
+                    <label for="{{ form.file.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Fichier</label>
+                    {{ form.file }}
+                    <p class="text-sm text-gray-500 mt-1">Formats acceptés : PDF, DOC, DOCX, TXT</p>
+                </div>
+                <div class="mb-4">
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">Description (optionnel)</label>
+                    {{ form.description }}
+                </div>
+                <div class="flex gap-4">
+                    <button type="submit" class="bg-primary-500 text-white px-6 py-2 rounded hover:bg-primary-600 transition-colors">
+                        {% if arborescence %}Mettre à jour{% else %}Ajouter{% endif %}
+                    </button>
+                    <a href="{% url 'tableau_de_bord' %}" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition-colors">Retour</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
