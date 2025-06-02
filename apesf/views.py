@@ -1,10 +1,13 @@
 from django.core.mail import EmailMessage
+from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import ContactMessage, ContactMessageAttachment, JobOffer, PageContent, Partner, Section, UploadedImage, News
 from .forms import ContactForm, JobOfferForm, PageContentForm, SectionForm, UploadedImageForm, NewsForm
+from .models import ArborescenceFile
+from .forms import ArborescenceFileForm
 
 # Page d'accueil
 def accueil(request):
@@ -564,29 +567,46 @@ def contact_view(request):
 
     if request.method == 'POST':
         form = ContactForm(request.POST, request.FILES, initial_subject=initial_subject)
-        print("Formulaire soumis, validation en cours...")  # Log pour confirmer la soumission
+        print("Formulaire soumis, validation en cours...")
+
         if form.is_valid():
-            print("Formulaire valide, enregistrement du message...")  # Log pour la validation
+            print("Formulaire valide, enregistrement du message...")
             contact_message = form.save()
 
-            for key, file in request.FILES.items():
-                if key.startswith('attachment_'):
-                    print(f"Enregistrement de la pièce jointe : {key}")  # Log pour les pièces jointes
-                    ContactMessageAttachment.objects.create(
+            # Traitement des pièces jointes du formulaire
+            attachments_added = []
+            for i in range(1, 4):  # Pour les 3 champs de pièces jointes
+                field_name = f'attachment_{i}'
+                file = form.cleaned_data.get(field_name)
+                if file:
+                    print(f"Enregistrement de la pièce jointe : {field_name} - {file.name}")
+                    attachment = ContactMessageAttachment.objects.create(
                         contact_message=contact_message,
                         file=file
                     )
+                    attachments_added.append(attachment)
+
+            # Traitement des pièces jointes dynamiques (JavaScript)
+            for key, file in request.FILES.items():
+                if key.startswith('attachment_') and key not in [f'attachment_{i}' for i in range(1, 4)]:
+                    print(f"Enregistrement de la pièce jointe dynamique : {key} - {file.name}")
+                    attachment = ContactMessageAttachment.objects.create(
+                        contact_message=contact_message,
+                        file=file
+                    )
+                    attachments_added.append(attachment)
 
             name = form.cleaned_data.get('name')
             email = form.cleaned_data.get('email')
             subject = form.cleaned_data.get('subject')
             message_content = form.cleaned_data.get('message')
             subject_display = dict(form.fields['subject'].choices).get(subject, subject)
-            print(f"Préparation de l'email - Objet : {subject_display}, Destinataires : {subject}")  # Log pour l'email
+            print(f"Préparation de l'email - Objet : {subject_display}")
 
+            # Corps de l'email
             email_body = f"""
 Un message a été transmis via le formulaire de contact du site https://tristan-devaux.fr.
-Pour répondre, utilisez l’adresse e-mail indiquée dans le message.
+Pour répondre, utilisez l'adresse e-mail indiquée dans le message.
 Attention : ne répondez pas directement à cet e-mail, votre réponse ne sera pas consultée.
 
 Contenu du message :
@@ -597,38 +617,97 @@ Objet : {subject_display}
 Message :
 
 {message_content}
+
+{f"Nombre de pièces jointes : {len(attachments_added)}" if attachments_added else "Aucune pièce jointe"}
 """
 
-            recipients = ['tristandevaux6@gmail.com'] if subject in ['partenariat', 'don'] else ['tristandevaux6@gmail.com', 'tristandevaux6@gmail.com']
-            print(f"Destinataires choisis : {recipients}")  # Log pour les destinataires
+            # Définir les destinataires
+            recipients = ['tristandevaux6@gmail.com'] if subject in ['partenariat', 'don'] else ['tristandevaux6@gmail.com']
+            print(f"Destinataires choisis : {recipients}")
 
-            email = EmailMessage(
+            # Créer l'email
+            email_message = EmailMessage(
                 subject=f"[APESF] {subject_display}",
                 body=email_body,
-                from_email='ton_email@gmail.com',
+                from_email='ton_email@gmail.com',  # Remplacez par votre vrai email
                 to=recipients,
                 reply_to=[email],
             )
 
-            for attachment in contact_message.attachments.all():
-                with attachment.file.open('rb') as f:
-                    print(f"Attachement de : {attachment.file.name}")  # Log pour les pièces jointes
-                    email.attach(attachment.file.name, f.read(), attachment.file.content_type)
+            # Ajouter les pièces jointes
+            for attachment in attachments_added:
+                try:
+                    with attachment.file.open('rb') as f:
+                        print(f"Ajout de la pièce jointe : {attachment.file.name}")
+
+                        # Déterminer le type MIME
+                        import mimetypes
+                        mime_type, _ = mimetypes.guess_type(attachment.file.name)
+                        if mime_type is None:
+                            mime_type = 'application/octet-stream'
+
+                        email_message.attach(
+                            attachment.file.name.split('/')[-1],  # Nom du fichier seulement
+                            f.read(),
+                            mime_type
+                        )
+                except Exception as e:
+                    print(f"Erreur lors de l'ajout de la pièce jointe {attachment.file.name} : {str(e)}")
 
             try:
-                print("Tentative d'envoi de l'email...")  # Log avant envoi
-                email.send()
-                print("Email envoyé avec succès aux destinataires : {}".format(recipients))
-                messages.success(request, "Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.")
+                print("Tentative d'envoi de l'email...")
+                email_message.send()
+                print(f"Email envoyé avec succès aux destinataires : {recipients}")
+                success_message = "Votre message a été envoyé avec succès !"
+                if attachments_added:
+                    success_message += f" {len(attachments_added)} pièce(s) jointe(s) incluse(s)."
+                success_message += " Nous vous répondrons dans les plus brefs délais."
+                messages.success(request, success_message)
             except Exception as e:
                 print(f"Erreur lors de l'envoi de l'email : {str(e)}")
                 messages.error(request, f"Une erreur est survenue lors de l'envoi de votre message : {str(e)}")
 
             return redirect('contact')
         else:
-            print("Formulaire non valide, erreurs : {}".format(form.errors))  # Log pour les erreurs de validation
+            print("Formulaire non valide, erreurs : {}".format(form.errors))
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
         form = ContactForm(initial={'subject': initial_subject})
 
     return render(request, 'contact.html', {'page': page, 'form': form})
+
+@login_required
+def download_arborescence(request):
+    """Vue pour télécharger le fichier d'arborescence"""
+    try:
+        # Récupérer le fichier le plus récent
+        arborescence = ArborescenceFile.objects.latest('uploaded_at')
+        return FileResponse(
+            arborescence.file.open(),
+            as_attachment=True,
+            filename=f"arborescence_conseil_administration.{arborescence.file.name.split('.')[-1]}"
+        )
+    except ArborescenceFile.DoesNotExist:
+        raise Http404("Aucun fichier d'arborescence disponible")
+
+@login_required
+def gerer_fichier_arborescence(request):
+    """Vue pour gérer le fichier d'arborescence"""
+    try:
+        arborescence = ArborescenceFile.objects.latest('uploaded_at')
+    except ArborescenceFile.DoesNotExist:
+        arborescence = None
+
+    if request.method == 'POST':
+        form = ArborescenceFileForm(request.POST, request.FILES, instance=arborescence)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Fichier d\'arborescence mis à jour avec succès!')
+            return redirect('gerer_fichier_arborescence')
+    else:
+        form = ArborescenceFileForm(instance=arborescence)
+
+    return render(request, 'gerer-fichier-arborescence.html', {
+        'form': form,
+        'arborescence': arborescence
+    })

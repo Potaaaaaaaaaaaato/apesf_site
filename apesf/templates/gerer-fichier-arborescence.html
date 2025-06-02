@@ -24,8 +24,8 @@
                     {% if arborescence.description %}
                         <p><strong>Description :</strong> {{ arborescence.description }}</p>
                     {% endif %}
-                    <a href="{{ arborescence.file.url }}" class="text-primary-500 hover:underline" target="_blank">
-                        <i class="bi bi-download"></i> Télécharger le fichier actuel
+                    <a href="{{ arborescence.file.url }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors mt-2" target="_blank">
+                        Télécharger le fichier actuel
                     </a>
                 </div>
             {% endif %}

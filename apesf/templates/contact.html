@@ -11,119 +11,157 @@
     <meta property="og:type" content="website">
 {% endblock %}
 {% block content %}
-<!-- Titre principal et phrase explicative -->
-<div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-primary-500">Contact</h1>
-    <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto">
-        Vous avez une question ou souhaitez nous contacter ? Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.
-    </p>
-    <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto">
-        Vous pouvez également prendre contact avec l'association par mail : <a href="mailto:accueil-angelus@apesf.fr">accueil-angelus@apesf.fr</a> & <a href="mailto:accueil-marmousets@apesf.fr">accueil-marmousets@apesf.fr</a>
-    </p>
-</div>
-
-<!-- Sections dynamiques -->
-{% if page %}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        {% for section in page.sections.all %}
-            <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
-                <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
-                <p class="text-neutral-600 mb-4">{{ section.content }}</p>
-                {% if section.link %}
-                    <div class="text-center">
-                        <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
-                            En savoir plus
-                        </a>
-                    </div>
-                {% endif %}
-                {% for image in section.images.all %}
-                    <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
-                {% endfor %}
-            </div>
-        {% endfor %}
+    <!-- Titre principal et phrase explicative -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-primary-500">Contact</h1>
+        <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto">
+            Vous avez une question ou souhaitez nous contacter ? Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.
+        </p>
+        <p class="text-lg text-neutral-600 mt-4 max-w-2xl mx-auto">
+            Vous pouvez également prendre contact avec l'association par mail : <a href="mailto:accueil-angelus@apesf.fr">accueil-angelus@apesf.fr</a> & <a href="mailto:accueil-marmousets@apesf.fr">accueil-marmousets@apesf.fr</a>
+        </p>
     </div>
-{% endif %}
 
-<!-- Formulaire de contact -->
-<div class="mx-auto max-w-4xl px-6 bg-white shadow-lg rounded-lg p-10">
-    <h2 class="text-2xl font-semibold text-primary-500 mb-8 text-center">Envoyez-nous un message</h2>
-    {% if messages %}
-        {% for message in messages %}
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    <form method="post" enctype="multipart/form-data" class="space-y-10">
-        {% csrf_token %}
-        <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
-            <label for="id_name" class="block text-sm font-medium text-gray-700 mb-2">Veuillez indiquer votre nom et prénom :</label>
-            {{ form.name }}
-        </div>
-        <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
-            <label for="id_email" class="block text-sm font-medium text-gray-700 mb-2">Veuillez indiquer votre adresse mail :</label>
-            {{ form.email }}
-        </div>
-        <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
-            <label for="id_subject" class="block text-sm font-medium text-gray-700 mb-2">Objet de votre message :</label>
-            {{ form.subject }}
-        </div>
-        <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
-            <label for="id_message" class="block text-sm font-medium text-gray-700 mb-2">Quel est votre message ?</label>
-            {{ form.message }}
-        </div>
-        <!-- Conteneur pour les champs de fichier dynamiques -->
-        <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Joindre des fichiers (CV, lettre de motivation, etc.) :</label>
-            <div id="file-inputs" class="space-y-4">
-                <!-- Premier champ de fichier (toujours présent) -->
-                <div class="file-input-group flex items-center space-x-2">
-                    <input type="file" name="attachment_1" class="w-full p-3 border border-neutral-600 rounded-lg">
-                    <button type="button" class="remove-file bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" style="display: none;">−</button>
+    <!-- Sections dynamiques -->
+    {% if page %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {% for section in page.sections.all %}
+                <div class="bg-white shadow-lg rounded-lg p-6 transform hover:scale-105 transition-transform">
+                    <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
+                    <p class="text-neutral-600 mb-4">{{ section.content }}</p>
+                    {% if section.link %}
+                        <div class="text-center">
+                            <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
+                                En savoir plus
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% for image in section.images.all %}
+                        <img src="{{ image.image.url }}" alt="Image" class="mt-4 w-full rounded-lg">
+                    {% endfor %}
                 </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Formulaire de contact -->
+    <div class="mx-auto max-w-4xl px-6 bg-white shadow-lg rounded-lg p-10">
+        <h2 class="text-2xl font-semibold text-primary-500 mb-8 text-center">Envoyez-nous un message</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}bg-red-100 border-l-4 border-red-500 text-red-700{% else %}bg-green-100 border-l-4 border-green-500 text-green-700{% endif %} p-4 mb-4 rounded">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Affichage des erreurs de formulaire -->
+        {% if form.errors %}
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+                <p><strong>Erreurs dans le formulaire :</strong></p>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field|capfirst }} : {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
             </div>
-            <!-- Bouton pour ajouter un nouveau champ -->
-            <button type="button" id="add-file" class="mt-4 bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">+ Ajouter un fichier</button>
-        </div>
-        <!-- Conteneur séparé pour le bouton -->
-        <div class="mt-12 pt-6 border-t border-gray-200 text-center">
-            <button type="submit" class="bg-secondary-500 text-white px-8 py-3 rounded-lg hover:bg-primary-500 hover:scale-105 transition-all">
-                Envoyer
-            </button>
-        </div>
-    </form>
-</div>
+        {% endif %}
 
-<!-- JavaScript pour gérer les champs dynamiques -->
-<script>
-document.getElementById('add-file').addEventListener('click', function() {
-    const fileInputs = document.getElementById('file-inputs');
-    const count = fileInputs.getElementsByClassName('file-input-group').length + 1;
-    
-    const div = document.createElement('div');
-    div.className = 'file-input-group flex items-center space-x-2';
-    
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.name = 'attachment_' + count;
-    input.className = 'w-full p-3 border border-neutral-600 rounded-lg';
-    
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
-    removeButton.className = 'remove-file bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600';
-    removeButton.textContent = '−';
-    removeButton.addEventListener('click', function() {
-        div.remove();
-    });
-    
-    div.appendChild(input);
-    div.appendChild(removeButton);
-    fileInputs.appendChild(div);
-});
+        <form method="post" enctype="multipart/form-data" class="space-y-10">
+            {% csrf_token %}
+            <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
+                <label for="id_name" class="block text-sm font-medium text-gray-700 mb-2">Veuillez indiquer votre nom et prénom :</label>
+                {{ form.name }}
+            </div>
+            <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
+                <label for="id_email" class="block text-sm font-medium text-gray-700 mb-2">Veuillez indiquer votre adresse mail :</label>
+                {{ form.email }}
+            </div>
+            <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
+                <label for="id_subject" class="block text-sm font-medium text-gray-700 mb-2">Objet de votre message :</label>
+                {{ form.subject }}
+            </div>
+            <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
+                <label for="id_message" class="block text-sm font-medium text-gray-700 mb-2">Quel est votre message ?</label>
+                {{ form.message }}
+            </div>
 
-// Afficher le bouton de suppression pour les champs ajoutés dynamiquement
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('remove-file')) {
-        e.target.parentElement.remove();
-    }
-});
-</script>
+            <!-- Section pièces jointes -->
+            <div class="bg-white border border-gray-200 shadow-md rounded-lg p-6">
+                <label class="block text-sm font-medium text-gray-700 mb-4">Joindre des fichiers (CV, lettre de motivation, etc.) :</label>
+                <p class="text-sm text-gray-500 mb-4">Formats autorisés : PDF, DOC, DOCX, TXT, JPG, JPEG, PNG (max 10MB par fichier)</p>
+
+                <div class="space-y-4">
+                    <!-- Champs de pièces jointes fixes -->
+                    <div class="file-input-group">
+                        <label for="id_attachment_1" class="block text-sm text-gray-600 mb-1">Fichier 1 :</label>
+                        {{ form.attachment_1 }}
+                    </div>
+                    <div class="file-input-group">
+                        <label for="id_attachment_2" class="block text-sm text-gray-600 mb-1">Fichier 2 :</label>
+                        {{ form.attachment_2 }}
+                    </div>
+                    <div class="file-input-group">
+                        <label for="id_attachment_3" class="block text-sm text-gray-600 mb-1">Fichier 3 :</label>
+                        {{ form.attachment_3 }}
+                    </div>
+                </div>
+
+                <!-- Conteneur pour les champs dynamiques supplémentaires -->
+                <div id="dynamic-file-inputs" class="space-y-4 mt-4"></div>
+
+                <!-- Bouton pour ajouter plus de fichiers -->
+                <button type="button" id="add-more-files" class="mt-4 bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
+                    + Ajouter plus de fichiers
+                </button>
+            </div>
+
+            <!-- Bouton d'envoi -->
+            <div class="mt-12 pt-6 border-t border-gray-200 text-center">
+                <button type="submit" class="bg-secondary-500 text-white px-8 py-3 rounded-lg hover:bg-primary-500 hover:scale-105 transition-all">
+                    Envoyer
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript pour gérer les champs dynamiques -->
+    <script>
+        let fileCounter = 4; // Commence après les 3 champs fixes
+
+        document.getElementById('add-more-files').addEventListener('click', function() {
+            const dynamicContainer = document.getElementById('dynamic-file-inputs');
+
+            const div = document.createElement('div');
+            div.className = 'file-input-group flex items-center space-x-2';
+
+            const label = document.createElement('label');
+            label.textContent = `Fichier ${fileCounter} :`;
+            label.className = 'block text-sm text-gray-600 min-w-0 flex-shrink-0';
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.name = `attachment_${fileCounter}`;
+            input.className = 'w-full p-3 border border-neutral-600 rounded-lg';
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 flex-shrink-0';
+            removeButton.textContent = 'Supprimer';
+            removeButton.addEventListener('click', function() {
+                div.remove();
+            });
+
+            const inputContainer = document.createElement('div');
+            inputContainer.className = 'flex-1';
+            inputContainer.appendChild(label);
+            inputContainer.appendChild(input);
+
+            div.appendChild(inputContainer);
+            div.appendChild(removeButton);
+            dynamicContainer.appendChild(div);
+
+            fileCounter++;
+        });
+    </script>
 {% endblock %}

@@ -74,8 +74,13 @@
         <!-- Gestion des organigrammes -->
         <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des organigrammes</h2>
         <p class="text-neutral-600 mb-4">Gérez les sections pour les organigrammes de la direction et de la structure affichés sur la page "Organisation".</p>
-        <div class="text-center">
-            <a href="{% url 'gerer_organigrammes' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all mb-8">Gérer les organigrammes</a>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <a href="{% url 'gerer_organigrammes' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all text-center">
+                Gérer les organigrammes
+            </a>
+            <a href="{% url 'gerer_fichier_arborescence' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all text-center">
+                Modifier le fichier lié
+            </a>
         </div>
 
         <!-- Gestion des actualités -->

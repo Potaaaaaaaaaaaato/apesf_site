@@ -32,4 +32,6 @@ urlpatterns = [
     path('gerer-offres-emplois/', views.gerer_offres_emplois, name='gerer_offres_emplois'),
     path('modifier-offre-emploi/<int:job_id>/', views.modifier_offre_emploi, name='modifier_offre_emploi'),
     path('rejoignez-nous/', views.rejoignez_nous, name='rejoignez_nous'),
+    path('download-arborescence/', views.download_arborescence, name='download_arborescence'),
+    path('gerer-fichier-arborescence/', views.gerer_fichier_arborescence, name='gerer_fichier_arborescence'),
 ]

@@ -184,3 +184,17 @@ class JobOffer(models.Model):
 
     class Meta:
         ordering = ['-posted_date']
+
+# Modèle pour gérer les fichiers liés aux arborescences
+class ArborescenceFile(models.Model):
+    title = models.CharField(max_length=200, default="Arborescence du conseil d'administration")
+    file = models.FileField(upload_to='arborescence/', help_text="Fichier contenant l'arborescence du conseil d'administration")
+    uploaded_at = models.DateTimeField(auto_now=True)
+    description = models.TextField(blank=True, help_text="Description du fichier")
+
+    class Meta:
+        verbose_name = "Fichier d'arborescence"
+        verbose_name_plural = "Fichiers d'arborescence"
+
+    def __str__(self):
+        return self.title

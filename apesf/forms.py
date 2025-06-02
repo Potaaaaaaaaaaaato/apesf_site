@@ -1,5 +1,6 @@
 from django import forms
-from .models import JobOffer, News, PageContent, Section, UploadedImage, ContactMessage
+from .models import JobOffer, News, PageContent, Section, UploadedImage, ContactMessage, ContactMessageAttachment
+from .models import ArborescenceFile
 
 class PageContentForm(forms.ModelForm):
     class Meta:
@@ -70,7 +71,7 @@ class ContactForm(forms.ModelForm):
         ('', 'Choisissez un sujet'),
         ('question', 'Question générale'),
         ('partenariat', 'Demande de partenariat'),
-        ('adhesion', 'Adhésion à l’association'),
+        ('adhesion', 'Adhésion à l\'association'),
         ('don', 'Faire un don'),
         ('stage', 'Demande de stage'),
         ('candidature', 'Candidature spontanée'),
@@ -85,11 +86,45 @@ class ContactForm(forms.ModelForm):
         required=True
     )
 
+    # Ajout de champs pour les pièces jointes (optionnels)
+    attachment_1 = forms.FileField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg'})
+    )
+    attachment_2 = forms.FileField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg'})
+    )
+    attachment_3 = forms.FileField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg'})
+    )
+
     def __init__(self, *args, **kwargs):
         initial_subject = kwargs.pop('initial_subject', '')
         super().__init__(*args, **kwargs)
         if initial_subject:
             self.fields['subject'].initial = initial_subject
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Validation des fichiers (taille, type, etc.)
+        for i in range(1, 4):
+            field_name = f'attachment_{i}'
+            file = cleaned_data.get(field_name)
+            if file:
+                # Vérifier la taille du fichier (max 10MB)
+                if file.size > 10 * 1024 * 1024:
+                    raise forms.ValidationError(f"Le fichier {file.name} est trop volumineux (max 10MB).")
+
+                # Vérifier les extensions autorisées
+                allowed_extensions = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.jpeg', '.png']
+                file_extension = file.name.lower().split('.')[-1]
+                if f'.{file_extension}' not in allowed_extensions:
+                    raise forms.ValidationError(f"Type de fichier non autorisé pour {file.name}. Extensions autorisées: {', '.join(allowed_extensions)}")
+
+        return cleaned_data
 
 class NewsForm(forms.ModelForm):
     class Meta:
@@ -113,4 +148,14 @@ class JobOfferForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'w-full p-2 border rounded', 'rows': 5}),
             'email_contact': forms.EmailInput(attrs={'class': 'w-full p-2 border rounded'}),
             'document': forms.ClearableFileInput(attrs={'class': 'w-full p-2 border rounded'}),
+        }
+
+class ArborescenceFileForm(forms.ModelForm):
+    class Meta:
+        model = ArborescenceFile
+        fields = ['title', 'file', 'description']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Titre du fichier'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Description optionnelle'}),
+            'file': forms.FileInput(attrs={'class': 'form-control', 'accept': '.pdf,.doc,.docx,.txt'})
         }
