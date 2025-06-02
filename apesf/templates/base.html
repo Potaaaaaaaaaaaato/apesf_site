@@ -39,6 +39,7 @@
             overflow: visible;
             margin: 0;
             padding: 0;
+            position: relative; /* Nécessaire pour le positionnement absolu des fleurs */
         }
 
         /* Ajuster le main pour éviter chevauchement avec la navbar */
@@ -92,29 +93,28 @@
         /* STYLES POUR LES FLEURS DYNAMIQUES */
         /* ======================== */
         .dynamic-flower {
-            position: fixed;
+            position: absolute; /* Changé de fixed à absolute */
             z-index: 5;
             pointer-events: none;
             opacity: 0.7;
             transition: opacity 0.3s ease;
-            width: 80px;
-            height: 80px;
+            width: 240px;  /* 80px × 3 = 240px */
+            height: 240px; /* 80px × 3 = 240px */
         }
 
         .dynamic-flower.top-left {
-            top: 100px;
+            top: 20px; /* Remonté de 180px à 100px */
             left: 20px;
         }
 
         .dynamic-flower.top-right {
-            top: 100px;
+            top: 20px; /* Remonté de 180px à 100px */
             right: 20px;
         }
 
         @media (max-width: 768px) {
             .dynamic-flower {
-                width: 60px;
-                height: 60px;
+                display: none; /* Masquer complètement les fleurs sur mobile */
             }
         }
     </style>
@@ -126,7 +126,7 @@
         <!-- Logo -->
         <div>
             <a href="{% url 'accueil' %}">
-                <img src="{% static 'images/logo.png' %}" alt="Logo APESF" class="h-12">
+                <img src="{% static 'images/logo_navbar.png' %}" alt="Logo APESF" class="h-12">
             </a>
         </div>
 
@@ -305,6 +305,8 @@
                 '{% static "images/fleurs/fleur1.png" %}',
                 '{% static "images/fleurs/fleur2.png" %}',
                 '{% static "images/fleurs/fleur3.png" %}',
+                '{% static "images/fleurs/fleur4.png" %}',
+                '{% static "images/fleurs/fleur5.png" %}',
             ];
 
             // Positions pour les fleurs (seulement haut gauche et haut droite)
@@ -334,7 +336,6 @@
                 flowerImg.src = flowers[flowerIndex];
                 flowerImg.alt = 'Fleur décorative';
                 flowerImg.className = `dynamic-flower ${position}`;
-                // Pas de rotation - les fleurs gardent leur orientation d'origine
 
                 document.body.appendChild(flowerImg);
             });

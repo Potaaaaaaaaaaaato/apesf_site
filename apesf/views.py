@@ -721,7 +721,7 @@ def gerer_fichier_arborescence(request):
     else:
         form = ArborescenceFileForm(instance=arborescence)
 
-    return render(request, 'gerer-fichier-arborescence.html', {
+    return render(request, 'gerer_fichier_arborescence.html', {
         'form': form,
         'arborescence': arborescence
     })

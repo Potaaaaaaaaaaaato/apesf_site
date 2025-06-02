@@ -3,7 +3,7 @@
 {% load tz %}
 {% block title %}Accueil{% endblock %}
 {% block extra_head %}
-    <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d’enfants, Les Marmousets et L’Angélus.">
+    <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d'enfants, Les Marmousets et L'Angélus.">
     <meta name="keywords" content="APESF, association, enfants, familles, Saint-Étienne, Marmousets, Angélus, protection enfance, accompagnement">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Association Pour l'Enfant et Sa Famille">
@@ -18,8 +18,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 {% endblock %}
 {% block content %}
-    <!-- Style personnalisé pour les carrousels, le modal et le bouton de pause -->
+    <!-- Style personnalisé pour les carrousels, le modal, le bouton de pause et le logo -->
     <style>
+        /* Style pour le logo de l'association (exclusif à la page d'accueil) */
+        .association-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 6;
+            pointer-events: none;
+            opacity: 0.8;
+            width: 150px;
+            height: auto;
+            transition: opacity 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .association-logo {
+                display: none; /* Masquer le logo sur mobile */
+            }
+        }
+
         /* Conteneurs des carrousels */
         .carousel-container, .news-carousel {
             position: relative;
@@ -332,6 +351,9 @@
         }
     </style>
 
+    <!-- Logo de l'association (exclusif à la page d'accueil) -->
+    <img src="{% static 'images/logo.png' %}" alt="Logo APESF" class="association-logo">
+
     <!-- Hero Section -->
     <section class="py-2 text-center">
         <div class="container mx-auto px-6">
@@ -339,7 +361,7 @@
                 Association Pour l'Enfant et Sa Famille
             </h1>
             <p class="text-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
-                Depuis 1934, nous accompagnons les enfants et leurs familles à Saint-Étienne, en favorisant leur épanouissement et en protégeant leurs droits à travers nos maisons d’enfants, Les Marmousets et L’Angélus.
+                Depuis 1934, nous accompagnons les enfants et leurs familles à Saint-Étienne, en favorisant leur épanouissement et en protégeant leurs droits à travers nos maisons d'enfants, Les Marmousets et L'Angélus.
             </p>
         </div>
     </section>
@@ -370,7 +392,7 @@
                                 <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Les Marmousets">
                             </div>
                             <div class="swiper-slide">
-                                <img src="{% static 'images/carousel-image-4.jpg' %}" alt="L’Angélus">
+                                <img src="{% static 'images/carousel-image-4.jpg' %}" alt="L'Angélus">
                             </div>
                             <div class="swiper-slide">
                                 <img src="{% static 'images/carousel-image-5.jpg' %}" alt="Soutien éducatif">
@@ -452,9 +474,9 @@
     <section class="py-8 text-center">
         <div class="container mx-auto px-6">
             <p class="text-lg text-neutral-600 leading-loose max-w-3xl mx-auto">
-                L’association Pour l’Enfant et sa Famille accompagne depuis des décennies les enfants et les familles en difficulté, à travers des dispositifs d’accueil souples et adaptés.
+                L'association Pour l'Enfant et sa Famille accompagne depuis des décennies les enfants et les familles en difficulté, à travers des dispositifs d'accueil souples et adaptés aux besoins de chacun.
                 Nos équipes engagées œuvrent chaque jour pour offrir un environnement sécurisé, bienveillant et respectueux du parcours de chacun.
-                Une mission en constante évolution, portée par l’écoute, l’innovation et la solidarité.
+                Une mission en constante évolution, portée par l'écoute, l'innovation et la solidarité.
             </p>
         </div>
     </section>
