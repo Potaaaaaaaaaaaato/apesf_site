@@ -87,178 +87,259 @@
             white-space: nowrap; /* Texte sur une seule ligne */
             text-align: center; /* Centre le texte */
         }
+
+        /* ======================== */
+        /* STYLES POUR LES FLEURS DYNAMIQUES */
+        /* ======================== */
+        .dynamic-flower {
+            position: fixed;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            width: 80px;
+            height: 80px;
+        }
+
+        .dynamic-flower.top-left {
+            top: 100px;
+            left: 20px;
+        }
+
+        .dynamic-flower.top-right {
+            top: 100px;
+            right: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dynamic-flower {
+                width: 60px;
+                height: 60px;
+            }
+        }
     </style>
 </head>
 <body class="font-poppins antialiased text-neutral-600 bg-neutral-50">
-    <!-- Header -->
-    <header class="bg-white shadow fixed top-0 left-0 w-full z-10">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <!-- Logo -->
-            <div>
-                <a href="{% url 'accueil' %}">
-                    <img src="{% static 'images/logo.png' %}" alt="Logo APESF" class="h-12">
-                </a>
-            </div>
-
-            <!-- Hamburger Button (visible on mobile) -->
-            <button id="menu-toggle" class="md:hidden text-primary-500 focus:outline-none">
-                <i class="bi bi-list text-2xl"></i>
-            </button>
-
-            <!-- Menu de navigation (desktop) -->
-            <!-- Partie navbar desktop (modifiée) -->
-            <ul id="nav-links" class="hidden md:flex items-center gap-6">
-                <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
-                <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Nos établissements & services</a></li>
-                <li><a href="{% url 'organisation' %}" class="hover:text-primary-600 transition-colors">Organisation</a></li>
-                <li><a href="{% url 'offres_emplois' %}" class="hover:text-primary-600 transition-colors">Offres d'emplois</a></li>
-                <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
-                <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Soutenez-nous</a></li>
-                <li><a href="{% url 'rejoignez_nous' %}" class="hover:text-primary-600 transition-colors">Rejoignez-nous</a></li>
-
-                <!-- Icône utilisateur cliquable (desktop uniquement) -->
-                <li class="relative hidden md:block">
-                    {% if user.is_authenticated %}
-                        <!-- Icône "person-check" -->
-                        <button id="user-icon" class="text-xl hover:text-primary-600 transition-colors">
-                            <i class="bi bi-person-check"></i>
-                        </button>
-                        <!-- Menu dropdown affiché au clic -->
-                        <ul id="user-dropdown" class="hidden absolute right-0 mt-2 bg-white shadow-md rounded-lg py-2 w-48 text-base z-50">
-                            <li>
-                                <a href="{% url 'tableau_de_bord' %}" class="block px-4 py-2 text-neutral-600 hover:text-primary-600 transition-colors duration-200">
-                                    Tableau de bord
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{% url 'deconnexion' %}" class="block px-4 py-2 text-neutral-600 hover:text-primary-600 transition-colors duration-200">
-                                    Déconnexion
-                                </a>
-                            </li>
-                        </ul>
-                    {% else %}
-                        <!-- Icône "person" -->
-                        <a href="{% url 'connexion' %}" class="text-xl hover:text-primary-600 transition-colors">
-                            <i class="bi bi-person"></i>
-                        </a>
-                    {% endif %}
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Menu mobile (hidden by default) -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
-            <ul class="container mx-auto px-6 py-4 space-y-4">
-                <li><a href="{% url 'accueil' %}" class="block hover:text-primary-600 transition-colors">Accueil</a></li>
-                <li><a href="{% url 'qui_sommes_nous' %}" class="block hover:text-primary-600 transition-colors">Nos établissements & services</a></li>
-                <li><a href="{% url 'organisation' %}" class="hover:text-primary-600 transition-colors">Organisation</a></li>
-                <li><a href="{% url 'offres_emplois' %}" class="block hover:text-primary-600 transition-colors">Offres d'emplois</a></li>
-                <li><a href="{% url 'contact' %}" class="block hover:text-primary-600 transition-colors">Contact</a></li>
-                <li><a href="{% url 'dons' %}" class="block hover:text-primary-600 transition-colors">Soutenez-nous</a></li>
-                <li><a href="{% url 'rejoignez_nous' %}" class="block hover:text-primary-600 transition-colors">Rejoignez-nous</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="{% url 'tableau_de_bord' %}" class="block hover:text-primary-600 transition-colors">Tableau de bord</a></li>
-                    <li><a href="{% url 'deconnexion' %}" class="block hover:text-primary-600 transition-colors">Déconnexion</a></li>
-                {% else %}
-                    <li><a href="{% url 'connexion' %}" class="block hover:text-primary-600 transition-colors">Connexion</a></li>
-                {% endif %}
-            </ul>
+<!-- Header -->
+<header class="bg-white shadow fixed top-0 left-0 w-full z-10">
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <div>
+            <a href="{% url 'accueil' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo APESF" class="h-12">
+            </a>
         </div>
-    </header>
 
-    <!-- Main content -->
-    <main class="container mx-auto px-6 py-24">
-        {% block content %}
-        {% endblock %}
-    </main>
+        <!-- Hamburger Button (visible on mobile) -->
+        <button id="menu-toggle" class="md:hidden text-primary-500 focus:outline-none">
+            <i class="bi bi-list text-2xl"></i>
+        </button>
 
-    <footer class="bg-neutral-100 py-8">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-8 md:items-start">
-                <!-- Colonne 1 : Liens utiles -->
-                <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-left">
-                    <h3 class="text-lg font-semibold mb-4 text-primary-500">Liens utiles</h3>
-                    <ul class="space-y-2 mt-0">
-                        <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
-                        <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Nos établissements & services</a></li>
-                        <li><a href="{% url 'organisation' %}" class="hover:text-secondary-500">Organisation</a></li>
+        <!-- Menu de navigation (desktop) -->
+        <!-- Partie navbar desktop (modifiée) -->
+        <ul id="nav-links" class="hidden md:flex items-center gap-6">
+            <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
+            <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Nos établissements & services</a></li>
+            <li><a href="{% url 'organisation' %}" class="hover:text-primary-600 transition-colors">Organisation</a></li>
+            <li><a href="{% url 'offres_emplois' %}" class="hover:text-primary-600 transition-colors">Offres d'emplois</a></li>
+            <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
+            <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Soutenez-nous</a></li>
+            <li><a href="{% url 'rejoignez_nous' %}" class="hover:text-primary-600 transition-colors">Rejoignez-nous</a></li>
+
+            <!-- Icône utilisateur cliquable (desktop uniquement) -->
+            <li class="relative hidden md:block">
+                {% if user.is_authenticated %}
+                    <!-- Icône "person-check" -->
+                    <button id="user-icon" class="text-xl hover:text-primary-600 transition-colors">
+                        <i class="bi bi-person-check"></i>
+                    </button>
+                    <!-- Menu dropdown affiché au clic -->
+                    <ul id="user-dropdown" class="hidden absolute right-0 mt-2 bg-white shadow-md rounded-lg py-2 w-48 text-base z-50">
+                        <li>
+                            <a href="{% url 'tableau_de_bord' %}" class="block px-4 py-2 text-neutral-600 hover:text-primary-600 transition-colors duration-200">
+                                Tableau de bord
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'deconnexion' %}" class="block px-4 py-2 text-neutral-600 hover:text-primary-600 transition-colors duration-200">
+                                Déconnexion
+                            </a>
+                        </li>
                     </ul>
-                </div>
+                {% else %}
+                    <!-- Icône "person" -->
+                    <a href="{% url 'connexion' %}" class="text-xl hover:text-primary-600 transition-colors">
+                        <i class="bi bi-person"></i>
+                    </a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
 
-                <!-- Colonne 2 : Contact -->
-                <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-center">
-                    <h3 class="text-lg font-semibold mb-4 text-primary-500">Contact</h3>
-                    <div class="space-y-2">
-                        <p class="my-0">1 Rue du Dr Paul Michelon, 42100 Saint-Étienne</p>
-                        <p class="my-0">04 77 25 37 15</p>
-                        <p class="my-0"><a href="mailto:accueil-angelus@apesf.fr">accueil-angelus@apesf.fr</a></p>
-                        <p class="my-0"><a href="mailto:accueil-marmousets@apesf.fr">accueil-marmousets@apesf.fr</a></p>
-                        <p class="my-0">Retrouvez-nous sur :</p>
-                        <div class="flex justify-center gap-4">
-                            <a href="https://linkedin.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-linkedin"></i></a>
-                            <a href="https://instagram.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-instagram"></i></a>
-                            <a href="https://facebook.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-facebook"></i></a>
-                        </div>
-                    </div>
-                </div>
+    <!-- Menu mobile (hidden by default) -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+        <ul class="container mx-auto px-6 py-4 space-y-4">
+            <li><a href="{% url 'accueil' %}" class="block hover:text-primary-600 transition-colors">Accueil</a></li>
+            <li><a href="{% url 'qui_sommes_nous' %}" class="block hover:text-primary-600 transition-colors">Nos établissements & services</a></li>
+            <li><a href="{% url 'organisation' %}" class="hover:text-primary-600 transition-colors">Organisation</a></li>
+            <li><a href="{% url 'offres_emplois' %}" class="block hover:text-primary-600 transition-colors">Offres d'emplois</a></li>
+            <li><a href="{% url 'contact' %}" class="block hover:text-primary-600 transition-colors">Contact</a></li>
+            <li><a href="{% url 'dons' %}" class="block hover:text-primary-600 transition-colors">Soutenez-nous</a></li>
+            <li><a href="{% url 'rejoignez_nous' %}" class="block hover:text-primary-600 transition-colors">Rejoignez-nous</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'tableau_de_bord' %}" class="block hover:text-primary-600 transition-colors">Tableau de bord</a></li>
+                <li><a href="{% url 'deconnexion' %}" class="block hover:text-primary-600 transition-colors">Déconnexion</a></li>
+            {% else %}
+                <li><a href="{% url 'connexion' %}" class="block hover:text-primary-600 transition-colors">Connexion</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</header>
 
-                <!-- Colonne 3 : Soutenez-nous -->
-                <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-right">
-                    <h3 class="text-lg font-semibold mb-4 text-primary-500">Soutenez-nous</h3>
-                    <ul class="space-y-2 mt-0">
-                        <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Faire un don</a></li>
-                        <li><a href="{% url 'offres_emplois' %}" class="hover:text-primary-600 transition-colors">Offres d’emplois</a></li>
-                        <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
-                        <li><a href="{% url 'rejoignez_nous' %}" class="hover:text-primary-600 transition-colors">Rejoignez-nous</a></li>
-                    </ul>
-                </div>
-            </div>
+<!-- Main content -->
+<main class="container mx-auto px-6 py-24">
+    {% block content %}
+    {% endblock %}
+</main>
 
-            <!-- Liens supplémentaires -->
-            <div class="text-center mt-8">
-                <ul class="flex flex-col md:flex-row justify-center gap-6">
-                    <li><a href="{% url 'mentions_legales' %}" class="hover:text-primary-600 transition-colors">Mentions légales</a></li>
-                    <li><a href="{% url 'credits' %}" class="hover:text-primary-600 transition-colors">Crédits</a></li>
-                    <li><a href="{% url 'connexion' %}" class="hover:text-primary-600 transition-colors">Connexion</a></li>
+<footer class="bg-neutral-100 py-8">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-8 md:items-start">
+            <!-- Colonne 1 : Liens utiles -->
+            <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-left">
+                <h3 class="text-lg font-semibold mb-4 text-primary-500">Liens utiles</h3>
+                <ul class="space-y-2 mt-0">
+                    <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
+                    <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Nos établissements & services</a></li>
+                    <li><a href="{% url 'organisation' %}" class="hover:text-secondary-500">Organisation</a></li>
                 </ul>
             </div>
 
-            <!-- Copyright -->
-            <p class="text-center mt-4 text-neutral-600">© 2025 - Association Pour l'Enfant et Sa Famille. Tous droits réservés.</p>
+            <!-- Colonne 2 : Contact -->
+            <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-center">
+                <h3 class="text-lg font-semibold mb-4 text-primary-500">Contact</h3>
+                <div class="space-y-2">
+                    <p class="my-0">1 Rue du Dr Paul Michelon, 42100 Saint-Étienne</p>
+                    <p class="my-0">04 77 25 37 15</p>
+                    <p class="my-0"><a href="mailto:accueil-angelus@apesf.fr">accueil-angelus@apesf.fr</a></p>
+                    <p class="my-0"><a href="mailto:accueil-marmousets@apesf.fr">accueil-marmousets@apesf.fr</a></p>
+                    <p class="my-0">Retrouvez-nous sur :</p>
+                    <div class="flex justify-center gap-4">
+                        <a href="https://linkedin.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://instagram.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-instagram"></i></a>
+                        <a href="https://facebook.com" class="hover:text-primary-600 transition-colors"><i class="bi bi-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Colonne 3 : Soutenez-nous -->
+            <div class="w-fit mx-auto md:mx-0 md:flex-1 text-center md:text-right">
+                <h3 class="text-lg font-semibold mb-4 text-primary-500">Soutenez-nous</h3>
+                <ul class="space-y-2 mt-0">
+                    <li><a href="{% url 'dons' %}" class="hover:text-primary-600 transition-colors">Faire un don</a></li>
+                    <li><a href="{% url 'offres_emplois' %}" class="hover:text-primary-600 transition-colors">Offres d'emplois</a></li>
+                    <li><a href="{% url 'contact' %}" class="hover:text-primary-600 transition-colors">Contact</a></li>
+                    <li><a href="{% url 'rejoignez_nous' %}" class="hover:text-primary-600 transition-colors">Rejoignez-nous</a></li>
+                </ul>
+            </div>
         </div>
-    </footer>
 
-    <!-- Swiper.js JS + gestion dropdown lors du clic sur l'icône -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
+        <!-- Liens supplémentaires -->
+        <div class="text-center mt-8">
+            <ul class="flex flex-col md:flex-row justify-center gap-6">
+                <li><a href="{% url 'mentions_legales' %}" class="hover:text-primary-600 transition-colors">Mentions légales</a></li>
+                <li><a href="{% url 'credits' %}" class="hover:text-primary-600 transition-colors">Crédits</a></li>
+                <li><a href="{% url 'connexion' %}" class="hover:text-primary-600 transition-colors">Connexion</a></li>
+            </ul>
+        </div>
 
-        if (menuToggle && mobileMenu) {
-            menuToggle.addEventListener('click', function () {
-                mobileMenu.classList.toggle('hidden');
+        <!-- Copyright -->
+        <p class="text-center mt-4 text-neutral-600">© 2025 - Association Pour l'Enfant et Sa Famille. Tous droits réservés.</p>
+    </div>
+</footer>
+
+<!-- Swiper.js JS + gestion dropdown lors du clic sur l'icône -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function () {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+
+    // Dropdown utilisateur desktop
+    const userIcon = document.getElementById('user-icon');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    if (userIcon && userDropdown) {
+        userIcon.addEventListener('click', function (e) {
+            e.stopPropagation(); // évite de le fermer immédiatement
+            userDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!userDropdown.classList.contains('hidden') &&
+                !userDropdown.contains(event.target) &&
+                event.target !== userIcon) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    // ========================
+    // SCRIPT POUR LES FLEURS DYNAMIQUES
+    // ========================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Vérifier si nous sommes sur la page d'accueil
+        const isAccueilPage = window.location.pathname === '/' ||
+            window.location.pathname === '/accueil/' ||
+            window.location.pathname.includes('accueil');
+
+        if (!isAccueilPage) {
+            // Liste des fleurs disponibles
+            const flowers = [
+                '{% static "images/fleurs/fleur1.png" %}',
+                '{% static "images/fleurs/fleur2.png" %}',
+                '{% static "images/fleurs/fleur3.png" %}',
+            ];
+
+            // Positions pour les fleurs (seulement haut gauche et haut droite)
+            const positions = ['top-left', 'top-right'];
+
+            // Générer un seed basé sur l'URL pour avoir des fleurs différentes par page
+            const pageSeed = btoa(window.location.pathname).split('').reduce((a, b) => {
+                a = ((a << 5) - a) + b.charCodeAt(0);
+                return a & a;
+            }, 0);
+
+            // Générer un seed pour l'actualisation
+            const refreshSeed = Date.now();
+
+            // Fonction pour générer un nombre pseudo-aléatoire
+            function seededRandom(seed) {
+                const x = Math.sin(seed) * 10000;
+                return x - Math.floor(x);
+            }
+
+            // Créer les fleurs dynamiques (une à gauche, une à droite)
+            positions.forEach((position, index) => {
+                const seed = pageSeed + refreshSeed + index;
+                const flowerIndex = Math.floor(seededRandom(seed) * flowers.length);
+
+                const flowerImg = document.createElement('img');
+                flowerImg.src = flowers[flowerIndex];
+                flowerImg.alt = 'Fleur décorative';
+                flowerImg.className = `dynamic-flower ${position}`;
+                // Pas de rotation - les fleurs gardent leur orientation d'origine
+
+                document.body.appendChild(flowerImg);
             });
         }
-
-        // Dropdown utilisateur desktop
-        const userIcon = document.getElementById('user-icon');
-        const userDropdown = document.getElementById('user-dropdown');
-
-        if (userIcon && userDropdown) {
-            userIcon.addEventListener('click', function (e) {
-                e.stopPropagation(); // évite de le fermer immédiatement
-                userDropdown.classList.toggle('hidden');
-            });
-
-            document.addEventListener('click', function (event) {
-                if (!userDropdown.classList.contains('hidden') &&
-                    !userDropdown.contains(event.target) &&
-                    event.target !== userIcon) {
-                    userDropdown.classList.add('hidden');
-                }
-            });
-        }
-    </script>
+    });
+</script>
 </body>
 </html>
