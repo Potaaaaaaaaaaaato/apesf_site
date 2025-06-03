@@ -39,7 +39,7 @@
             }
         }
 
-        /* Style pour la bulle de discussion BD - VERSION RONDE avec queue arrondie vers le bas */
+        /* Style pour la bulle de discussion BD - VERSION RONDE avec queue longue vers la gauche */
         .speech-bubble {
             position: fixed;
             top: 40%;
@@ -49,10 +49,10 @@
             background-color: #FFFFFF;
             border: 3px solid #1B4F72;
             border-radius: 50%;
-            padding: 20px;
-            width: 120px;
-            height: 120px;
-            font-size: 12px;
+            padding: 25px;
+            width: 160px;
+            height: 160px;
+            font-size: 14px;
             font-weight: 600;
             color: #1B4F72;
             text-align: center;
@@ -63,31 +63,29 @@
             justify-content: center;
         }
 
-        /* Queue arrondie qui pointe vers le bas */
+        /* Queue longue qui pointe vers la gauche depuis le bas-gauche de la bulle */
         .speech-bubble::before {
             content: '';
             position: absolute;
-            bottom: -20px; /* Positionné en bas de la bulle */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px; /* Largeur de la queue */
-            height: 20px; /* Hauteur de la queue */
+            bottom: 10px; /* En bas de la bulle */
+            left: -10px; /* Plus proche du bord de la bulle */
+            width: 40px; /* Largeur de la queue */
+            height: 30px; /* Hauteur de la queue */
             background-color: #1B4F72;
-            border-radius: 15px 15px 0 50px; /* Arrondi en haut, pointu en bas */
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%); /* Forme de queue pointue */
+            border-radius: 0 15px 0 15px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 50%); /* Triangle pointant vers la gauche */
         }
 
         .speech-bubble::after {
             content: '';
             position: absolute;
-            bottom: -17px; /* Légèrement au-dessus du ::before */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px; /* Largeur légèrement plus petite */
-            height: 17px; /* Hauteur légèrement plus petite */
+            bottom: 13px; /* Légèrement au-dessus du ::before */
+            left: -7px; /* Plus proche du bord de la bulle */
+            width: 34px; /* Largeur légèrement plus petite */
+            height: 24px; /* Hauteur légèrement plus petite */
             background-color: #FFFFFF;
-            border-radius: 12px 12px 0 40px; /* Arrondi en haut, pointu en bas */
-            clip-path: polygon(25% 0%, 75% 0%, 100% 100%); /* Forme de queue pointue */
+            border-radius: 0 12px 0 12px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 50%); /* Triangle pointant vers la gauche */
         }
 
         /* Animation de rebond pour attirer l'attention */
@@ -428,7 +426,7 @@
 
     <!-- Bulle de discussion BD qui pointe vers le carrousel d'actualités -->
     <div class="speech-bubble">
-        <p>Cliquez ici pour en savoir plus sur nos actualités ! 📰</p>
+        <p>Cliquez ici pour en savoir plus !</p>
     </div>
 
     <!-- Hero Section -->
