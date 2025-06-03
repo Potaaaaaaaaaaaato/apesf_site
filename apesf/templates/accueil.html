@@ -39,6 +39,77 @@
             }
         }
 
+        /* Style pour la bulle de discussion BD - VERSION RONDE avec queue arrondie vers le bas */
+        .speech-bubble {
+            position: fixed;
+            top: 40%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 100;
+            background-color: #FFFFFF;
+            border: 3px solid #1B4F72;
+            border-radius: 50%;
+            padding: 20px;
+            width: 120px;
+            height: 120px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #1B4F72;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: bounce 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Queue arrondie qui pointe vers le bas */
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -20px; /* Positionné en bas de la bulle */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px; /* Largeur de la queue */
+            height: 20px; /* Hauteur de la queue */
+            background-color: #1B4F72;
+            border-radius: 15px 15px 0 50px; /* Arrondi en haut, pointu en bas */
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%); /* Forme de queue pointue */
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -17px; /* Légèrement au-dessus du ::before */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px; /* Largeur légèrement plus petite */
+            height: 17px; /* Hauteur légèrement plus petite */
+            background-color: #FFFFFF;
+            border-radius: 12px 12px 0 40px; /* Arrondi en haut, pointu en bas */
+            clip-path: polygon(25% 0%, 75% 0%, 100% 100%); /* Forme de queue pointue */
+        }
+
+        /* Animation de rebond pour attirer l'attention */
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(-50%);
+            }
+            40% {
+                transform: translateY(-60%);
+            }
+            60% {
+                transform: translateY(-55%);
+            }
+        }
+
+        /* Style pour masquer la bulle sur mobile */
+        @media (max-width: 768px) {
+            .speech-bubble {
+                display: none;
+            }
+        }
+
         /* Conteneurs des carrousels */
         .carousel-container, .news-carousel {
             position: relative;
@@ -355,6 +426,11 @@
     <!-- Logo de l'association (exclusif à la page d'accueil) -->
     <img src="{% static 'images/logo.png' %}" alt="Logo APESF" class="association-logo">
 
+    <!-- Bulle de discussion BD qui pointe vers le carrousel d'actualités -->
+    <div class="speech-bubble">
+        <p>Cliquez ici pour en savoir plus sur nos actualités ! 📰</p>
+    </div>
+
     <!-- Hero Section -->
     <section class="py-2 text-center">
         <div class="container mx-auto px-6">
@@ -407,7 +483,7 @@
             </div>
 
             <!-- Carrousel d'actualités -->
-            <div class="news-carousel">
+            <div class="news-carousel" id="news-carousel-target">
                 <div id="carouselNews" class="swiper">
                     <div class="swiper-wrapper">
                         {% for news in news_items %}
@@ -526,6 +602,31 @@
                     prevEl: '.swiper-button-prev',
                 },
             });
+
+            // Gestion du clic sur la bulle pour rediriger vers le carrousel d'actualités
+            const speechBubble = document.querySelector('.speech-bubble');
+            const newsCarousel = document.getElementById('news-carousel-target');
+
+            if (speechBubble && newsCarousel) {
+                speechBubble.addEventListener('click', function() {
+                    // Faire défiler vers le carrousel d'actualités
+                    newsCarousel.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+
+                    // Ajouter un effet de surbrillance temporaire
+                    newsCarousel.style.transition = 'box-shadow 0.3s ease';
+                    newsCarousel.style.boxShadow = '0 0 20px rgba(27, 79, 114, 0.5)';
+
+                    setTimeout(() => {
+                        newsCarousel.style.boxShadow = 'none';
+                    }, 2000);
+                });
+
+                // Ajouter un style de curseur pointer
+                speechBubble.style.cursor = 'pointer';
+            }
 
             // Bouton pause/lecture des carrousels
             const carouselControl = document.getElementById('carouselControl');

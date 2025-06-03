@@ -643,7 +643,7 @@ Message :
             email_message = EmailMessage(
                 subject=f"[APESF] {subject_display}",
                 body=email_body,
-                from_email='ton_email@gmail.com',  # Remplacez par votre vrai email
+                from_email='tristandevaux6@gmail.com',  # Remplacez par votre vrai email
                 to=recipients,
                 reply_to=[email],
             )

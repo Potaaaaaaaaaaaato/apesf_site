@@ -22,7 +22,7 @@
             padding: 20px; /* Padding interne pour l'encadré */
             border: 3px solid #F9B435; /* Encadré jaune autour de toute la liste */
             border-radius: 12px; /* Coins arrondis */
-            background-color: rgba(249, 180, 53, 0.05); /* Fond jaune très léger */
+            background-color: #F9B435; /* Fond jaune complètement rempli */
             box-shadow: 0 4px 12px rgba(249, 180, 53, 0.2); /* Ombre jaune */
         }
         .unit-links a {
@@ -39,16 +39,16 @@
             margin-bottom: 0; /* Pas de marge pour le dernier élément */
         }
         .unit-links a:hover {
-            color: #E84C3D;
+            color: #000000; /* Texte noir au survol */
             transform: scale(1.05);
-            background-color: rgba(249, 180, 53, 0.2); /* Fond jaune pâle pour survol */
-            border: 1px solid #F9B435; /* Encadré jaune individuel */
+            background-color: #FFFFFF; /* Fond blanc au survol */
+            border: 1px solid #CCCCCC; /* Encadré gris clair */
         }
         .unit-links a.active {
-            color: #E84C3D;
+            color: #000000; /* Texte noir pour l'élément actif */
             font-weight: 600;
-            background-color: rgba(249, 180, 53, 0.2); /* Fond jaune pâle pour actif */
-            border: 1px solid #F9B435; /* Encadré jaune individuel */
+            background-color: #FFFFFF; /* Fond blanc pour l'élément actif */
+            border: 1px solid #CCCCCC; /* Encadré gris clair */
         }
         .unit-links a.active::before {
             content: "•";
