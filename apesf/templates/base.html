@@ -164,9 +164,12 @@
 <header class="bg-white shadow fixed top-0 left-0 w-full z-10">
     <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
         <!-- Logo -->
-        <div>
+        <div class="flex items-center">
             <a href="{% url 'accueil' %}">
-                <img src="{% static 'images/logo_navbar.png' %}" alt="Logo APESF" class="h-12">
+                <!-- Logo pour desktop (visible à partir de md:768px) -->
+                <img src="{% static 'images/logo_navbar.png' %}" alt="Logo APESF Desktop" class="h-12 hidden md:block">
+                <!-- Logo pour mobile (visible en dessous de md:768px) -->
+                <img src="{% static 'images/logo.png' %}" alt="Logo APESF Mobile" class="h-12 block md:hidden">
             </a>
         </div>
 
@@ -176,7 +179,6 @@
         </button>
 
         <!-- Menu de navigation (desktop) -->
-        <!-- Partie navbar desktop (modifiée) -->
         <ul id="nav-links" class="hidden md:flex items-center gap-6">
             <li><a href="{% url 'accueil' %}" class="hover:text-primary-600 transition-colors">Accueil</a></li>
             <li><a href="{% url 'qui_sommes_nous' %}" class="hover:text-primary-600 transition-colors">Nos établissements & services</a></li>
@@ -334,85 +336,88 @@
     // SCRIPT POUR LES BLOCS DE FLEURS DYNAMIQUES
     // ========================
     document.addEventListener('DOMContentLoaded', function() {
+        // Configuration des fleurs avec types et couleurs
+        const flowerTypes = ['fleur1', 'fleur2', 'fleur3'];
+        const flowerColors = ['orange', 'bleue', 'jaune'];
+
         // Vérifier si nous sommes sur la page d'accueil
         const isAccueilPage = window.location.pathname === '/' ||
             window.location.pathname === '/accueil/' ||
             window.location.pathname.includes('accueil');
 
-        if (!isAccueilPage) {
-            // Configuration des fleurs avec types et couleurs
-            const flowerTypes = ['fleur1', 'fleur2', 'fleur3'];
-            const flowerColors = ['orange', 'bleue', 'jaune'];
+        // Positions possibles pour le bloc
+        let positions = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 
-            // Positions possibles pour le bloc (4 coins)
-            const positions = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
-
-            // Génération du seed basé sur l'URL et l'heure
-            const pageSeed = btoa(window.location.pathname).split('').reduce((a, b) => {
-                a = ((a << 5) - a) + b.charCodeAt(0);
-                return a & a;
-            }, 0);
-            const refreshSeed = Date.now();
-
-            function seededRandom(seed) {
-                const x = Math.sin(seed) * 10000;
-                return x - Math.floor(x);
-            }
-
-            // Fonction pour mélanger un tableau avec un seed
-            function shuffleWithSeed(array, seed) {
-                const result = [...array];
-                for (let i = result.length - 1; i > 0; i--) {
-                    const j = Math.floor(seededRandom(seed + i) * (i + 1));
-                    [result[i], result[j]] = [result[j], result[i]];
-                }
-                return result;
-            }
-
-            // Sélection de la position initiale aléatoire pour le bloc
-            const positionSeed = pageSeed + refreshSeed;
-            let currentPositionIndex = Math.floor(seededRandom(positionSeed) * positions.length);
-
-            // Création du bloc de fleurs
-            const flowerBlock = document.createElement('div');
-            flowerBlock.className = `flower-block ${positions[currentPositionIndex]}`;
-
-            // Mélange des couleurs pour garantir 3 couleurs différentes
-            const shuffledColors = shuffleWithSeed(flowerColors, pageSeed + refreshSeed + 1);
-
-            // Création des 3 fleurs avec des types et couleurs aléatoires
-            for (let i = 0; i < 3; i++) {
-                const typeSeed = pageSeed + refreshSeed + i + 10;
-                const selectedType = flowerTypes[Math.floor(seededRandom(typeSeed) * flowerTypes.length)];
-                const selectedColor = shuffledColors[i]; // Couleur unique pour chaque fleur
-
-                const flowerImg = document.createElement('img');
-                flowerImg.src = `{% static "images/fleurs/" %}${selectedType}_${selectedColor}.png`;
-                flowerImg.alt = `Fleur décorative ${selectedType} ${selectedColor}`;
-                flowerImg.className = 'flower-item';
-
-                flowerBlock.appendChild(flowerImg);
-            }
-
-            document.body.appendChild(flowerBlock);
-
-            // Animation de déplacement du bloc toutes les 8 secondes
-            setInterval(() => {
-                // Retirer l'ancienne classe de position
-                positions.forEach(pos => flowerBlock.classList.remove(pos));
-
-                // Choisir une nouvelle position différente de l'actuelle
-                let newPositionIndex;
-                do {
-                    newPositionIndex = Math.floor(seededRandom(Date.now()) * positions.length);
-                } while (newPositionIndex === currentPositionIndex && positions.length > 1);
-
-                currentPositionIndex = newPositionIndex;
-
-                // Ajouter la nouvelle position
-                flowerBlock.classList.add(positions[currentPositionIndex]);
-            }, 8000); // Change de position toutes les 8 secondes
+        // Si page d'accueil, exclure le coin haut gauche
+        if (isAccueilPage) {
+            positions = positions.filter(pos => pos !== 'top-left');
         }
+
+        // Génération du seed basé sur l'URL et l'heure
+        const pageSeed = btoa(window.location.pathname).split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+        const refreshSeed = Date.now();
+
+        function seededRandom(seed) {
+            const x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        // Fonction pour mélanger un tableau avec un seed
+        function shuffleWithSeed(array, seed) {
+            const result = [...array];
+            for (let i = result.length - 1; i > 0; i--) {
+                const j = Math.floor(seededRandom(seed + i) * (i + 1));
+                [result[i], result[j]] = [result[j], result[i]];
+            }
+            return result;
+        }
+
+        // Sélection de la position initiale aléatoire pour le bloc
+        const positionSeed = pageSeed + refreshSeed;
+        let currentPositionIndex = Math.floor(seededRandom(positionSeed) * positions.length);
+
+        // Création du bloc de fleurs
+        const flowerBlock = document.createElement('div');
+        flowerBlock.className = `flower-block ${positions[currentPositionIndex]}`;
+
+        // Mélange des couleurs pour garantir 3 couleurs différentes
+        const shuffledColors = shuffleWithSeed(flowerColors, pageSeed + refreshSeed + 1);
+
+        // Création des 3 fleurs avec des types et couleurs aléatoires
+        for (let i = 0; i < 3; i++) {
+            const typeSeed = pageSeed + refreshSeed + i + 10;
+            const selectedType = flowerTypes[Math.floor(seededRandom(typeSeed) * flowerTypes.length)];
+            const selectedColor = shuffledColors[i]; // Couleur unique pour chaque fleur
+
+            const flowerImg = document.createElement('img');
+            flowerImg.src = `{% static "images/fleurs/" %}${selectedType}_${selectedColor}.png`;
+            flowerImg.alt = `Fleur décorative ${selectedType} ${selectedColor}`;
+            flowerImg.className = 'flower-item';
+
+            flowerBlock.appendChild(flowerImg);
+        }
+
+        document.body.appendChild(flowerBlock);
+
+        // Animation de déplacement du bloc toutes les 8 secondes
+        setInterval(() => {
+            // Retirer l'ancienne classe de position
+            positions.forEach(pos => flowerBlock.classList.remove(pos));
+
+            // Choisir une nouvelle position différente de l'actuelle
+            let newPositionIndex;
+            do {
+                newPositionIndex = Math.floor(seededRandom(Date.now()) * positions.length);
+            } while (newPositionIndex === currentPositionIndex && positions.length > 1);
+
+            currentPositionIndex = newPositionIndex;
+
+            // Ajouter la nouvelle position
+            flowerBlock.classList.add(positions[currentPositionIndex]);
+        }, 8000); // Change de position toutes les 8 secondes
     });
 </script>
 </body>

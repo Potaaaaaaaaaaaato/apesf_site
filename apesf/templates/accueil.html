@@ -3,7 +3,7 @@
 {% load tz %}
 {% block title %}Accueil{% endblock %}
 {% block extra_head %}
-    <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d'enfants, Les Marmousets et L'Angélus.">
+    <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d'enfants, Les Marmousets et l'Angélus.">
     <meta name="keywords" content="APESF, association, enfants, familles, Saint-Étienne, Marmousets, Angélus, protection enfance, accompagnement">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Association Pour l'Enfant et Sa Famille">
@@ -196,14 +196,14 @@
             color: #E84C3D !important;
         }
 
-        /* Style pour le bouton de pause/lecture commun */
+        /* Style pour le bouton de pause/lecture commun - AGRANDI x2,5 */
         .carousel-control-btn {
             position: absolute;
             bottom: 10px;
             left: 10px;
             z-index: 20;
-            width: 40px;
-            height: 40px;
+            width: 50px; /* 40px × 2.5 = 100px */
+            height: 50px; /* 40px × 2.5 = 100px */
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             display: flex;
@@ -211,7 +211,7 @@
             align-items: center;
             cursor: pointer;
             color: #1B4F72;
-            font-size: 1.25rem;
+            font-size: 3.125rem; /* 1.25rem × 2.5 = 3.125rem */
             transition: background-color 0.3s ease;
         }
         .carousel-control-btn:hover {
@@ -317,10 +317,11 @@
             .swiper-button-prev:after, .swiper-button-next:after {
                 font-size: 14px;
             }
+            /* Bouton de pause agrandi aussi sur mobile - x2,5 */
             .carousel-control-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
+                width: 50px; /* 32px × 2.5 = 80px */
+                height: 50px; /* 32px × 2.5 = 80px */
+                font-size: 2.5rem; /* 1rem × 2.5 = 2.5rem */
                 bottom: 5px;
                 left: 5px;
             }
@@ -361,7 +362,7 @@
                 Association Pour l'Enfant et Sa Famille
             </h1>
             <p class="text-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
-                Depuis 1934, nous accompagnons les enfants et leurs familles à Saint-Étienne, en favorisant leur épanouissement et en protégeant leurs droits à travers nos maisons d'enfants, Les Marmousets et L'Angélus.
+                Depuis 1934, nous accompagnons les enfants et leurs familles à Saint-Étienne, en favorisant leur épanouissement et en protégeant leurs droits à travers nos maisons d'enfants, Les Marmousets et l'Angélus.
             </p>
         </div>
     </section>
@@ -448,7 +449,7 @@
                     <div class="swiper-button-prev"></div>
                     <div class="swiper-button-next"></div>
                     <div class="swiper-pagination"></div>
-                    <!-- Bouton de pause/lecture commun -->
+                    <!-- Bouton de pause/lecture commun - AGRANDI x2,5 -->
                     <div id="carouselControl" class="carousel-control-btn" title="Pause">
                         <i class="bi bi-pause-fill"></i>
                     </div>

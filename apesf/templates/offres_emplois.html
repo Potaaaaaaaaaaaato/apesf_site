@@ -39,8 +39,7 @@
                          data-title="{{ job.title }}"
                          data-content="{{ job.description }}"
                          data-date="{{ job.posted_date }}"
-                         data-document="{% if job.document %}{{ job.document.url }}|{{ job.document.name|cut:'job_documents/' }}{% endif %}"
-                         data-email="{{ job.email_contact }}">
+                         data-document="{% if job.document %}{{ job.document.url }}|{{ job.document.name|cut:'job_documents/' }}{% endif %}">
                         <i class="bi bi-arrows-angle-expand expand-icon"></i>
                         <h2 class="text-2xl font-semibold text-primary-500 mb-2">{{ job.title }}</h2>
                         <div class="text-neutral-600 mb-4">{{ job.description|linebreaks }}</div>
@@ -53,7 +52,7 @@
                             </p>
                         {% endif %}
                         <div class="text-center mt-4">
-                            <a href="mailto:{{ job.email_contact }}?subject=Candidature pour {{ job.title }}"
+                            <a href="mailto:accueil-angelus@apesf.fr,accueil-marmousets@apesf.fr?subject=Candidature pour {{ job.title }}"
                                class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">
                                 Postuler à cette offre
                             </a>
@@ -200,7 +199,6 @@
                     const content = this.getAttribute('data-content');
                     const date = this.getAttribute('data-date');
                     const documentData = this.getAttribute('data-document');
-                    const email = this.getAttribute('data-email');
 
                     // Remplir le modal
                     modalTitle.textContent = title;
@@ -215,10 +213,8 @@
                         modalDocument.innerHTML = `<p>Détails de l'offre : <a href="${url}" target="_blank" class="text-primary-500 hover:underline">${name}</a></p>`;
                     }
 
-                    // Gestion du bouton Postuler avec la classe CSS spécifique
-                    if (email) {
-                        modalApply.innerHTML = `<a href="mailto:${email}?subject=Candidature pour ${title}" class="modal-apply-btn">Postuler à cette offre</a>`;
-                    }
+                    // Gestion du bouton Postuler avec les emails en dur
+                    modalApply.innerHTML = `<a href="mailto:accueil-angelus@apesf.fr,accueil-marmousets@apesf.fr?subject=Candidature pour ${title}" class="modal-apply-btn">Postuler à cette offre</a>`;
 
                     modal.style.display = 'flex';
                 });
