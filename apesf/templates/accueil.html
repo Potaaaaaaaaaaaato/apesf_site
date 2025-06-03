@@ -625,6 +625,33 @@
                 speechBubble.style.cursor = 'pointer';
             }
 
+            // Gestion de l'affichage de la bulle en fonction du défilement
+            if (speechBubble) {
+                // Fonction pour gérer l'affichage de la bulle selon le scroll
+                function handleBubbleVisibility() {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const windowHeight = window.innerHeight;
+
+                    // Seuil de défilement (ajustez cette valeur selon vos besoins)
+                    // Plus la valeur est petite, plus tôt la bulle disparaît
+                    const scrollThreshold = windowHeight * 0; // 30% de la hauteur de l'écran
+
+                    if (scrollTop > scrollThreshold) {
+                        // Masquer la bulle quand on a défilé
+                        speechBubble.style.display = 'none';
+                    } else {
+                        // Afficher la bulle quand on est en haut
+                        speechBubble.style.display = 'flex';
+                    }
+                }
+
+                // Écouter les événements de défilement
+                window.addEventListener('scroll', handleBubbleVisibility);
+
+                // Appeler la fonction au chargement pour définir l'état initial
+                handleBubbleVisibility();
+            }
+
             // Bouton pause/lecture des carrousels
             const carouselControl = document.getElementById('carouselControl');
             let carouselsPaused = false;
