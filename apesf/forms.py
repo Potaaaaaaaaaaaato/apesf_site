@@ -104,8 +104,33 @@ class ContactForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         initial_subject = kwargs.pop('initial_subject', '')
         super().__init__(*args, **kwargs)
+
+        # AJOUT DE LA CORRESPONDANCE ENTRE LES PARAMÈTRES URL ET LES VALEURS DU FORMULAIRE
         if initial_subject:
-            self.fields['subject'].initial = initial_subject
+            # Dictionnaire de correspondance entre les valeurs URL et les clés du formulaire
+            subject_mapping = {
+                'Candidature spontanée': 'candidature',
+                'Demande de stage': 'stage',
+                'Question générale': 'question',
+                'Demande de partenariat': 'partenariat',
+                'Adhésion à l\'association': 'adhesion',
+                'Faire un don': 'don',
+                'Participer à un événement': 'evenement',
+                'Autre': 'autre',
+            }
+
+            # Utiliser la correspondance ou la valeur directe si elle existe déjà dans les choix
+            mapped_subject = subject_mapping.get(initial_subject, initial_subject)
+
+            # Vérifier que la valeur mappée existe dans les choix
+            choice_keys = [choice[0] for choice in self.SUBJECT_CHOICES]
+            if mapped_subject in choice_keys:
+                self.fields['subject'].initial = mapped_subject
+            else:
+                # Debug : afficher les valeurs pour comprendre le problème
+                print(f"Valeur reçue: '{initial_subject}'")
+                print(f"Valeur mappée: '{mapped_subject}'")
+                print(f"Choix disponibles: {choice_keys}")
 
     def clean(self):
         cleaned_data = super().clean()

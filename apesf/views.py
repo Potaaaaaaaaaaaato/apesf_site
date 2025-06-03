@@ -686,7 +686,8 @@ Message :
             print("Formulaire non valide, erreurs : {}".format(form.errors))
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
-        form = ContactForm(initial={'subject': initial_subject})
+        # CORRECTION : utiliser initial_subject au lieu de initial={'subject': initial_subject}
+        form = ContactForm(initial_subject=initial_subject)
 
     return render(request, 'contact.html', {'page': page, 'form': form})
 

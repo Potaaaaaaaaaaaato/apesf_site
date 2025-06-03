@@ -15,11 +15,15 @@
 {% block content %}
     <!-- Styles personnalisés pour la page -->
     <style>
-        /* Style pour la liste des liens à droite */
+        /* Style pour la liste des liens à droite avec encadré jaune global */
         .unit-links {
             position: sticky;
             top: 100px;
-            padding-left: 30px; /* Retour au padding d'origine */
+            padding: 20px; /* Padding interne pour l'encadré */
+            border: 3px solid #F9B435; /* Encadré jaune autour de toute la liste */
+            border-radius: 12px; /* Coins arrondis */
+            background-color: rgba(249, 180, 53, 0.05); /* Fond jaune très léger */
+            box-shadow: 0 4px 12px rgba(249, 180, 53, 0.2); /* Ombre jaune */
         }
         .unit-links a {
             display: block;
@@ -29,18 +33,22 @@
             transition: all 0.3s ease;
             position: relative;
             border-radius: 8px;
+            margin-bottom: 6px; /* Espacement entre les liens */
+        }
+        .unit-links a:last-child {
+            margin-bottom: 0; /* Pas de marge pour le dernier élément */
         }
         .unit-links a:hover {
             color: #E84C3D;
             transform: scale(1.05);
             background-color: rgba(249, 180, 53, 0.2); /* Fond jaune pâle pour survol */
-            border: 1px solid #F9B435; /* Encadré jaune */
+            border: 1px solid #F9B435; /* Encadré jaune individuel */
         }
         .unit-links a.active {
             color: #E84C3D;
             font-weight: 600;
             background-color: rgba(249, 180, 53, 0.2); /* Fond jaune pâle pour actif */
-            border: 1px solid #F9B435; /* Encadré jaune */
+            border: 1px solid #F9B435; /* Encadré jaune individuel */
         }
         .unit-links a.active::before {
             content: "•";
@@ -141,7 +149,8 @@
         }
         @media (max-width: 768px) {
             .unit-links {
-                padding-left: 15px;
+                padding: 15px; /* Padding réduit sur mobile */
+                border-width: 2px; /* Bordure plus fine sur mobile */
             }
             .modal-content {
                 width: 95%;
@@ -173,7 +182,7 @@
                 <div class="bg-white shadow-lg rounded-lg p-6 section-container">
                     <h2 class="text-2xl font-semibold text-primary-500 mb-4">Découvrez nos établissements et services</h2>
                     <p class="text-neutral-600 mb-4">
-                        Bienvenue sur la page dédiée à la présentation de nos établissements et services à Saint-Étienne ! Nous sommes ravis de vous faire découvrir les différentes unités qui composent l’APESF, chacune conçue pour répondre aux besoins spécifiques des enfants, des jeunes majeurs et des familles que nous accompagnons. Que ce soit à travers nos structures d’accueil comme les Marmousets et l’Angélus, ou via des dispositifs innovants tels que le Placement modulable, l’AEMO H et l’Accueil parental, notre mission est d’offrir un soutien personnalisé et bienveillant. Sélectionnez une option à droite pour explorer nos services et en apprendre davantage sur notre engagement au quotidien.
+                        Bienvenue sur la page dédiée à la présentation de nos établissements et services à Saint-Étienne ! Nous sommes ravis de vous faire découvrir les différentes unités qui composent l'APESF, chacune conçue pour répondre aux besoins spécifiques des enfants, des jeunes majeurs et des familles que nous accompagnons. Que ce soit à travers nos structures d'accueil comme les Marmousets et l'Angélus, ou via des dispositifs innovants tels que le Placement modulable, l'AEMO H et l'Accueil parental, notre mission est d'offrir un soutien personnalisé et bienveillant. Sélectionnez une option à droite pour explorer nos services et en apprendre davantage sur notre engagement au quotidien.
                     </p>
                 </div>
             {% else %}
