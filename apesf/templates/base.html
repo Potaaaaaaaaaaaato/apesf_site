@@ -93,12 +93,12 @@
         /* STYLES POUR LES BLOCS DE FLEURS DYNAMIQUES */
         /* ======================== */
         .flower-block {
-            position: fixed;
+            position: absolute;
             z-index: 5;
             pointer-events: none;
             opacity: 0.7;
             transition: all 2s ease-in-out;
-            width: 240px;  /* Réduit pour chevauchement renforcé */
+            width: 200px;  /* Réduit encore plus pour permettre plus de chevauchement */
             height: 120px;
             display: flex;
             align-items: center;
@@ -106,12 +106,12 @@
         }
 
         .flower-block.top-left {
-            top: 100px;
+            top: 20px;
             left: 20px;
         }
 
         .flower-block.top-right {
-            top: 100px;
+            top: 20px;
             right: 20px;
         }
 
@@ -133,7 +133,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Positionnement horizontal avec chevauchement renforcé des 3 fleurs */
+        /* Positionnement horizontal avec chevauchement MAXIMAL des 3 fleurs */
         .flower-item:nth-child(1) {
             top: 0;
             left: 0;      /* Première fleur à gauche */
@@ -142,13 +142,13 @@
 
         .flower-item:nth-child(2) {
             top: 0;
-            left: 60px;   /* Chevauchement de 60px (au lieu de 40px) */
+            left: 40px;   /* Chevauchement renforcé de 40px (au lieu de 60px) */
             z-index: 2;
         }
 
         .flower-item:nth-child(3) {
             top: 0;
-            left: 120px;  /* Chevauchement de 60px (au lieu de 40px) */
+            left: 80px;   /* Chevauchement renforcé de 40px (au lieu de 120px) */
             z-index: 1;
         }
 
