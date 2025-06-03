@@ -90,31 +90,71 @@
         }
 
         /* ======================== */
-        /* STYLES POUR LES FLEURS DYNAMIQUES */
+        /* STYLES POUR LES BLOCS DE FLEURS DYNAMIQUES */
         /* ======================== */
-        .dynamic-flower {
-            position: absolute; /* Changé de fixed à absolute */
+        .flower-block {
+            position: fixed;
             z-index: 5;
             pointer-events: none;
             opacity: 0.7;
-            transition: opacity 0.3s ease;
-            width: 240px;  /* 80px × 3 = 240px */
-            height: 240px; /* 80px × 3 = 240px */
+            transition: all 2s ease-in-out;
+            width: 240px;  /* Réduit pour chevauchement renforcé */
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .dynamic-flower.top-left {
-            top: 20px; /* Remonté de 180px à 100px */
+        .flower-block.top-left {
+            top: 100px;
             left: 20px;
         }
 
-        .dynamic-flower.top-right {
-            top: 20px; /* Remonté de 180px à 100px */
+        .flower-block.top-right {
+            top: 100px;
             right: 20px;
         }
 
+        .flower-block.bottom-left {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .flower-block.bottom-right {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .flower-item {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Positionnement horizontal avec chevauchement renforcé des 3 fleurs */
+        .flower-item:nth-child(1) {
+            top: 0;
+            left: 0;      /* Première fleur à gauche */
+            z-index: 3;
+        }
+
+        .flower-item:nth-child(2) {
+            top: 0;
+            left: 60px;   /* Chevauchement de 60px (au lieu de 40px) */
+            z-index: 2;
+        }
+
+        .flower-item:nth-child(3) {
+            top: 0;
+            left: 120px;  /* Chevauchement de 60px (au lieu de 40px) */
+            z-index: 1;
+        }
+
         @media (max-width: 768px) {
-            .dynamic-flower {
-                display: none; /* Masquer complètement les fleurs sur mobile */
+            .flower-block {
+                display: none;
             }
         }
     </style>
@@ -291,7 +331,7 @@
     }
 
     // ========================
-    // SCRIPT POUR LES FLEURS DYNAMIQUES
+    // SCRIPT POUR LES BLOCS DE FLEURS DYNAMIQUES
     // ========================
     document.addEventListener('DOMContentLoaded', function() {
         // Vérifier si nous sommes sur la page d'accueil
@@ -300,45 +340,78 @@
             window.location.pathname.includes('accueil');
 
         if (!isAccueilPage) {
-            // Liste des fleurs disponibles
-            const flowers = [
-                '{% static "images/fleurs/fleur1.png" %}',
-                '{% static "images/fleurs/fleur2.png" %}',
-                '{% static "images/fleurs/fleur3.png" %}',
-                '{% static "images/fleurs/fleur4.png" %}',
-                '{% static "images/fleurs/fleur5.png" %}',
-            ];
+            // Configuration des fleurs avec types et couleurs
+            const flowerTypes = ['fleur1', 'fleur2', 'fleur3'];
+            const flowerColors = ['orange', 'bleue', 'jaune'];
 
-            // Positions pour les fleurs (seulement haut gauche et haut droite)
-            const positions = ['top-left', 'top-right'];
+            // Positions possibles pour le bloc (4 coins)
+            const positions = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 
-            // Générer un seed basé sur l'URL pour avoir des fleurs différentes par page
+            // Génération du seed basé sur l'URL et l'heure
             const pageSeed = btoa(window.location.pathname).split('').reduce((a, b) => {
                 a = ((a << 5) - a) + b.charCodeAt(0);
                 return a & a;
             }, 0);
-
-            // Générer un seed pour l'actualisation
             const refreshSeed = Date.now();
 
-            // Fonction pour générer un nombre pseudo-aléatoire
             function seededRandom(seed) {
                 const x = Math.sin(seed) * 10000;
                 return x - Math.floor(x);
             }
 
-            // Créer les fleurs dynamiques (une à gauche, une à droite)
-            positions.forEach((position, index) => {
-                const seed = pageSeed + refreshSeed + index;
-                const flowerIndex = Math.floor(seededRandom(seed) * flowers.length);
+            // Fonction pour mélanger un tableau avec un seed
+            function shuffleWithSeed(array, seed) {
+                const result = [...array];
+                for (let i = result.length - 1; i > 0; i--) {
+                    const j = Math.floor(seededRandom(seed + i) * (i + 1));
+                    [result[i], result[j]] = [result[j], result[i]];
+                }
+                return result;
+            }
+
+            // Sélection de la position initiale aléatoire pour le bloc
+            const positionSeed = pageSeed + refreshSeed;
+            let currentPositionIndex = Math.floor(seededRandom(positionSeed) * positions.length);
+
+            // Création du bloc de fleurs
+            const flowerBlock = document.createElement('div');
+            flowerBlock.className = `flower-block ${positions[currentPositionIndex]}`;
+
+            // Mélange des couleurs pour garantir 3 couleurs différentes
+            const shuffledColors = shuffleWithSeed(flowerColors, pageSeed + refreshSeed + 1);
+
+            // Création des 3 fleurs avec des types et couleurs aléatoires
+            for (let i = 0; i < 3; i++) {
+                const typeSeed = pageSeed + refreshSeed + i + 10;
+                const selectedType = flowerTypes[Math.floor(seededRandom(typeSeed) * flowerTypes.length)];
+                const selectedColor = shuffledColors[i]; // Couleur unique pour chaque fleur
 
                 const flowerImg = document.createElement('img');
-                flowerImg.src = flowers[flowerIndex];
-                flowerImg.alt = 'Fleur décorative';
-                flowerImg.className = `dynamic-flower ${position}`;
+                flowerImg.src = `{% static "images/fleurs/" %}${selectedType}_${selectedColor}.png`;
+                flowerImg.alt = `Fleur décorative ${selectedType} ${selectedColor}`;
+                flowerImg.className = 'flower-item';
 
-                document.body.appendChild(flowerImg);
-            });
+                flowerBlock.appendChild(flowerImg);
+            }
+
+            document.body.appendChild(flowerBlock);
+
+            // Animation de déplacement du bloc toutes les 8 secondes
+            setInterval(() => {
+                // Retirer l'ancienne classe de position
+                positions.forEach(pos => flowerBlock.classList.remove(pos));
+
+                // Choisir une nouvelle position différente de l'actuelle
+                let newPositionIndex;
+                do {
+                    newPositionIndex = Math.floor(seededRandom(Date.now()) * positions.length);
+                } while (newPositionIndex === currentPositionIndex && positions.length > 1);
+
+                currentPositionIndex = newPositionIndex;
+
+                // Ajouter la nouvelle position
+                flowerBlock.classList.add(positions[currentPositionIndex]);
+            }, 8000); // Change de position toutes les 8 secondes
         }
     });
 </script>
