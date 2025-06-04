@@ -34,6 +34,7 @@
         .section-container p {
             color: #4B5563; /* text-neutral-600 */
             margin-top: 12px;
+            text-align: justify; /* AJOUT : Justifie le texte */
         }
         .section-container .expand-icon {
             position: absolute;
@@ -77,8 +78,11 @@
         }
         .modal-content p {
             font-size: 1rem;
-            color: #4B5563; /* text-neutral-600 */
+            color: #4B5563;
             margin-bottom: 12px;
+            white-space: pre-line; /* AJOUT : Respecte les sauts de ligne */
+            line-height: 1.6;      /* AJOUT : Améliore l'espacement des lignes */
+            text-align: justify;   /* AJOUT : Justifie le texte */
         }
         .modal-content .modal-images {
             display: flex;

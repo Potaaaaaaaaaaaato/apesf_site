@@ -169,6 +169,7 @@
             display: -webkit-box;
             -webkit-line-clamp: 6; /* Limite à 4 lignes */
             -webkit-box-orient: vertical;
+            text-align: justify; /* AJOUT : Justifie le texte */
         }
         .news-carousel .swiper-slide a {
             font-size: 0.875rem; /* 14px */
@@ -320,6 +321,9 @@
             font-size: 1rem;
             color: #4B5563;
             margin-bottom: 12px;
+            white-space: pre-line; /* AJOUT : Respecte les sauts de ligne */
+            line-height: 1.6;      /* AJOUT : Améliore l'espacement des lignes */
+            text-align: justify;   /* AJOUT : Justifie le texte */
         }
         .modal-content .modal-images {
             display: flex;

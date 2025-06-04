@@ -83,6 +83,11 @@
         .section-container .expand-icon:hover {
             color: #E84C3D;
         }
+        .section-container p {
+            color: #4B5563; /* text-neutral-600 */
+            margin-top: 12px;
+            text-align: justify; /* AJOUT : Justifie le texte */
+        }
         .preserve-linebreaks {
             white-space: pre-line;
             line-height: 1.6;
@@ -109,6 +114,7 @@
             max-height: 90vh; /* Légèrement augmenté pour plus d'espace */
             overflow-y: auto; /* Permet de faire défiler si le contenu est trop long */
             position: relative;
+            text-align: justify;   /* AJOUT : Justifie le texte */
         }
         .modal-content h3 {
             font-size: 1.5rem;
@@ -120,6 +126,8 @@
             font-size: 1rem;
             color: #4B5563;
             margin-bottom: 12px;
+            white-space: pre-line; /* AJOUT : Respecte les sauts de ligne */
+            line-height: 1.6;      /* AJOUT : Améliore l'espacement des lignes */
         }
         .modal-content .modal-images {
             display: flex;
