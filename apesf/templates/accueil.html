@@ -109,8 +109,14 @@
 
         /* Conteneurs des carrousels */
         .carousel-container, .news-carousel {
-            position: relative;
-            width: 100%;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .carousel-container .swiper, .news-carousel .swiper {
+            border-radius: 0.5rem;
+            overflow: hidden;
         }
 
         /* Taille fixe pour les carrousels */
@@ -456,8 +462,8 @@
                     <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
                 </div>
 
-                <!-- Carrousel (Swiper) -->
-                <div class="carousel-container">
+                <!-- Carrousel (Swiper) avec ombre -->
+                <div class="carousel-container bg-white">
                     <div id="carouselAccueil" class="swiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
@@ -483,8 +489,8 @@
                 </div>
             </div>
 
-            <!-- Carrousel d'actualités -->
-            <div class="news-carousel" id="news-carousel-target">
+            <!-- Carrousel d'actualités avec ombre -->
+            <div class="news-carousel bg-white" id="news-carousel-target">
                 <div id="carouselNews" class="swiper">
                     <div class="swiper-wrapper">
                         {% for news in news_items %}
