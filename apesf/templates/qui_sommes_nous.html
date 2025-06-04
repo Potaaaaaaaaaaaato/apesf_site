@@ -76,6 +76,11 @@
         .section-container .expand-icon:hover {
             color: #E84C3D;
         }
+        /* NOUVEAU STYLE : Préservation des sauts de ligne */
+        .preserve-linebreaks {
+            white-space: pre-line;
+            line-height: 1.6;
+        }
         /* Style pour le modal */
         .modal {
             display: none;
@@ -181,8 +186,8 @@
                 <!-- Section par défaut -->
                 <div class="bg-white shadow-lg rounded-lg p-6 section-container">
                     <h2 class="text-2xl font-semibold text-primary-500 mb-4">Découvrez nos établissements et services</h2>
-                    <p class="text-neutral-600 mb-4">
-                        Bienvenue sur la page dédiée à la présentation de nos établissements et services à Saint-Étienne ! Nous sommes ravis de vous faire découvrir les différentes unités qui composent l'APESF, chacune conçue pour répondre aux besoins spécifiques des enfants, des jeunes majeurs et des familles que nous accompagnons. Que ce soit à travers nos structures d'accueil comme les Marmousets et l'Angélus, ou via des dispositifs innovants tels que le Placement modulable, l'AEMO H et l'Accueil parental, notre mission est d'offrir un soutien personnalisé et bienveillant. Sélectionnez une option à droite pour explorer nos services et en apprendre davantage sur notre engagement au quotidien.
+                    <p class="text-neutral-600 mb-4 preserve-linebreaks">
+                        Bienvenue sur la page dédiée à la présentation de nos établissements et services à Saint-Étienne ! Nous sommes ravis de vous faire découvrir les différentes unités qui composent notre association et qui œuvrent quotidiennement pour l'accompagnement des enfants et de leurs familles.
                     </p>
                 </div>
             {% else %}
@@ -197,7 +202,8 @@
                                  data-link="{% if section.link %}{{ section.link }}{% endif %}">
                                 <i class="bi bi-arrows-angle-expand expand-icon"></i>
                                 <h2 class="text-2xl font-semibold text-primary-500 mb-4">{{ section.title }}</h2>
-                                <p class="text-neutral-600 mb-4">{{ section.content }}</p>
+                                <!-- MODIFICATION : Ajout de la classe preserve-linebreaks -->
+                                <p class="text-neutral-600 mb-4 preserve-linebreaks">{{ section.content }}</p>
                                 {% if section.link %}
                                     <a href="{{ section.link }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
                                         En savoir plus
@@ -234,7 +240,8 @@
         <div class="modal-content">
             <button class="return-btn">Retour</button>
             <h3 id="modalTitle"></h3>
-            <p id="modalContent"></p>
+            <!-- MODIFICATION : Ajout de la classe preserve-linebreaks -->
+            <p id="modalContent" class="preserve-linebreaks"></p>
             <div id="modalImages" class="modal-images"></div>
             <p id="noImagesMessage" style="color: #4B5563; display: none;">Aucune image associée à cette section.</p>
             <div id="modalLink"></div>

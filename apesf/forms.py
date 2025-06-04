@@ -22,7 +22,12 @@ class SectionForm(forms.ModelForm):
         fields = ['title', 'content', 'link', 'order', 'unit', 'organigram_type']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
-            'content': forms.Textarea(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all', 'rows': 5}),
+            # MODIFICATION : Ajout de placeholder pour expliquer les sauts de ligne
+            'content': forms.Textarea(attrs={
+                'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all',
+                'rows': 8,
+                'placeholder': 'Saisissez le contenu de la section. Les sauts de ligne seront préservés dans l\'affichage.'
+            }),
             'link': forms.URLInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
             'order': forms.NumberInput(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
             'unit': forms.Select(attrs={'class': 'w-full p-3 border border-neutral-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all'}),
@@ -30,11 +35,11 @@ class SectionForm(forms.ModelForm):
         }
         labels = {
             'title': 'Titre',
-            'content': 'Contenu',
+            'content': 'Contenu (les sauts de ligne seront préservés)',
             'link': 'Lien (optionnel)',
-            'order': 'Ordre d’affichage',
+            'order': 'Ordre d\'affichage',
             'unit': 'Établissement/Service associé',
-            'organigram_type': 'Type d’organigramme',
+            'organigram_type': 'Type d\'organigramme',
         }
 
 class UploadedImageForm(forms.ModelForm):

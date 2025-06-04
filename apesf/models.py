@@ -40,7 +40,7 @@ class Section(models.Model):
     organigram_type = models.CharField(max_length=50, choices=ORGANIGRAM_TYPE_CHOICES, default='', verbose_name="Type d'organigramme", blank=True)
     title = models.CharField(max_length=200, verbose_name="Titre")
     content = models.TextField(verbose_name="Contenu")
-    description = models.TextField(blank=True, null=True, verbose_name="Description pour l'organigramme", help_text="Description affichée dans le modal de l'organigramme entre l'image et le bouton de téléchargement")
+    description = models.TextField(blank=True, null=True, verbose_name="Description pour l'organigramme", help_text="Description affichée dans le modal de l'organigramme entre l'image et le bouton")
     link = models.URLField(blank=True, null=True, verbose_name="Lien (optionnel)")
     order = models.PositiveIntegerField(default=0, verbose_name="Ordre d'affichage")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
@@ -57,6 +57,11 @@ class Section(models.Model):
         elif self.organigram_type:
             return f"{self.title} (Organigramme: {self.get_organigram_type_display()})"
         return f"{self.title} (Unité: {self.get_unit_display() or 'Aucune unité'})"
+
+    # NOUVELLE MÉTHODE : Pour préserver les sauts de ligne
+    def get_formatted_content(self):
+        """Retourne le contenu avec les sauts de ligne convertis en balises HTML"""
+        return self.content.replace('\n', '<br>')
 
 # Modèle pour les images uploadées (associées à une section ou une actualité)
 class UploadedImage(models.Model):

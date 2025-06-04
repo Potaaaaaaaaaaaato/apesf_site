@@ -118,22 +118,23 @@
         .modal-content .return-btn:hover {
             color: #E84C3D;
         }
-        /* Style pour le bouton de téléchargement - respecte le design existant et CENTRÉ */
+        /* Style pour le bouton de téléchargement */
         .download-btn {
-            display: block; /* Changé de inline-block à block */
+            display: block;
             background-color: #1B4F72; /* Couleur primary-500 du site */
             color: white;
             padding: 12px 24px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 500;
-            margin: 16px auto 0 auto; /* Centrage avec margin auto */
+            margin: 16px auto 0 auto; /* Centrage horizontal par rapport à la section */
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-align: center; /* Centre le texte dans le bouton */
-            width: fit-content; /* La largeur s'adapte au contenu */
+            text-align: center;
+            width: fit-content;
         }
+
         .download-btn:hover {
             background-color: #15406b; /* Couleur primary-600 du site */
             transform: scale(1.02);
@@ -186,6 +187,10 @@
                             {% endif %}
                         </div>
                     {% endfor %}
+                    <!-- Bouton de téléchargement déplacé ici -->
+                    <button id="downloadBtn" class="download-btn">
+                        Télécharger l'arborescence du conseil d'administration
+                    </button>
                 </div>
             {% else %}
                 <div class="text-center text-neutral-600">
@@ -233,11 +238,6 @@
             <div id="modalImages" class="modal-images"></div>
             <p id="noImagesMessage" style="color: #4B5563; display: none;">Aucune image associée à cette section.</p>
             <div id="modalLink"></div>
-
-            <!-- Bouton de téléchargement avec le style du site -->
-            <button id="downloadBtn" class="download-btn">
-                Télécharger l'arborescence du conseil d'administration
-            </button>
         </div>
     </div>
 
