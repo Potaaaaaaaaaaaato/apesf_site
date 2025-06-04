@@ -109,14 +109,8 @@
 
         /* Conteneurs des carrousels */
         .carousel-container, .news-carousel {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-radius: 0.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .carousel-container .swiper, .news-carousel .swiper {
-            border-radius: 0.5rem;
-            overflow: hidden;
+            position: relative;
+            width: 100%;
         }
 
         /* Taille fixe pour les carrousels */
@@ -462,8 +456,8 @@
                     <a href="https://instagram.com" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
                 </div>
 
-                <!-- Carrousel (Swiper) avec ombre -->
-                <div class="carousel-container bg-white">
+                <!-- Carrousel (Swiper) -->
+                <div class="carousel-container shadow-lg">
                     <div id="carouselAccueil" class="swiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
@@ -489,8 +483,8 @@
                 </div>
             </div>
 
-            <!-- Carrousel d'actualités avec ombre -->
-            <div class="news-carousel bg-white" id="news-carousel-target">
+            <!-- Carrousel d'actualités -->
+            <div class="news-carousel shadow-lg" id="news-carousel-target">
                 <div id="carouselNews" class="swiper">
                     <div class="swiper-wrapper">
                         {% for news in news_items %}
@@ -574,7 +568,7 @@
     <!-- Script pour initialiser les carrousels et gérer le modal -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Initialisation du carrousel d'images
+            // Initialisation du carrousel d'images avec sélecteurs spécifiques
             const carouselAccueil = new Swiper('#carouselAccueil', {
                 loop: true,
                 autoplay: {
@@ -582,16 +576,16 @@
                     disableOnInteraction: false,
                 },
                 pagination: {
-                    el: '.swiper-pagination',
+                    el: '#carouselAccueil .swiper-pagination',
                     clickable: true,
                 },
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: '#carouselAccueil .swiper-button-next',
+                    prevEl: '#carouselAccueil .swiper-button-prev',
                 },
             });
 
-            // Initialisation du carrousel d'actualités
+            // Initialisation du carrousel d'actualités avec sélecteurs spécifiques
             const carouselNews = new Swiper('#carouselNews', {
                 loop: true,
                 autoplay: {
@@ -599,12 +593,12 @@
                     disableOnInteraction: false,
                 },
                 pagination: {
-                    el: '.swiper-pagination',
+                    el: '#carouselNews .swiper-pagination',
                     clickable: true,
                 },
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: '#carouselNews .swiper-button-next',
+                    prevEl: '#carouselNews .swiper-button-prev',
                 },
             });
 
