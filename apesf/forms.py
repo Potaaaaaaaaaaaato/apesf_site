@@ -2,6 +2,7 @@ from django import forms
 from .models import JobOffer, News, PageContent, Section, UploadedImage, ContactMessage, ContactMessageAttachment
 from .models import ArborescenceFile
 from django.contrib.auth.forms import PasswordChangeForm
+from .models import CarouselImage
 
 class PageContentForm(forms.ModelForm):
     class Meta:
@@ -213,3 +214,29 @@ class ForcePasswordChangeForm(PasswordChangeForm):
         self.fields['old_password'].label = "Mot de passe actuel"
         self.fields['new_password1'].label = "Nouveau mot de passe"
         self.fields['new_password2'].label = "Confirmez le nouveau mot de passe"
+
+class CarouselImageForm(forms.ModelForm):
+    class Meta:
+        model = CarouselImage
+        fields = ['image', 'title', 'description', 'is_active']
+        widgets = {
+            'image': forms.FileInput(attrs={
+                'class': 'block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100',
+                'accept': 'image/*'
+            }),
+            'title': forms.TextInput(attrs={
+                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50',
+                'placeholder': 'Titre de l\'image (pour l\'accessibilité)'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50',
+                'rows': 3,
+                'placeholder': 'Description optionnelle de l\'image'
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+            })
+        }
+
+class CarouselOrderForm(forms.Form):
+    image_ids = forms.CharField(widget=forms.HiddenInput())

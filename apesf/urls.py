@@ -35,4 +35,9 @@ urlpatterns = [
     path('download-arborescence/', views.download_arborescence, name='download_arborescence'),
     path('gerer-fichier-arborescence/', views.gerer_fichier_arborescence, name='gerer_fichier_arborescence'),
     path('forcer-changement-mot-de-passe/', views.forcer_changement_mot_de_passe, name='forcer_changement_mot_de_passe'),
+    path('carousel/', views.manage_carousel, name='manage_carousel'),
+    path('carousel/add/', views.add_carousel_image, name='add_carousel_image'),
+    path('carousel/edit/<int:image_id>/', views.edit_carousel_image, name='edit_carousel_image'),
+    path('carousel/delete/<int:image_id>/', views.delete_carousel_image, name='delete_carousel_image'),
+    path('carousel/reorder/', views.reorder_carousel_images, name='reorder_carousel_images'),
 ]

@@ -217,3 +217,35 @@ class ArborescenceFile(models.Model):
 
     def __str__(self):
         return self.title
+
+# Modèle pour gérer les images du carrousel de la page d'accueil
+class CarouselImage(models.Model):
+    image = models.ImageField(upload_to='carousel/', verbose_name="Image du carrousel")
+    title = models.CharField(max_length=200, verbose_name="Titre de l'image", help_text="Texte alternatif pour l'accessibilité")
+    description = models.TextField(blank=True, verbose_name="Description", help_text="Description optionnelle de l'image")
+    order = models.PositiveIntegerField(default=0, verbose_name="Ordre d'affichage")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d'ajout")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Date de modification")
+
+    class Meta:
+        ordering = ['order', '-created_at']
+        verbose_name = "Image du carrousel"
+        verbose_name_plural = "Images du carrousel"
+
+    def __str__(self):
+        return f"{self.title} (Ordre: {self.order})"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.image:
+            img_path = self.image.path
+            try:
+                img = Image.open(img_path)
+                # Redimensionner pour le carrousel (optionnel)
+                if img.width > 1200 or img.height > 800:
+                    output_size = (1200, 800)
+                    img.thumbnail(output_size, Image.Resampling.LANCZOS)
+                    img.save(img_path, quality=90)
+            except Exception as e:
+                print(f"Erreur lors du redimensionnement de l'image {self.image.name} : {e}")

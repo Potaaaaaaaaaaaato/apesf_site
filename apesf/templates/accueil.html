@@ -464,21 +464,22 @@
                 <div class="carousel-container shadow-lg">
                     <div id="carouselAccueil" class="swiper">
                         <div class="swiper-wrapper">
-                            <div class="swiper-slide">
-                                <img src="{% static 'images/carousel-image-1.jpg' %}" alt="Activités avec les enfants">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="{% static 'images/carousel-image-2.jpg' %}" alt="Moments partagés en famille">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Les Marmousets">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="{% static 'images/carousel-image-4.jpg' %}" alt="L'Angélus">
-                            </div>
-                            <div class="swiper-slide">
-                                <img src="{% static 'images/carousel-image-5.jpg' %}" alt="Soutien éducatif">
-                            </div>
+                            {% for image in carousel_images %}
+                                <div class="swiper-slide">
+                                    <img src="{{ image.image.url }}" alt="{{ image.title }}">
+                                </div>
+                                {% empty %}
+                                <!-- Images par défaut si aucune image n'est configurée -->
+                                <div class="swiper-slide">
+                                    <img src="{% static 'images/carousel-image-1.jpg' %}" alt="Image par défaut 1">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="{% static 'images/carousel-image-2.jpg' %}" alt="Image par défaut 2">
+                                </div>
+                                <div class="swiper-slide">
+                                    <img src="{% static 'images/carousel-image-3.jpg' %}" alt="Image par défaut 3">
+                                </div>
+                            {% endfor %}
                         </div>
                         <div class="swiper-button-prev"></div>
                         <div class="swiper-button-next"></div>

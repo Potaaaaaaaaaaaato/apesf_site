@@ -1,10 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Supprimer l'image du carrousel{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-red-500">Supprimer l'image du carrousel</h1>
+            <p class="text-neutral-600 mt-2">Cette action est irréversible</p>
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <div class="text-center mb-6">
+                    <img src="{{ carousel_image.image.url }}" alt="{{ carousel_image.title }}" class="max-w-full h-auto max-h-64 mx-auto rounded-lg shadow-sm mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">{{ carousel_image.title }}</h2>
+                    {% if carousel_image.description %}
+                        <p class="text-gray-600 mt-2">{{ carousel_image.description }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-exclamation-triangle text-red-400 text-xl"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-red-700">
+                                <strong>Attention :</strong> Cette action supprimera définitivement cette image du carrousel.
+                                Le fichier image sera également supprimé du serveur.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" class="text-center">
+                    {% csrf_token %}
+                    <div class="flex gap-4 justify-center">
+                        <button type="submit" class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 hover:scale-105 transition-all">
+                            Confirmer la suppression
+                        </button>
+                        <a href="{% url 'manage_carousel' %}" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">
+                            Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

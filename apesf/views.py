@@ -10,6 +10,12 @@ from .forms import ContactForm, JobOfferForm, PageContentForm, SectionForm, Uplo
 from .models import ArborescenceFile
 from .forms import ArborescenceFileForm
 from .forms import ForcePasswordChangeForm
+import json
+from .models import CarouselImage
+from .forms import CarouselImageForm, CarouselOrderForm
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.db import models
 
 # Page d'accueil
 def accueil(request):
@@ -18,8 +24,8 @@ def accueil(request):
     except PageContent.DoesNotExist:
         page = None
 
-    # Récupérer les 5 dernières images uploadées pour le carrousel
-    carousel_images = UploadedImage.objects.all().order_by('-uploaded_at')[:5]
+    # MODIFICATION : Utiliser les images du carrousel au lieu des UploadedImage
+    carousel_images = CarouselImage.objects.filter(is_active=True).order_by('order')
 
     # Récupérer les 5 dernières actualités pour le carrousel d'actualités
     news_items = News.objects.prefetch_related('images').all().order_by('-date')[:5]
@@ -763,3 +769,103 @@ def forcer_changement_mot_de_passe(request):
         form = ForcePasswordChangeForm(request.user)
 
     return render(request, 'forcer_changement_mot_de_passe.html', {'form': form})
+
+@login_required
+def manage_carousel(request):
+    """Vue pour gérer les images du carrousel"""
+    if not request.user.userprofile.role in ['admin', 'superuser']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('tableau_de_bord')
+
+    carousel_images = CarouselImage.objects.all().order_by('order')
+
+    return render(request, 'manage_carousel.html', {
+        'carousel_images': carousel_images
+    })
+
+@login_required
+def add_carousel_image(request):
+    """Vue pour ajouter une image au carrousel"""
+    if not request.user.userprofile.role in ['admin', 'superuser']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('tableau_de_bord')
+
+    if request.method == 'POST':
+        form = CarouselImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Définir l'ordre automatiquement
+            last_order = CarouselImage.objects.aggregate(
+                max_order=models.Max('order')
+            )['max_order'] or 0
+
+            carousel_image = form.save(commit=False)
+            carousel_image.order = last_order + 1
+            carousel_image.save()
+
+            messages.success(request, 'Image ajoutée au carrousel avec succès!')
+            return redirect('manage_carousel')
+    else:
+        form = CarouselImageForm()
+
+    return render(request, 'add_carousel_image.html', {
+        'form': form
+    })
+
+@login_required
+def edit_carousel_image(request, image_id):
+    """Vue pour modifier une image du carrousel"""
+    if not request.user.userprofile.role in ['admin', 'superuser']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('tableau_de_bord')
+
+    carousel_image = get_object_or_404(CarouselImage, id=image_id)
+
+    if request.method == 'POST':
+        form = CarouselImageForm(request.POST, request.FILES, instance=carousel_image)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Image modifiée avec succès!')
+            return redirect('manage_carousel')
+    else:
+        form = CarouselImageForm(instance=carousel_image)
+
+    return render(request, 'edit_carousel_image.html', {
+        'form': form,
+        'carousel_image': carousel_image
+    })
+
+@login_required
+def delete_carousel_image(request, image_id):
+    """Vue pour supprimer une image du carrousel"""
+    if not request.user.userprofile.role in ['admin', 'superuser']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('tableau_de_bord')
+
+    carousel_image = get_object_or_404(CarouselImage, id=image_id)
+
+    if request.method == 'POST':
+        carousel_image.delete()
+        messages.success(request, 'Image supprimée du carrousel avec succès!')
+        return redirect('manage_carousel')
+
+    return render(request, 'delete_carousel_image.html', {
+        'carousel_image': carousel_image
+    })
+
+@login_required
+@require_POST
+def reorder_carousel_images(request):
+    """Vue AJAX pour réorganiser les images du carrousel"""
+    if not request.user.userprofile.role in ['admin', 'superuser']:
+        return JsonResponse({'success': False, 'error': 'Permissions insuffisantes'})
+
+    try:
+        data = json.loads(request.body)
+        image_ids = data.get('image_ids', [])
+
+        for index, image_id in enumerate(image_ids):
+            CarouselImage.objects.filter(id=image_id).update(order=index + 1)
+
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
