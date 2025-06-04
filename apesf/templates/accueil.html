@@ -495,7 +495,7 @@
                                  data-content="{{ news.content }}"
                                  data-date="{{ news.date|date:'Y-m-d' }}"
                                  data-document="{% if news.document %}{{ news.document.url }}{% endif %}"
-                                 data-images="{% for image in news.images.all %}{{ image.image.url }}|{% endfor %}"
+                                 data-images="{% if news.image %}{{ news.image.url }}|{% endif %}{% for image in news.images.all %}{{ image.image.url }}|{% endfor %}"
                                  data-is-upcoming="{% if news.date|date:'Y-m-d' > current_date %}true{% else %}false{% endif %}">
                                 <div class="upcoming-badge-container">
                                     <div class="upcoming-badge">À VENIR</div>
