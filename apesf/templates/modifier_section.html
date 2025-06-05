@@ -7,67 +7,102 @@
     <meta name="author" content="Association Pour l'Enfant et Sa Famille">
 {% endblock %}
 {% block content %}
-<div class="container mx-auto px-6 py-8">
-    <h1 class="text-3xl font-bold text-primary-500 mb-6 text-center">
-        Modifier la section : {{ section.title }}
-    </h1>
-
-    <!-- Messages -->
-    {% if messages %}
-        <div class="mb-6">
-            {% for message in messages %}
-                <div class="bg-{{ message.tags }}-100 text-{{ message.tags }}-800 p-4 rounded-lg text-center">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-green-600">Modifier la section</h1>
         </div>
-    {% endif %}
 
-    <!-- Formulaire pour modifier la section -->
-    <div class="bg-white shadow-lg rounded-lg p-6 max-w-2xl mx-auto">
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="text-center">
-                <button type="submit" class="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors">
-                    Mettre à jour
-                </button>
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-info-circle-fill text-blue-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-blue-800">Modification de section</h2>
+                </div>
+                <p class="text-blue-700">
+                    Vous modifiez la section <strong>{{ section.title }}</strong>.
+                    Les modifications seront immédiatement visibles sur le site public.
+                </p>
             </div>
-        </form>
-    </div>
 
-    <!-- Gestion des images associées -->
-    <div class="max-w-2xl mx-auto mt-8">
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Images associées</h2>
-        {% if section.images.all %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                {% for image in section.images.all %}
-                    <div class="bg-white shadow-lg rounded-lg p-4">
-                        <img src="{{ image.image.url }}" alt="{{ section.title }}" class="w-full h-32 object-cover rounded-lg mb-2">
-                        <a href="{% url 'supprimer_image' image.id %}" class="block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-center" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ? Cette action est irréversible.');">Supprimer</a>
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-2">Section à modifier :</h3>
+                <p><strong>Titre :</strong> {{ section.title }}</p>
+                <p><strong>Créée le :</strong> {{ section.created_at|date:"d/m/Y à H:i" }}</p>
+                {% if section.page %}
+                    <p><strong>Page associée :</strong> {{ section.page.title }}</p>
+                {% elif section.unit %}
+                    <p><strong>Unité associée :</strong> {{ section.unit.get_name_display }}</p>
+                {% endif %}
+                {% if section.images.all %}
+                    <p><strong>Images associées :</strong> {{ section.images.all|length }} image{{ section.images.all|length|pluralize }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mb-6">
+                    {% for message in messages %}
+                        <div class="bg-green-50 border border-green-200 rounded p-4 text-green-800">
+                            <div class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-green-500 text-xl mr-2"></i>
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Formulaire pour modifier la section -->
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <div class="flex justify-center gap-4">
+                    <button type="submit"
+                            class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                        <i class="bi bi-check-lg mr-1"></i>
+                        Mettre à jour la section
+                    </button>
+                    {% if section.page %}
+                        <a href="{% url 'gerer_sections' section.page.id %}"
+                           class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                            <i class="bi bi-arrow-left mr-1"></i>
+                            Annuler
+                        </a>
+                    {% elif section.unit %}
+                        <a href="{% url 'gerer_sections_unite' section.unit.name %}"
+                           class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                            <i class="bi bi-arrow-left mr-1"></i>
+                            Annuler
+                        </a>
+                    {% else %}
+                        <a href="{% url 'tableau_de_bord' %}"
+                           class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                            <i class="bi bi-arrow-left mr-1"></i>
+                            Annuler
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+        <!-- Gestion des images associées -->
+        <div class="max-w-2xl mx-auto mt-8">
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-primary-500 mb-4">Images associées</h2>
+                {% if section.images.all %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                        {% for image in section.images.all %}
+                            <div class="bg-white shadow-lg rounded-lg p-4">
+                                <img src="{{ image.image.url }}" alt="{{ section.title }}" class="w-full h-32 object-cover rounded-lg mb-2">
+                                <a href="{% url 'supprimer_image' image.id %}" class="block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-center" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ? Cette action est irréversible.');">Supprimer</a>
+                            </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
+                {% else %}
+                    <p class="text-neutral-600 mb-4 text-center">Aucune image associée à cette section. Ajoutez-en via le formulaire ci-dessus.</p>
+                {% endif %}
             </div>
-        {% else %}
-            <p class="text-neutral-600 mb-4 text-center">Aucune image associée à cette section. Ajoutez-en via le formulaire ci-dessus.</p>
-        {% endif %}
+        </div>
     </div>
-
-    <!-- Bouton de retour -->
-    <div class="text-center mt-8">
-        {% if section.page %}
-            <a href="{% url 'gerer_sections' section.page.id %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">
-                Retour à la gestion des sections
-            </a>
-        {% elif section.unit %}
-            <a href="{% url 'gerer_sections_unite' section.unit %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">
-                Retour à la gestion des sections ({{ section.get_unit_display }})
-            </a>
-        {% else %}
-            <a href="{% url 'gerer_organigrammes' %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">
-                Retour à la gestion des organigrammes
-            </a>
-        {% endif %}
-    </div>
-</div>
 {% endblock %}

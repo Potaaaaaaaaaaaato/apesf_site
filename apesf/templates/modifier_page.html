@@ -1,33 +1,69 @@
 {% extends 'base.html' %}
 {% block title %}Modifier la page - {{ page.title }}{% endblock %}
 {% block content %}
-<div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-primary-500">Modifier la page : {{ page.title }}</h1>
-</div>
-<div class="section mx-auto max-w-md">
-    <p class="text-neutral-600 mb-8">Modifiez les champs ci-dessous pour mettre à jour la page.</p>
-    {% if messages %}
-        {% for message in messages %}
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        <div>
-            <label for="id_title" class="block text-sm font-medium text-neutral-600">Titre</label>
-            {{ form.title }}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-green-600">Modifier la page</h1>
         </div>
-        <div>
-            <label for="id_slug" class="block text-sm font-medium text-neutral-600">Slug (URL)</label>
-            {{ form.slug }}
-        </div>
-        <div class="text-center">
-            <button type="submit" class="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">Mettre à jour</button>
-        </div>
-    </form>
-    <div class="text-center mt-8">
-        <a href="{% url 'tableau_de_bord' %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">Retour au tableau de bord</a>
-    </div>
-</div>
-{% endblock %}
 
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-info-circle-fill text-blue-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-blue-800">Modification de page</h2>
+                </div>
+                <p class="text-blue-700">
+                    Vous modifiez la page <strong>{{ page.title }}</strong>.
+                    Les modifications seront immédiatement visibles sur le site public.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-2">Page à modifier :</h3>
+                <p><strong>Titre :</strong> {{ page.title }}</p>
+                <p><strong>Slug (URL) :</strong> {{ page.slug }}</p>
+                <p><strong>Créée le :</strong> {{ page.created_at|date:"d/m/Y à H:i" }}</p>
+                <p><strong>Dernière modification :</strong> {{ page.updated_at|date:"d/m/Y à H:i" }}</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mb-6">
+                    {% for message in messages %}
+                        <div class="bg-green-50 border border-green-200 rounded p-4 text-green-800">
+                            <div class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-green-500 text-xl mr-2"></i>
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label for="id_title" class="block text-sm font-medium text-neutral-600">Titre</label>
+                    {{ form.title }}
+                </div>
+                <div>
+                    <label for="id_slug" class="block text-sm font-medium text-neutral-600">Slug (URL)</label>
+                    {{ form.slug }}
+                </div>
+
+                <div class="flex justify-center gap-4">
+                    <button type="submit"
+                            class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                        <i class="bi bi-check-lg mr-1"></i>
+                        Mettre à jour la page
+                    </button>
+                    <a href="{% url 'tableau_de_bord' %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                        <i class="bi bi-arrow-left mr-1"></i>
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

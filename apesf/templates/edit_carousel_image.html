@@ -4,98 +4,130 @@
 {% block title %}Modifier l'image du carrousel{% endblock %}
 
 {% block content %}
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-6">
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-primary-500">Modifier l'image du carrousel</h1>
-            <p class="text-neutral-600 mt-2">{{ carousel_image.title }}</p>
+            <h1 class="text-3xl font-bold text-green-600">Modifier l'image du carrousel</h1>
         </div>
 
-        <div class="max-w-2xl mx-auto">
-            <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-info-circle-fill text-blue-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-blue-800">Modification d'image du carrousel</h2>
+                </div>
+                <p class="text-blue-700">
+                    Vous modifiez l'image <strong>{{ carousel_image.title }}</strong>.
+                    Les modifications seront immédiatement visibles sur le carrousel du site.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-2">Image à modifier :</h3>
+                <p><strong>Titre :</strong> {{ carousel_image.title }}</p>
+                <p><strong>Ordre d'affichage :</strong> {{ carousel_image.order }}</p>
+                <p><strong>Statut :</strong>
+                    {% if carousel_image.is_active %}
+                        <span class="text-green-600">Active</span>
+                    {% else %}
+                        <span class="text-red-600">Inactive</span>
+                    {% endif %}
+                </p>
+                <p><strong>Ajoutée le :</strong> {{ carousel_image.created_at|date:"d/m/Y à H:i" }}</p>
+
                 <!-- Aperçu de l'image actuelle -->
-                <div class="mb-6 text-center">
+                <div class="mt-4 text-center">
                     <p class="text-sm font-medium text-gray-700 mb-2">Image actuelle:</p>
                     <img src="{{ carousel_image.image.url }}" alt="{{ carousel_image.title }}" class="max-w-full h-auto max-h-64 mx-auto rounded-lg shadow-sm">
                 </div>
+            </div>
 
-                {% if messages %}
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mb-6">
                     {% for message in messages %}
-                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">
-                            {{ message }}
+                        <div class="bg-green-50 border border-green-200 rounded p-4 text-green-800">
+                            <div class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-green-500 text-xl mr-2"></i>
+                                {{ message }}
+                            </div>
                         </div>
                     {% endfor %}
-                {% endif %}
+                </div>
+            {% endif %}
 
-                <form method="post" enctype="multipart/form-data" class="space-y-6">
-                    {% csrf_token %}
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
 
-                    <div>
-                        <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
-                            Nouvelle image (laisser vide pour conserver l'actuelle)
-                        </label>
-                        {{ form.image }}
-                        <p class="mt-1 text-sm text-gray-500">
-                            Formats acceptés: JPG, PNG, GIF. Taille recommandée: 1200x800px
-                        </p>
-                        {% if form.image.errors %}
-                            <div class="mt-1 text-sm text-red-600">
-                                {{ form.image.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
+                <div>
+                    <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Nouvelle image (laisser vide pour conserver l'actuelle)
+                    </label>
+                    {{ form.image }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        Formats acceptés: JPG, PNG, GIF. Taille recommandée: 1200x800px
+                    </p>
+                    {% if form.image.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {{ form.image.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <div>
-                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
-                            Titre *
-                        </label>
-                        {{ form.title }}
-                        <p class="mt-1 text-sm text-gray-500">
-                            Ce titre sera utilisé comme texte alternatif pour l'accessibilité
-                        </p>
-                        {% if form.title.errors %}
-                            <div class="mt-1 text-sm text-red-600">
-                                {{ form.title.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
+                <div>
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Titre *
+                    </label>
+                    {{ form.title }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        Ce titre sera utilisé comme texte alternatif pour l'accessibilité
+                    </p>
+                    {% if form.title.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {{ form.title.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <div>
-                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
-                            Description (optionnelle)
-                        </label>
-                        {{ form.description }}
-                        <p class="mt-1 text-sm text-gray-500">
-                            Description détaillée de l'image (ne sera pas affichée publiquement)
-                        </p>
-                        {% if form.description.errors %}
-                            <div class="mt-1 text-sm text-red-600">
-                                {{ form.description.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Description (optionnelle)
+                    </label>
+                    {{ form.description }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        Description détaillée de l'image (ne sera pas affichée publiquement)
+                    </p>
+                    {% if form.description.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {{ form.description.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <div class="flex items-center">
-                        {{ form.is_active }}
-                        <label for="{{ form.is_active.id_for_label }}" class="ml-2 text-sm font-medium text-gray-700">
-                            Image active (affichée dans le carrousel)
-                        </label>
-                        {% if form.is_active.errors %}
-                            <div class="mt-1 text-sm text-red-600">
-                                {{ form.is_active.errors.0 }}
-                            </div>
-                        {% endif %}
-                    </div>
+                <div class="flex items-center">
+                    {{ form.is_active }}
+                    <label for="{{ form.is_active.id_for_label }}" class="ml-2 text-sm font-medium text-gray-700">
+                        Image active (affichée dans le carrousel)
+                    </label>
+                    {% if form.is_active.errors %}
+                        <div class="mt-1 text-sm text-red-600">
+                            {{ form.is_active.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
 
-                    <div class="flex gap-4 pt-4">
-                        <button type="submit" class="bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">
-                            Modifier l'image
-                        </button>
-                        <a href="{% url 'manage_carousel' %}" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">
-                            Annuler
-                        </a>
-                    </div>
-                </form>
-            </div>
+                <div class="flex justify-center gap-4">
+                    <button type="submit"
+                            class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                        <i class="bi bi-check-lg mr-1"></i>
+                        Mettre à jour l'image
+                    </button>
+                    <a href="{% url 'manage_carousel' %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                        <i class="bi bi-arrow-left mr-1"></i>
+                        Annuler
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock %}

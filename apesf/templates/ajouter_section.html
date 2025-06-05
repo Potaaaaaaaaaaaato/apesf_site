@@ -1,49 +1,124 @@
 {% extends 'base.html' %}
 {% block title %}Ajouter une section - {{ page.title }}{% endblock %}
 {% block content %}
-<div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-primary-500">Ajouter une section à la page : {{ page.title }}</h1>
-</div>
-<div class="section mx-auto max-w-md">
-    <p class="text-neutral-600 mb-8">Remplissez les champs ci-dessous pour ajouter une nouvelle section.</p>
-    <p class="text-neutral-600 mb-8">Vous pouvez ajouter un titre, un contenu, un lien (optionnel) et un ordre pour la section.</p>
-    <p class="text-neutral-600 mb-8"> A notre que l'ordre d'une section définit son positionnement sur le site. Plus l'ordre est petit, plus le contenu de cette section sera placé haut dans le site.</p>
-    {% if form.non_field_errors %}
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">{{ form.non_field_errors }}</div>
-    {% endif %}
-    {% if form.errors %}
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">Veuillez corriger les erreurs ci-dessus.</div>
-    {% endif %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        <div>
-            <label for="id_title" class="block text-sm font-medium text-neutral-600">Titre</label>
-            {{ form.title }}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-green-600">Ajouter une section</h1>
         </div>
-        <div>
-            <label for="id_content" class="block text-sm font-medium text-neutral-600">Contenu</label>
-            {{ form.content }}
-        </div>
-        <div>
-            <label for="id_link" class="block text-sm font-medium text-neutral-600">Lien (optionnel)</label>
-            {{ form.link }}
-        </div>
-        <div>
-            <label for="id_order" class="block text-sm font-medium text-neutral-600">Ordre</label>
-            {{ form.order }}
-        </div>
-        <div class="text-center">
-            <button type="submit" class="bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">Ajouter la section</button>
-        </div>
-    </form>
-    <div class="text-center mt-8">
-        <a href="{% url 'gerer_sections' page.id %}" class="inline-block bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 hover:scale-105 transition-all">Retour à la gestion des sections</a>
-    </div>
-</div>
-{% endblock %}
 
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-green-50 border border-green-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-plus-circle-fill text-green-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-green-800">Création d'une nouvelle section</h2>
+                </div>
+                <p class="text-green-700">
+                    Vous allez ajouter une nouvelle section à la page <strong>{{ page.title }}</strong>.
+                    La section sera immédiatement visible sur le site.
+                </p>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-info-circle-fill text-blue-500 text-xl mr-2"></i>
+                    <h3 class="text-lg font-semibold text-blue-800">Instructions</h3>
+                </div>
+                <ul class="text-blue-700 space-y-1">
+                    <li>• Le <strong>titre</strong> sera affiché comme en-tête de section</li>
+                    <li>• Le <strong>contenu</strong> peut contenir du texte formaté</li>
+                    <li>• Le <strong>lien</strong> est optionnel (bouton "En savoir plus")</li>
+                    <li>• L'<strong>ordre</strong> définit la position (plus petit = plus haut)</li>
+                    <li>• Vous pourrez ajouter des images après création</li>
+                </ul>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-2">Page de destination :</h3>
+                <p><strong>Titre :</strong> {{ page.title }}</p>
+                <p><strong>Slug :</strong> {{ page.slug }}</p>
+                <p><strong>Créée le :</strong> {{ page.created_at|date:"d/m/Y à H:i" }}</p>
+            </div>
+
+            <!-- Messages d'erreur -->
+            {% if form.non_field_errors %}
+                <div class="mb-6">
+                    <div class="bg-red-50 border border-red-200 rounded p-4 text-red-800">
+                        <div class="flex items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl mr-2"></i>
+                            {{ form.non_field_errors }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if form.errors %}
+                <div class="mb-6">
+                    <div class="bg-red-50 border border-red-200 rounded p-4 text-red-800">
+                        <div class="flex items-center">
+                            <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl mr-2"></i>
+                            Veuillez corriger les erreurs ci-dessous.
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Messages de succès -->
+            {% if messages %}
+                <div class="mb-6">
+                    {% for message in messages %}
+                        <div class="bg-green-50 border border-green-200 rounded p-4 text-green-800">
+                            <div class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-green-500 text-xl mr-2"></i>
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label for="id_title" class="block text-sm font-medium text-neutral-600">Titre de la section *</label>
+                    {{ form.title }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        Le titre principal de cette section
+                    </p>
+                </div>
+                <div>
+                    <label for="id_content" class="block text-sm font-medium text-neutral-600">Contenu *</label>
+                    {{ form.content }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        Le contenu textuel de la section (les retours à la ligne seront conservés)
+                    </p>
+                </div>
+                <div>
+                    <label for="id_link" class="block text-sm font-medium text-neutral-600">Lien (optionnel)</label>
+                    {{ form.link }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        URL complète si vous voulez ajouter un bouton "En savoir plus"
+                    </p>
+                </div>
+                <div>
+                    <label for="id_order" class="block text-sm font-medium text-neutral-600">Ordre d'affichage *</label>
+                    {{ form.order }}
+                    <p class="mt-1 text-sm text-gray-500">
+                        Position de la section sur la page (1 = en haut, 2 = en dessous, etc.)
+                    </p>
+                </div>
+
+                <div class="flex justify-center gap-4">
+                    <button type="submit"
+                            class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                        <i class="bi bi-plus-lg mr-1"></i>
+                        Créer la section
+                    </button>
+                    <a href="{% url 'gerer_sections' page.id %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                        <i class="bi bi-arrow-left mr-1"></i>
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
