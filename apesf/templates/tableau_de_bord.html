@@ -10,223 +10,438 @@
     <meta property="og:url" content="https://www.tristan-devaux.fr/tableau-de-bord/">
     <meta property="og:type" content="website">
 {% endblock %}
+
 {% block content %}
-    <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-primary-500">Tableau de bord</h1>
-    </div>
-    <div class="section">
-        <p class="text-lg mb-4">Bienvenue sur votre tableau de bord, {{ user.username }} !</p>
-        <p class="text-neutral-600 mb-8">Sur ce site, vous avez le rôle de "{{ user.userprofile.role }}".</p>
-        <p class="text-neutral-600 mb-8">Le tableau de bord vous permet de gérer plusieurs choses sur votre site.</p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- En-tête principal -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mb-6">
+                <i class="bi bi-speedometer2 text-3xl text-white"></i>
+            </div>
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                Tableau de bord
+            </h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Interface d'administration complète pour gérer votre site APESF
+            </p>
+        </div>
+
+        <!-- Section de bienvenue -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-8 mb-12 shadow-sm">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                    <i class="bi bi-person-check text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Bienvenue, {{ user.username }} ! 👋</h2>
+                    <p class="text-gray-600">Rôle : <span class="font-semibold text-blue-600">{{ user.userprofile.role }}</span></p>
+                </div>
+            </div>
+            <p class="text-gray-700 text-lg leading-relaxed">
+                Gérez facilement tous les aspects de votre site depuis cette interface centralisée.
+                Chaque section vous permet de maintenir votre contenu à jour efficacement.
+            </p>
+        </div>
+
+        <!-- Messages de succès -->
         {% if messages %}
             {% for message in messages %}
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded">{{ message }}</div>
+                <div class="bg-green-50 border-l-4 border-green-400 p-6 mb-8 rounded-r-lg shadow-sm">
+                    <div class="flex items-center">
+                        <i class="bi bi-check-circle-fill text-green-500 text-2xl mr-3"></i>
+                        <p class="text-green-800 font-medium">{{ message }}</p>
+                    </div>
+                </div>
             {% endfor %}
         {% endif %}
 
         <!-- Gestion des pages -->
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des pages</h2>
-        <p class="text-neutral-600 mb-4">Voici la liste des pages du site. Cliquez sur "Gérer les sections" pour supprimer des sections, ou sur "Ajouter une page" pour en créer une nouvelle.</p>
-        {% if pages %}
-            <ul class="space-y-4 mb-8">
-                {% for page in pages %}
-                    <li class="bg-white shadow-lg rounded-lg p-4 flex justify-between items-center">
-                        <span>{{ page.title }} (Page : {{ page.slug }})</span>
-                        <a href="{% url 'gerer_sections' page.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Gérer les sections</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-neutral-600 mb-4">Aucune page n'existe. Ajoutez-en une ci-dessous.</p>
-        {% endif %}
-        <div class="text-center">
-            <a href="{% url 'ajouter_page' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all mb-8">Ajouter une page</a>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mr-4">
+                    <i class="bi bi-file-earmark-text text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gestion des pages</h2>
+                    <p class="text-gray-600">Administrez le contenu de vos pages web</p>
+                </div>
+            </div>
+
+            {% if pages %}
+                <div class="space-y-4 mb-8">
+                    {% for page in pages %}
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-gray-100 transition-colors">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-gray-800 text-lg">{{ page.title }}</h3>
+                                <p class="text-gray-600">Page : {{ page.slug }}</p>
+                            </div>
+                            <div class="flex justify-center">
+                                <a href="{% url 'gerer_sections' page.id %}"
+                                   class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-md flex items-center gap-2">
+                                    <i class="bi bi-gear"></i>
+                                    Gérer les sections
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 mb-8">
+                    <i class="bi bi-file-earmark-plus text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500 text-lg">Aucune page n'existe actuellement</p>
+                    <p class="text-gray-400">Créez votre première page ci-dessous</p>
+                </div>
+            {% endif %}
+
+            <div class="flex justify-center">
+                <a href="{% url 'ajouter_page' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3">
+                    <i class="bi bi-plus-lg"></i>
+                    Ajouter une page
+                </a>
+            </div>
         </div>
 
-        <!-- Gestion des sections par établissement/service -->
-        <div class="mb-12">
-            <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des sections par établissement/service</h2>
-            <p class="text-neutral-600 mb-4">Gérez les sections spécifiques aux établissements et services (Marmousets, Angélus, Placement modulable, AEMO H, Accueil parental) qui apparaissent sur la page "Nos établissements & services".</p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <a href="{% url 'gerer_sections_unite' 'marmousets' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
-                    <h3 class="text-xl font-semibold text-primary-500">Marmousets</h3>
-                    <p class="text-neutral-600">Gérer les sections pour les Marmousets</p>
+        <!-- Gestion des établissements/services -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mr-4">
+                    <i class="bi bi-building text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Établissements & Services</h2>
+                    <p class="text-gray-600">Gérez le contenu de chaque unité</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a href="{% url 'gerer_sections_unite' 'marmousets' %}"
+                   class="group bg-gradient-to-br from-pink-50 to-rose-50 border-2 border-pink-200 rounded-xl p-6 text-center hover:border-pink-400 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div class="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-house-heart text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Marmousets</h3>
+                    <p class="text-gray-600 text-sm">Sections des Marmousets</p>
                 </a>
-                <a href="{% url 'gerer_sections_unite' 'angelus' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
-                    <h3 class="text-xl font-semibold text-primary-500">Angélus</h3>
-                    <p class="text-neutral-600">Gérer les sections pour l’Angélus</p>
+
+                <a href="{% url 'gerer_sections_unite' 'angelus' %}"
+                   class="group bg-gradient-to-br from-yellow-50 to-amber-50 border-2 border-yellow-200 rounded-xl p-6 text-center hover:border-yellow-400 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-stars text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Angélus</h3>
+                    <p class="text-gray-600 text-sm">Sections de l'Angélus</p>
                 </a>
-                <a href="{% url 'gerer_sections_unite' 'placement_modulable' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
-                    <h3 class="text-xl font-semibold text-primary-500">Placement modulable</h3>
-                    <p class="text-neutral-600">Gérer les sections pour le Placement modulable</p>
+
+                <a href="{% url 'gerer_sections_unite' 'placement_modulable' %}"
+                   class="group bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6 text-center hover:border-green-400 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-puzzle text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Placement modulable</h3>
+                    <p class="text-gray-600 text-sm">Sections du Placement modulable</p>
                 </a>
-                <a href="{% url 'gerer_sections_unite' 'aemo_h' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
-                    <h3 class="text-xl font-semibold text-primary-500">AEMO H</h3>
-                    <p class="text-neutral-600">Gérer les sections pour l’AEMO H</p>
+
+                <a href="{% url 'gerer_sections_unite' 'aemo_h' %}"
+                   class="group bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl p-6 text-center hover:border-blue-400 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-shield-check text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">AEMO H</h3>
+                    <p class="text-gray-600 text-sm">Sections de l'AEMO H</p>
                 </a>
-                <a href="{% url 'gerer_sections_unite' 'accueil_parental' %}" class="bg-white shadow-lg rounded-lg p-6 text-center hover:scale-105 transition-transform">
-                    <h3 class="text-xl font-semibold text-primary-500">Accueil parental</h3>
-                    <p class="text-neutral-600">Gérer les sections pour l’Accueil parental</p>
+
+                <a href="{% url 'gerer_sections_unite' 'accueil_parental' %}"
+                   class="group bg-gradient-to-br from-purple-50 to-violet-50 border-2 border-purple-200 rounded-xl p-6 text-center hover:border-purple-400 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <i class="bi bi-people-fill text-white text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Accueil parental</h3>
+                    <p class="text-gray-600 text-sm">Sections de l'Accueil parental</p>
                 </a>
             </div>
         </div>
 
         <!-- Gestion des organigrammes -->
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des organigrammes</h2>
-        <p class="text-neutral-600 mb-4">Gérez les sections pour les organigrammes de la direction et de la structure affichés sur la page "Organisation".</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <a href="{% url 'gerer_organigrammes' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all text-center">
-                Gérer les organigrammes
-            </a>
-            <a href="{% url 'gerer_fichier_arborescence' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all text-center">
-                Modifier le fichier lié
-            </a>
-            <a href="{% url 'supprimer_fichier_arborescence' %}"
-               class="inline-block bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 hover:scale-105 transition-all text-center"
-               onclick="return confirm('Êtes-vous sûr de vouloir supprimer le fichier d\'arborescence ?')">
-                Supprimer le fichier
-            </a>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center mr-4">
+                    <i class="bi bi-diagram-3 text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gestion des organigrammes</h2>
+                    <p class="text-gray-600">Structure organisationnelle et hiérarchie</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'gerer_organigrammes' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-md flex items-center justify-center gap-2">
+                    <i class="bi bi-diagram-3"></i>
+                    Gérer les organigrammes
+                </a>
+                <a href="{% url 'gerer_fichier_arborescence' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-md flex items-center justify-center gap-2">
+                    <i class="bi bi-file-earmark-arrow-up"></i>
+                    Modifier le fichier lié
+                </a>
+                <a href="{% url 'supprimer_fichier_arborescence' %}"
+                   class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-md flex items-center justify-center gap-2"
+                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer le fichier d\'arborescence ?')">
+                    <i class="bi bi-trash"></i>
+                    Supprimer le fichier
+                </a>
+            </div>
         </div>
 
         <!-- Gestion des actualités -->
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des actualités</h2>
-        <p class="text-neutral-600 mb-4">Gérez les actualités affichées sur la page d'accueil. Cliquez ci-dessous pour ajouter, modifier ou supprimer des actualités.</p>
-        <div class="text-center">
-            <a href="{% url 'gerer_actualites' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all mb-8">Gérer les actualités</a>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center mr-4">
+                    <i class="bi bi-newspaper text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gestion des actualités</h2>
+                    <p class="text-gray-600">Publiez et gérez vos actualités</p>
+                </div>
+            </div>
+
+            <div class="flex justify-center mb-8">
+                <a href="{% url 'gerer_actualites' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3">
+                    <i class="bi bi-newspaper"></i>
+                    Gérer les actualités
+                </a>
+            </div>
+
+            <!-- Actualités récentes -->
+            {% if news_items %}
+                <div class="border-t border-gray-200 pt-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                        <i class="bi bi-clock-history text-gray-500"></i>
+                        Actualités récentes
+                    </h3>
+                    <div class="space-y-4" id="news-list">
+                        {% for news in news_items %}
+                            <div class="news-item bg-gray-50 border border-gray-200 rounded-xl p-6 hover:bg-gray-100 transition-colors">
+                                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                    <div class="flex-1">
+                                        <h4 class="font-semibold text-gray-800 text-lg mb-2">{{ news.title }}</h4>
+                                        <p class="text-gray-600 mb-3">{{ news.content|truncatewords:20 }}</p>
+                                        <div class="text-sm text-gray-500 space-y-1">
+                                            <p><strong>Date :</strong> {{ news.date }}</p>
+                                            {% if news.image %}
+                                                <p><strong>Image :</strong>
+                                                    <a href="{{ news.image.url }}" class="text-blue-600 hover:text-blue-800 hover:underline" target="_blank">
+                                                        Voir l'image
+                                                    </a>
+                                                </p>
+                                            {% endif %}
+                                            {% if news.document %}
+                                                <p><strong>Document :</strong>
+                                                    <a href="{{ news.document.url }}" class="text-blue-600 hover:text-blue-800 hover:underline" target="_blank">
+                                                        {{ news.document.name }}
+                                                    </a>
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center lg:justify-end">
+                                        <a href="{% url 'modifier_actualite' news.id %}"
+                                           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                                            <i class="bi bi-pencil"></i>
+                                            Modifier
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="flex justify-center mt-6">
+                        <button id="toggle-news"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-md flex items-center gap-2">
+                            <i class="bi bi-eye"></i>
+                            Voir plus
+                        </button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                    <i class="bi bi-newspaper text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500 text-lg">Aucune actualité publiée</p>
+                    <p class="text-gray-400">Créez votre première actualité</p>
+                </div>
+            {% endif %}
         </div>
 
-        <!-- Liste des actualités -->
-        <h3 class="text-xl font-semibold text-primary-500 mb-4">Actualités récentes</h3>
-        <p class="text-neutral-600 mb-4">Voici un aperçu des actualités actuellement enregistrées.</p>
-        {% if news_items %}
-            <ul id="news-list" class="space-y-4 mb-8">
-                {% for news in news_items %}
-                    <li class="news-item bg-white shadow-lg rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div class="flex-1">
-                            <p class="text-gray-800 font-medium">{{ news.title }}</p>
-                            <p class="text-neutral-600">{{ news.content }}</p>
-                            <p class="text-sm text-gray-500">Date : {{ news.date }}</p>
-                            {% if news.image %}
-                                <p class="text-sm text-gray-500">Image : <a href="{{ news.image.url }}" class="text-primary-500 hover:underline" target="_blank">{{ news.image.url }}</a></p>
-                            {% endif %}
-                            {% if news.document %}
-                                <p class="text-sm text-gray-500">Pièce jointe : <a href="{{ news.document.url }}" class="text-primary-500 hover:underline" target="_blank">{{ news.document.name }}</a></p>
-                            {% endif %}
-                        </div>
-                        <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                            <a href="{% url 'modifier_actualite' news.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors text-center">Modifier</a>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-            <div class="text-center">
-                <button id="toggle-news" class="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">Voir plus</button>
+        <!-- Gestion du carrousel -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center mr-4">
+                    <i class="bi bi-images text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gestion du carrousel</h2>
+                    <p class="text-gray-600">Images défilantes de la page d'accueil</p>
+                </div>
             </div>
-        {% else %}
-            <p class="text-neutral-600 mb-4">Aucune actualité pour le moment. Ajoutez-en via la page de gestion.</p>
-        {% endif %}
 
-        <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-            <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion du carrousel</h2>
-            <p class="text-neutral-600 mb-4">Gérez les images affichées dans le carrousel de la page d'accueil</p>
-            <a href="{% url 'manage_carousel' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all">
-                <i class="bi bi-images mr-2"></i>
-                Gérer le carrousel
-            </a>
+            <div class="flex justify-center">
+                <a href="{% url 'manage_carousel' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3">
+                    <i class="bi bi-images"></i>
+                    Gérer le carrousel
+                </a>
+            </div>
         </div>
 
         <!-- Gestion des offres d'emploi -->
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des offres d'emploi</h2>
-        <p class="text-neutral-600 mb-4">Gérez les offres d’emploi affichées sur la page "Offres d’emplois". Cliquez ci-dessous pour ajouter, modifier ou supprimer des offres.</p>
-        <div class="text-center">
-            <a href="{% url 'gerer_offres_emplois' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all mb-8">Gérer les offres d’emploi</a>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center mr-4">
+                    <i class="bi bi-briefcase text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gestion des offres d'emploi</h2>
+                    <p class="text-gray-600">Recrutement et opportunités de carrière</p>
+                </div>
+            </div>
+
+            <div class="flex justify-center">
+                <a href="{% url 'gerer_offres_emplois' %}"
+                   class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3">
+                    <i class="bi bi-briefcase"></i>
+                    Gérer les offres d'emploi
+                </a>
+            </div>
         </div>
 
         <!-- Gestion des images -->
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des images</h2>
-        <p class="text-neutral-600 mb-4">Vous pouvez uploader des images et les associer à une section spécifique. Cliquez sur "Uploader une image" pour commencer.</p>
-        <div class="text-center">
-            <a href="{% url 'telecharger_image' %}" class="inline-block bg-secondary-500 text-white px-6 py-3 rounded-lg hover:bg-secondary-600 hover:scale-105 transition-all mb-8">Uploader une image</a>
-        </div>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-12 bg-cyan-500 rounded-xl flex items-center justify-center mr-4">
+                    <i class="bi bi-image text-white text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Gestion des images</h2>
+                    <p class="text-gray-600">Bibliothèque multimédia du site</p>
+                </div>
+            </div>
 
-        <!-- Liste des images uploadées -->
-        <h3 class="text-xl font-semibold text-primary-500 mb-4">Images uploadées</h3>
-        <p class="text-neutral-600 mb-4">Voici la liste des images uploadées, avec leur section associée. Vous pouvez modifier ou supprimer une image.</p>
-        {% if images %}
-            <ul class="space-y-4 mb-8">
-                {% for image in images %}
-                    <li class="bg-white shadow-lg rounded-lg p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2">
-                                <img src="{{ image.image.url }}" alt="Image" class="w-16 h-16 object-cover rounded-lg">
-                                <div>
-                                    <p class="text-gray-800">Section : <span class="font-medium">{{ image.section.title|default:"Aucune section" }}</span></p>
-                                    <p class="text-sm text-gray-500">Uploadé le : {{ image.uploaded_at }}</p>
-                                    <p class="text-sm text-gray-500">URL de l'image : <a href="{{ image.image.url }}" class="text-primary-500 hover:underline" target="_blank">{{ image.image.url }}</a></p>
+            <div class="flex justify-center mb-8">
+                <a href="{% url 'telecharger_image' %}"
+                   class="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3">
+                    <i class="bi bi-cloud-upload"></i>
+                    Uploader une image
+                </a>
+            </div>
+
+            <!-- Images uploadées -->
+            {% if images %}
+                <div class="border-t border-gray-200 pt-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                        <i class="bi bi-collection text-gray-500"></i>
+                        Images uploadées
+                    </h3>
+                    <div class="space-y-4">
+                        {% for image in images %}
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 hover:bg-gray-100 transition-colors">
+                                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                    <div class="flex items-center gap-4">
+                                        <img src="{{ image.image.url }}" alt="Aperçu"
+                                             class="w-20 h-20 object-cover rounded-xl border-2 border-gray-300 shadow-sm">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-gray-800 mb-1">
+                                                Section : {{ image.section.title|default:"Aucune section" }}
+                                            </h4>
+                                            <p class="text-gray-600 text-sm mb-2">Uploadé le : {{ image.uploaded_at }}</p>
+                                            <a href="{{ image.image.url }}"
+                                               class="text-blue-600 hover:text-blue-800 hover:underline text-sm" target="_blank">
+                                                Voir l'image complète
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-3 justify-center lg:justify-end">
+                                        <a href="{% url 'modifier_image' image.id %}"
+                                           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                                            <i class="bi bi-pencil"></i>
+                                            Modifier
+                                        </a>
+                                        <a href="{% url 'supprimer_image' image.id %}"
+                                           class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')">
+                                            <i class="bi bi-trash"></i>
+                                            Supprimer
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto">
-                            <a href="{% url 'modifier_image' image.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors text-center">Modifier</a>
-                            <a href="{% url 'supprimer_image' image.id %}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-center" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ? Cette action est irréversible.');">Supprimer</a>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-neutral-600 mb-4">Aucune image uploadée pour le moment.</p>
-        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-8 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                    <i class="bi bi-image text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500 text-lg">Aucune image uploadée</p>
+                    <p class="text-gray-400">Commencez par uploader vos premières images</p>
+                </div>
+            {% endif %}
+        </div>
 
-        <!-- Gestion des messages de contact
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des messages de contact</h2>
-        <p class="text-neutral-600 mb-4">Voici la liste des messages envoyés via le formulaire de contact. Notez que la suppression d'un message est irréversible.</p>
-        {% if messages_contact %}
-            <ul class="space-y-4 mb-8">
-                {% for message in messages_contact %}
-                    <li class="bg-white shadow-lg rounded-lg p-4 flex flex-col gap-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <strong>{{ message.name }}</strong> ({{ message.email }}) - {{ message.submitted_at }}<br>
-                                <p class="text-gray-800 font-medium mt-2">Objet : {{ message.subject|default:"(Aucun objet)" }}</p>
-                                <p class="text-neutral-600 mt-2">{{ message.message }}</p>
-                                {% if message.attachments.all %}
-                                    <p class="text-sm text-gray-500 mt-2">Pièces jointes :</p>
-                                    <ul class="list-disc pl-5">
-                                        {% for attachment in message.attachments.all %}
-                                            <li>
-                                                <a href="{{ attachment.file.url }}" class="text-primary-500 hover:underline" target="_blank">
-                                                    {{ attachment.file.name|cut:"contact_attachments/" }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                                <span class="inline-block mt-2 px-2 py-1 text-sm rounded {% if message.is_read %}bg-green-100 text-green-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
-                                {% if message.is_read %}Lu{% else %}Non lu{% endif %}
-                            </span>
-                            </div>
-                            <div class="flex space-x-2">
-                                {% if not message.is_read %}
-                                    <a href="{% url 'mark_message_as_read' message.id %}" class="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition-colors">Marquer comme lu</a>
-                                {% endif %}
-                                <a href="{% url 'supprimer_message' message.id %}" class="bg-red-500 text-black px-4 py-2 rounded hover:bg-red-700 transition-colors" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce message ? Cette action est irréversible.');">Supprimer</a>
-                                <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject|default:'Réponse à votre message' }}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">Répondre par mail <i class="bi bi-envelope-arrow-up"></i></a>
-                            </div>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="text-neutral-600 mb-4">Aucun message reçu pour le moment.</p>
-        {% endif %} -->
+        <!-- ⚠️ ZONE DE DANGER ⚠️ -->
+        <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl shadow-xl border-2 border-red-400 p-8 mb-8">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-red-700 rounded-full mb-6">
+                    <i class="bi bi-exclamation-triangle-fill text-white text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-4">⚠️ ZONE DE DANGER ⚠️</h2>
+                <p class="text-red-100 text-lg leading-relaxed max-w-3xl mx-auto">
+                    Les fonctionnalités ci-dessous sont réservées aux utilisateurs expérimentés.
+                    Toute modification dans cette zone peut avoir des conséquences importantes sur le fonctionnement du site.
+                    Procédez avec une extrême prudence !
+                </p>
+                <div class="flex items-center justify-center gap-2 mt-4 text-red-200">
+                    <i class="bi bi-shield-exclamation text-xl"></i>
+                    <span class="font-semibold">Accès restreint - Permissions élevées requises</span>
+                    <i class="bi bi-shield-exclamation text-xl"></i>
+                </div>
+            </div>
+        </div>
 
         <!-- Gestion des utilisateurs (superuser uniquement) -->
         {% if user.userprofile.role == 'superuser' %}
-            <h2 class="text-2xl font-semibold text-primary-500 mb-4">Gestion des utilisateurs</h2>
-            <p class="text-neutral-600 mb-4">En tant que super utilisateur, vous pouvez gérer les utilisateurs et leurs rôles via l'interface admin de Django. Cliquez sur le bouton ci-dessous pour y accéder.</p>
-            <p class="text-neutral-600 mb-4">Attention, l'utilisation de cette page est complexe et toute modification doit être réfléchie. Veuillez vous référer à la documentation du site avant toute action.</p>
-            <div class="text-center">
-                <a href="{% url 'admin:apesf_userprofile_changelist' %}" class="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 hover:scale-105 transition-all">Gérer les utilisateurs</a>
+            <div class="bg-white rounded-2xl shadow-lg border-2 border-red-300 p-8 mb-8 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center mr-4">
+                        <i class="bi bi-people text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Gestion des utilisateurs</h2>
+                        <p class="text-gray-600">Administration des comptes et permissions</p>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 border border-red-200 rounded-xl p-6 mb-6">
+                    <div class="flex items-start gap-3">
+                        <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl mt-1"></i>
+                        <div>
+                            <h3 class="font-semibold text-red-800 mb-2">Zone réservée aux super-utilisateurs</h3>
+                            <p class="text-red-700 text-sm leading-relaxed">
+                                Cette section nécessite des connaissances techniques avancées.
+                                Toute modification doit être effectuée avec précaution car elle peut affecter
+                                l'accès des autres utilisateurs au système.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <a href="{% url 'admin:apesf_userprofile_changelist' %}"
+                       class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3">
+                        <i class="bi bi-gear"></i>
+                        Interface d'administration Django
+                    </a>
+                </div>
             </div>
         {% endif %}
     </div>
@@ -236,26 +451,33 @@
         document.addEventListener('DOMContentLoaded', function () {
             const newsItems = document.querySelectorAll('.news-item');
             const toggleButton = document.getElementById('toggle-news');
-            let showingAll = false;
 
-            // Affiche seulement les 3 premières actualités par défaut
-            function updateVisibility() {
-                newsItems.forEach((item, index) => {
-                    if (!showingAll && index >= 3) {
-                        item.style.display = 'none';
+            if (toggleButton && newsItems.length > 0) {
+                let showingAll = false;
+
+                function updateVisibility() {
+                    newsItems.forEach((item, index) => {
+                        if (!showingAll && index >= 3) {
+                            item.style.display = 'none';
+                        } else {
+                            item.style.display = 'block';
+                        }
+                    });
+
+                    if (showingAll) {
+                        toggleButton.innerHTML = '<i class="bi bi-eye-slash"></i> Voir moins';
                     } else {
-                        item.style.display = 'flex';
+                        toggleButton.innerHTML = '<i class="bi bi-eye"></i> Voir plus';
                     }
-                });
-                toggleButton.textContent = showingAll ? 'Voir moins' : 'Voir plus';
-            }
+                }
 
-            updateVisibility();
-
-            toggleButton.addEventListener('click', function () {
-                showingAll = !showingAll;
                 updateVisibility();
-            });
+
+                toggleButton.addEventListener('click', function () {
+                    showingAll = !showingAll;
+                    updateVisibility();
+                });
+            }
         });
     </script>
 {% endblock %}
