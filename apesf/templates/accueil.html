@@ -3,7 +3,7 @@
 {% load tz %}
 {% block title %}Accueil{% endblock %}
 {% block extra_head %}
-    <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d'enfants, Les Marmousets et l'Angélus.">
+    <meta name="description" content="Association Pour l'Enfant et Sa Famille, à Saint-Étienne depuis 1934. Nous accompagnons les enfants et leurs familles via nos maisons d'enfants, Les Marmousets, et l'Angélus.">
     <meta name="keywords" content="APESF, association, enfants, familles, Saint-Étienne, Marmousets, Angélus, protection enfance, accompagnement">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Association Pour l'Enfant et Sa Famille">
@@ -159,17 +159,22 @@
             color: #1B4F72; /* Couleur primaire */
             margin-bottom: 8px;
         }
-        .news-carousel .swiper-slide p {
+        .news-carousel .swiper-slide p.news-content {
             font-size: 0.875rem; /* 14px */
             color: #4B5563; /* Couleur neutre */
             margin-bottom: 8px;
             max-height: 80px; /* Limite la hauteur du texte */
             overflow: hidden;
-            text-overflow: ellipsis; /* Ajoute "..." si le texte dépasse */
-            display: -webkit-box;
-            -webkit-line-clamp: 6; /* Limite à 4 lignes */
-            -webkit-box-orient: vertical;
-            text-align: justify; /* AJOUT : Justifie le texte */
+            text-align: justify; /* Justifie le texte */
+            word-wrap: break-word; /* Force le retour à la ligne des mots longs */
+            white-space: normal; /* Permet le retour à la ligne normal */
+            line-height: 1.4; /* Améliore l'espacement des lignes */
+        }
+        .news-carousel .swiper-slide p.news-date {
+            font-size: 0.875rem; /* 14px */
+            color: #4B5563; /* Couleur neutre */
+            margin-bottom: 8px;
+            font-weight: 500;
         }
         .news-carousel .swiper-slide a {
             font-size: 0.875rem; /* 14px */
@@ -381,6 +386,9 @@
             .news-carousel .swiper-slide {
                 padding: 20px 40px; /* Réduit le padding sur mobile */
             }
+            .news-carousel .swiper-slide p.news-content {
+                max-height: 60px; /* Hauteur réduite sur mobile */
+            }
             .swiper-button-prev, .swiper-button-next {
                 width: 20px; /* Taille encore plus petite sur mobile */
                 height: 20px;
@@ -443,7 +451,7 @@
                 Association Pour l'Enfant et Sa Famille
             </h1>
             <p class="text-[17px] text-neutral-600 mb-8 max-w-4xl mx-auto">
-                Depuis sa création en 1934, l’Association Pour l’Enfant et Sa Famille reste fidèle aux idéaux et engagements de ses fondateurs : la prise en charge des plus fragiles avec une nécessaire exigence de qualité et de technicité, en respectant la place des familles élargies au sein des Maisons d’Enfants et de ses services. Il s’agit pour l’Association d’articuler une éthique de conviction, de responsabilité, de discussion, d’engagement, de compétence, d’innovation en diversifiant les formes d’interventions pour accompagner les parents dans l’éducation de leurs enfants.
+                Depuis sa création en 1934, l'Association Pour l'Enfant et Sa Famille reste fidèle aux idéaux et engagements de ses fondateurs : la prise en charge des plus fragiles avec un professionnalisme reconnu et dans l'esprit de la tradition laïque et républicaine.
             </p>
         </div>
     </section>
@@ -513,8 +521,8 @@
                                     <img src="{{ image.image.url }}" alt="Image associée à {{ news.title }}">
                                 {% endfor %}
                                 <h3>{{ news.title }}</h3>
-                                <p>{{ news.content }}</p>
-                                <p>{{ news.date }}</p>
+                                <p class="news-content" data-full-text="{{ news.content|escape }}">{{ news.content }}</p>
+                                <p class="news-date">{{ news.date }}</p>
                                 {% if news.document %}
                                     <a href="{{ news.document.url }}" target="_blank">Télécharger la pièce jointe</a>
                                 {% endif %}
@@ -557,7 +565,7 @@
     <section class="py-8 text-center">
         <div class="container mx-auto px-6">
             <p class="text-[17px] text-neutral-600 leading-loose max-w-4xl mx-auto">
-                L’APESF entend être réactive par rapport aux orientations énoncées par les Politiques Publiques, inventive dans les réponses à apporter et évolutive dans son organisation. Elle se fixe une double exigence : celle d’une réelle capacité à faire connaître aux pouvoirs publics les besoins et les demandes insuffisamment pris en compte et celle d’être force de proposition concernant les besoins repérés.
+                L'APESF entend être réactive par rapport aux orientations énoncées par les Politiques Publiques, inventive dans les réponses à apporter et évolutive dans son organisation pour maintenir une prestation de qualité au niveau de son site historique et implanter de nouveaux services sur le territoire en réponse aux besoins des populations.
             </p>
         </div>
     </section>
@@ -573,6 +581,46 @@
     <!-- Script pour initialiser les carrousels et gérer le modal -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Fonction pour tronquer le texte avec "..." à la fin
+            function truncateText(element, maxHeight) {
+                const fullText = element.getAttribute('data-full-text');
+                if (!fullText) return;
+
+                element.textContent = fullText;
+
+                // Vérifier si le texte dépasse la hauteur maximale
+                if (element.scrollHeight > maxHeight) {
+                    let truncatedText = fullText;
+                    let words = fullText.split(' ');
+
+                    // Réduire progressivement le texte mot par mot
+                    for (let i = words.length - 1; i >= 0; i--) {
+                        truncatedText = words.slice(0, i).join(' ') + '...';
+                        element.textContent = truncatedText;
+
+                        // Si ça rentre dans la hauteur, on s'arrête
+                        if (element.scrollHeight <= maxHeight) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Appliquer la troncature à tous les contenus d'actualités
+            function applyTextTruncation() {
+                const newsContents = document.querySelectorAll('.news-content[data-full-text]');
+                newsContents.forEach(element => {
+                    const maxHeight = window.innerWidth <= 768 ? 60 : 80; // Hauteur différente sur mobile
+                    truncateText(element, maxHeight);
+                });
+            }
+
+            // Appliquer la troncature au chargement
+            applyTextTruncation();
+
+            // Réappliquer la troncature lors du redimensionnement de la fenêtre
+            window.addEventListener('resize', applyTextTruncation);
+
             // Initialisation du carrousel d'images avec sélecteurs spécifiques
             const carouselAccueil = new Swiper('#carouselAccueil', {
                 loop: true,
@@ -605,6 +653,12 @@
                     nextEl: '#carouselNews .swiper-button-next',
                     prevEl: '#carouselNews .swiper-button-prev',
                 },
+                on: {
+                    // Réappliquer la troncature après chaque changement de slide
+                    slideChange: function () {
+                        setTimeout(applyTextTruncation, 100);
+                    }
+                }
             });
 
             // Gestion du clic sur la bulle pour rediriger vers le carrousel d'actualités

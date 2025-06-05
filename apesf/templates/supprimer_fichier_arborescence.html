@@ -1,10 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Supprimer le fichier d'arborescence{% endblock %}
+{% block content %}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-red-600">Supprimer le fichier d'arborescence</h1>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-red-50 border border-red-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-red-800">Attention - Action irréversible</h2>
+                </div>
+                <p class="text-red-700">
+                    Vous êtes sur le point de supprimer définitivement le fichier d'arborescence.
+                    Cette action ne peut pas être annulée.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-2">Fichier à supprimer :</h3>
+                <p><strong>Titre :</strong> {{ arborescence.title }}</p>
+                <p><strong>Uploadé le :</strong> {{ arborescence.uploaded_at|date:"d/m/Y à H:i" }}</p>
+                {% if arborescence.description %}
+                    <p><strong>Description :</strong> {{ arborescence.description }}</p>
+                {% endif %}
+                <p><strong>Fichier :</strong>
+                    <a href="{{ arborescence.file.url }}" class="text-primary-500 hover:underline" target="_blank">
+                        {{ arborescence.file.name|cut:"arborescence_files/" }}
+                    </a>
+                </p>
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <form method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold"
+                            onclick="return confirm('Êtes-vous absolument certain de vouloir supprimer ce fichier ? Cette action est irréversible.')">
+                        <i class="bi bi-trash mr-1"></i>
+                        Confirmer la suppression
+                    </button>
+                </form>
+                <a href="{% url 'gerer_fichier_arborescence' %}"
+                   class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    <i class="bi bi-arrow-left mr-1"></i>
+                    Annuler
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

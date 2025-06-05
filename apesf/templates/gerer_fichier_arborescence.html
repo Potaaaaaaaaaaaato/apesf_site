@@ -24,9 +24,18 @@
                     {% if arborescence.description %}
                         <p><strong>Description :</strong> {{ arborescence.description }}</p>
                     {% endif %}
-                    <a href="{{ arborescence.file.url }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors mt-2" target="_blank">
-                        Télécharger le fichier actuel
-                    </a>
+                    <div class="flex gap-2 mt-3">
+                        <a href="{{ arborescence.file.url }}" class="inline-block bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors" target="_blank">
+                            <i class="bi bi-download mr-1"></i>
+                            Télécharger le fichier actuel
+                        </a>
+                        <a href="{% url 'supprimer_fichier_arborescence' %}"
+                           class="inline-block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce fichier ? Cette action est irréversible.')">
+                            <i class="bi bi-trash mr-1"></i>
+                            Supprimer le fichier
+                        </a>
+                    </div>
                 </div>
             {% endif %}
 

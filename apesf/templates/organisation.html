@@ -128,7 +128,10 @@
         }
         /* Style pour le bouton de téléchargement */
         .download-btn {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             background-color: #1B4F72; /* Couleur primary-500 du site */
             color: white;
             padding: 12px 24px;
@@ -143,10 +146,24 @@
             width: fit-content;
         }
 
-        .download-btn:hover {
+        .download-btn:hover:not(.disabled) {
             background-color: #15406b; /* Couleur primary-600 du site */
             transform: scale(1.02);
         }
+
+        /* Style pour le bouton désactivé */
+        .download-btn.disabled {
+            background-color: #9CA3AF; /* Couleur grise */
+            color: #6B7280; /* Texte gris foncé */
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .download-btn.disabled:hover {
+            transform: none;
+            background-color: #9CA3AF;
+        }
+
         @media (max-width: 768px) {
             .organigram-section {
                 padding: 16px;
@@ -195,9 +212,14 @@
                             {% endif %}
                         </div>
                     {% endfor %}
-                    <!-- Bouton de téléchargement déplacé ici -->
-                    <button id="downloadBtn" class="download-btn">
-                        Télécharger l'arborescence du conseil d'administration
+                    <!-- Bouton de téléchargement modifié -->
+                    <button id="downloadBtn" class="download-btn{% if not arborescence_file_available %} disabled{% endif %}">
+                        {% if arborescence_file_available %}
+                            <i class="bi bi-download"></i>
+                        {% else %}
+                            <i class="bi bi-ban"></i>
+                        {% endif %}
+                        Aucun fichier disponible actuellement
                     </button>
                 </div>
             {% else %}
@@ -300,8 +322,14 @@
                 });
             });
 
-            // Gestion du bouton de téléchargement
-            downloadBtn.addEventListener('click', function() {
+            // Gestion du bouton de téléchargement modifiée
+            downloadBtn.addEventListener('click', function(e) {
+                // Vérifier si le bouton est désactivé
+                if (this.classList.contains('disabled')) {
+                    e.preventDefault();
+                    return false;
+                }
+
                 // URL vers le fichier d'arborescence
                 const downloadUrl = '{% url "download_arborescence" %}';
 

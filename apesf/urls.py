@@ -40,4 +40,5 @@ urlpatterns = [
     path('carousel/edit/<int:image_id>/', views.edit_carousel_image, name='edit_carousel_image'),
     path('carousel/delete/<int:image_id>/', views.delete_carousel_image, name='delete_carousel_image'),
     path('carousel/reorder/', views.reorder_carousel_images, name='reorder_carousel_images'),
+    path('supprimer-fichier-arborescence/', views.supprimer_fichier_arborescence, name='supprimer_fichier_arborescence'),
 ]

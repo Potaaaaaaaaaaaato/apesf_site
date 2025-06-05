@@ -1,3 +1,5 @@
+import os
+
 from django.core.mail import EmailMessage
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -71,10 +73,25 @@ def organisation(request):
     direction_sections = Section.objects.filter(page=page, organigram_type='direction')
     structure_sections = Section.objects.filter(page=page, organigram_type='structure')
 
+    # Vérifier si le fichier d'arborescence est disponible
+    arborescence_file_available = False
+    try:
+        # Vérifier s'il existe un fichier d'arborescence en base de données
+        arborescence = ArborescenceFile.objects.latest('uploaded_at')
+        # Vérifier si le fichier existe physiquement sur le serveur
+        if arborescence.file and os.path.exists(arborescence.file.path):
+            arborescence_file_available = True
+    except ArborescenceFile.DoesNotExist:
+        pass
+    except Exception:
+        # En cas d'erreur (fichier corrompu, etc.), considérer comme non disponible
+        pass
+
     return render(request, 'organisation.html', {
         'page': page,
         'direction_sections': direction_sections,
         'structure_sections': structure_sections,
+        'arborescence_file_available': arborescence_file_available,
     })
 
 # Page "Partenaires"
@@ -714,6 +731,10 @@ def download_arborescence(request):
 @login_required
 def gerer_fichier_arborescence(request):
     """Vue pour gérer le fichier d'arborescence"""
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour accéder à cette page.")
+        return redirect('tableau_de_bord')
+
     try:
         arborescence = ArborescenceFile.objects.latest('uploaded_at')
     except ArborescenceFile.DoesNotExist:
@@ -869,3 +890,33 @@ def reorder_carousel_images(request):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
+
+@login_required
+def supprimer_fichier_arborescence(request):
+    """Vue pour supprimer le fichier d'arborescence"""
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires pour effectuer cette action.")
+        return redirect('tableau_de_bord')
+
+    try:
+        arborescence = ArborescenceFile.objects.latest('uploaded_at')
+    except ArborescenceFile.DoesNotExist:
+        messages.error(request, "Aucun fichier d'arborescence à supprimer.")
+        return redirect('gerer_fichier_arborescence')
+
+    if request.method == 'POST':
+        # Supprimer le fichier physique si il existe
+        try:
+            if arborescence.file and os.path.exists(arborescence.file.path):
+                os.remove(arborescence.file.path)
+        except Exception as e:
+            messages.warning(request, f"Le fichier physique n'a pas pu être supprimé : {str(e)}")
+
+        # Supprimer l'enregistrement en base de données
+        arborescence.delete()
+        messages.success(request, "Le fichier d'arborescence a été supprimé avec succès !")
+        return redirect('gerer_fichier_arborescence')
+
+    return render(request, 'supprimer_fichier_arborescence.html', {
+        'arborescence': arborescence
+    })

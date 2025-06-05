@@ -26,7 +26,9 @@
             box-shadow: 0 4px 12px rgba(249, 180, 53, 0.2); /* Ombre jaune */
         }
         .unit-links a {
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 10px 15px;
             color: #4B5563;
             font-size: 1.125rem;
@@ -44,11 +46,18 @@
             background-color: #FFFFFF; /* Fond blanc au survol */
             border: 1px solid #CCCCCC; /* Encadré gris clair */
         }
+        .unit-links a:hover .arrow-icon {
+            color: #1B4F72; /* Couleur primaire pour la flèche au survol */
+            transform: scale(1.1);
+        }
         .unit-links a.active {
             color: #000000; /* Texte noir pour l'élément actif */
             font-weight: 600;
             background-color: #FFFFFF; /* Fond blanc pour l'élément actif */
             border: 1px solid #CCCCCC; /* Encadré gris clair */
+        }
+        .unit-links a.active .arrow-icon {
+            color: #E84C3D; /* Couleur rouge pour la flèche de l'élément actif */
         }
         .unit-links a.active::before {
             content: "•";
@@ -59,6 +68,11 @@
             color: #E84C3D;
             font-size: 1.5rem;
             line-height: 1;
+        }
+        .arrow-icon {
+            color: #6B7280; /* Couleur grise par défaut */
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
         /* Style pour les sections */
         .section-container {
@@ -163,6 +177,12 @@
                 padding: 15px; /* Padding réduit sur mobile */
                 border-width: 2px; /* Bordure plus fine sur mobile */
             }
+            .unit-links a {
+                font-size: 1rem; /* Taille de police réduite sur mobile */
+            }
+            .arrow-icon {
+                font-size: 0.875rem; /* Flèche plus petite sur mobile */
+            }
             .modal-content {
                 width: 95%;
                 padding: 16px;
@@ -229,14 +249,29 @@
             {% endif %}
         </div>
 
-        <!-- Partie droite (25%) : Liste des liens cliquables -->
+        <!-- Partie droite (25%) : Liste des liens cliquables avec flèches -->
         <div class="md:w-1/4">
             <div class="unit-links">
-                <a href="?unit=angelus" class="{% if selected_unit == 'angelus' %}active{% endif %}">Angélus</a>
-                <a href="?unit=marmousets" class="{% if selected_unit == 'marmousets' %}active{% endif %}">Marmousets</a>
-                <a href="?unit=placement_modulable" class="{% if selected_unit == 'placement_modulable' %}active{% endif %}">Placement modulable</a>
-                <a href="?unit=aemo_h" class="{% if selected_unit == 'aemo_h' %}active{% endif %}">AEMO H</a>
-                <a href="?unit=accueil_parental" class="{% if selected_unit == 'accueil_parental' %}active{% endif %}">Accueil parental</a>
+                <a href="?unit=angelus" class="{% if selected_unit == 'angelus' %}active{% endif %}">
+                    <span>Angélus</span>
+                    <i class="bi bi-arrow-up-right arrow-icon"></i>
+                </a>
+                <a href="?unit=marmousets" class="{% if selected_unit == 'marmousets' %}active{% endif %}">
+                    <span>Marmousets</span>
+                    <i class="bi bi-arrow-up-right arrow-icon"></i>
+                </a>
+                <a href="?unit=placement_modulable" class="{% if selected_unit == 'placement_modulable' %}active{% endif %}">
+                    <span>Placement modulable</span>
+                    <i class="bi bi-arrow-up-right arrow-icon"></i>
+                </a>
+                <a href="?unit=aemo_h" class="{% if selected_unit == 'aemo_h' %}active{% endif %}">
+                    <span>AEMO H</span>
+                    <i class="bi bi-arrow-up-right arrow-icon"></i>
+                </a>
+                <a href="?unit=accueil_parental" class="{% if selected_unit == 'accueil_parental' %}active{% endif %}">
+                    <span>Accueil parental</span>
+                    <i class="bi bi-arrow-up-right arrow-icon"></i>
+                </a>
             </div>
         </div>
     </div>
