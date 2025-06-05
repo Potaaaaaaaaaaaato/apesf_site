@@ -54,6 +54,31 @@
         </div>
     {% endif %}
 
+    <!-- Section de don Stripe -->
+    <div class="container mx-auto px-6 mb-12">
+        <div class="bg-white shadow-lg rounded-lg p-8 text-center">
+            <h2 class="text-3xl font-semibold text-primary-500 mb-6">Faire un don maintenant</h2>
+            <p class="text-neutral-600 mb-8 max-w-2xl mx-auto">
+                Soutenez notre mission en effectuant un don sécurisé via Stripe. Votre générosité nous aide à continuer notre travail auprès des enfants et des familles.
+            </p>
+
+            <!-- Formulaire de don Stripe -->
+            <div class="stripe-donation-container">
+                <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+                <stripe-buy-button
+                        buy-button-id="buy_btn_1RWIFjJCTEc24DqT3oQS5Bik"
+                        publishable-key="pk_live_51RVTusJCTEc24DqTecdaUbTYkqRftcYP1qniyvrQBxKPdz733Qit6R4O1WYH697N8LOt9gullp3irYkA4tvYfiUR00Pc1O1MoZ"
+                >
+                </stripe-buy-button>
+            </div>
+
+            <p class="text-sm text-neutral-500 mt-6">
+                <i class="bi bi-shield-check me-2"></i>
+                Paiement sécurisé via Stripe
+            </p>
+        </div>
+    </div>
+
     <!-- Modal pour afficher les détails de la section -->
     <div id="donationModal" class="modal">
         <div class="modal-content">
@@ -92,6 +117,15 @@
             white-space: pre-line;
             line-height: 1.6;
         }
+
+        /* Styles pour la section de don Stripe */
+        .stripe-donation-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
         /* Style pour le modal */
         .modal {
             display: none; /* Caché par défaut */
