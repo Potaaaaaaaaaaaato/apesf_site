@@ -110,16 +110,11 @@
                                             <i class="bi bi-pencil mr-1"></i>
                                             Modifier
                                         </a>
-                                        <form method="post" action="{% url 'gerer_organigrammes' %}"
-                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette section ? Cette action est irréversible.');"
-                                              class="inline">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="section_id" value="{{ section.id }}">
-                                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-sm">
-                                                <i class="bi bi-trash mr-1"></i>
-                                                Supprimer
-                                            </button>
-                                        </form>
+                                        <a href="{% url 'supprimer_section' section.id %}"
+                                           class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-sm">
+                                            <i class="bi bi-trash mr-1"></i>
+                                            Supprimer
+                                        </a>
                                     </div>
                                 </div>
                             </div>

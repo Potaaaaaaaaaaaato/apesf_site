@@ -29,8 +29,8 @@ def accueil(request):
     # MODIFICATION : Utiliser les images du carrousel au lieu des UploadedImage
     carousel_images = CarouselImage.objects.filter(is_active=True).order_by('order')
 
-    # Récupérer les 5 dernières actualités pour le carrousel d'actualités
-    news_items = News.objects.prefetch_related('images').all().order_by('-date')[:5]
+    # Récupérer les 1000 dernières actualités pour le carrousel d'actualités
+    news_items = News.objects.prefetch_related('images').all().order_by('-date')[:1000]
 
     return render(request, 'accueil.html', {
         'page': page,
