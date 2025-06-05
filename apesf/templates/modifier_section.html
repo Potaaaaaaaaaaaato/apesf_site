@@ -1,18 +1,23 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Modifier une section{% endblock %}
+
 {% block extra_head %}
     <meta name="description" content="Modifier une section dans le tableau de bord administrateur de l'APESF.">
     <meta name="keywords" content="APESF, section, administration, Saint-Étienne">
     <meta name="robots" content="noindex, nofollow">
     <meta name="author" content="Association Pour l'Enfant et Sa Famille">
 {% endblock %}
+
 {% block content %}
     <div class="container mx-auto px-6">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-green-600">Modifier la section</h1>
         </div>
 
-        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <div class="max-w-2xl mx-auto">
+            <!-- Section d'information -->
             <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-6">
                 <div class="flex items-center mb-3">
                     <i class="bi bi-info-circle-fill text-blue-500 text-xl mr-2"></i>
@@ -20,21 +25,20 @@
                 </div>
                 <p class="text-blue-700">
                     Vous modifiez la section <strong>{{ section.title }}</strong>.
-                    Les modifications seront immédiatement visibles sur le site public.
+                    Les modifications seront immédiatement visibles sur le site.
                 </p>
             </div>
 
             <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
                 <h3 class="font-semibold text-gray-800 mb-2">Section à modifier :</h3>
                 <p><strong>Titre :</strong> {{ section.title }}</p>
-                <p><strong>Créée le :</strong> {{ section.created_at|date:"d/m/Y à H:i" }}</p>
-                {% if section.page %}
-                    <p><strong>Page associée :</strong> {{ section.page.title }}</p>
-                {% elif section.unit %}
-                    <p><strong>Unité associée :</strong> {{ section.unit.get_name_display }}</p>
+                <p><strong>Ordre :</strong> {{ section.order }}</p>
+                <p><strong>Contenu :</strong> {{ section.content|truncatewords:30 }}</p>
+                {% if section.unit %}
+                    <p><strong>Unité :</strong> {{ section.unit }}</p>
                 {% endif %}
-                {% if section.images.all %}
-                    <p><strong>Images associées :</strong> {{ section.images.all|length }} image{{ section.images.all|length|pluralize }}</p>
+                {% if section.page %}
+                    <p><strong>Page :</strong> {{ section.page.title }}</p>
                 {% endif %}
             </div>
 
@@ -52,55 +56,85 @@
                 </div>
             {% endif %}
 
-            <!-- Formulaire pour modifier la section -->
-            <form method="post" enctype="multipart/form-data" class="space-y-6">
-                {% csrf_token %}
-                {{ form.as_p }}
+            <!-- Formulaire de modification -->
+            <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
 
-                <div class="flex justify-center gap-4">
-                    <button type="submit"
-                            class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold">
-                        <i class="bi bi-check-lg mr-1"></i>
-                        Mettre à jour la section
-                    </button>
-                    {% if section.page %}
-                        <a href="{% url 'gerer_sections' section.page.id %}"
-                           class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
-                            <i class="bi bi-arrow-left mr-1"></i>
-                            Annuler
-                        </a>
-                    {% elif section.unit %}
-                        <a href="{% url 'gerer_sections_unite' section.unit.name %}"
-                           class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
-                            <i class="bi bi-arrow-left mr-1"></i>
-                            Annuler
-                        </a>
-                    {% else %}
-                        <a href="{% url 'tableau_de_bord' %}"
-                           class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
-                            <i class="bi bi-arrow-left mr-1"></i>
-                            Annuler
-                        </a>
-                    {% endif %}
-                </div>
-            </form>
-        </div>
+                    {% for field in form %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ field.label }}
+                                {% if field.field.required %}*{% endif %}
+                            </label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="mt-1 text-sm text-red-600">
+                                    {{ field.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
 
-        <!-- Gestion des images associées -->
-        <div class="max-w-2xl mx-auto mt-8">
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <h2 class="text-2xl font-semibold text-primary-500 mb-4">Images associées</h2>
-                {% if section.images.all %}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                    <div class="flex justify-center">
+                        <button type="submit" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                            <i class="bi bi-check-lg mr-1"></i>
+                            Mettre à jour la section
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Gestion des images associées -->
+            {% if section.images.all %}
+                <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-green-600 mb-4">Images associées</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         {% for image in section.images.all %}
-                            <div class="bg-white shadow-lg rounded-lg p-4">
-                                <img src="{{ image.image.url }}" alt="{{ section.title }}" class="w-full h-32 object-cover rounded-lg mb-2">
-                                <a href="{% url 'supprimer_image' image.id %}" class="block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-center" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ? Cette action est irréversible.');">Supprimer</a>
+                            <div class="bg-gray-50 border border-gray-200 rounded p-4">
+                                <img src="{{ image.image.url }}" alt="{{ section.title }}"
+                                     class="w-full h-32 object-cover rounded-lg mb-2">
+                                <a href="{% url 'supprimer_image' image.id %}"
+                                   class="block bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-center text-sm"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ? Cette action est irréversible.');">
+                                    <i class="bi bi-trash mr-1"></i>
+                                    Supprimer
+                                </a>
                             </div>
                         {% endfor %}
                     </div>
+                </div>
+            {% endif %}
+
+            <!-- Boutons de retour -->
+            <div class="flex justify-center gap-4">
+                {% if section.page %}
+                    <a href="{% url 'gerer_sections' section.page.id %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                        <i class="bi bi-arrow-left mr-1"></i>
+                        Retour aux sections
+                    </a>
+                {% elif section.unit %}
+                    <a href="{% url 'gerer_sections_unite' unit=section.unit %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                        <i class="bi bi-arrow-left mr-1"></i>
+                        Retour aux sections d'unité
+                    </a>
+                {% elif section.organigram_type %}
+                    <a href="{% url 'gerer_organigrammes' %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                        <i class="bi bi-arrow-left mr-1"></i>
+                        Retour aux organigrammes
+                    </a>
                 {% else %}
-                    <p class="text-neutral-600 mb-4 text-center">Aucune image associée à cette section. Ajoutez-en via le formulaire ci-dessus.</p>
+                    <a href="{% url 'tableau_de_bord' %}"
+                       class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                        <i class="bi bi-arrow-left mr-1"></i>
+                        Retour au tableau de bord
+                    </a>
                 {% endif %}
             </div>
         </div>

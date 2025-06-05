@@ -1,65 +1,127 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Gérer les sections pour {{ unit_display }}{% endblock %}
+
 {% block content %}
-<div class="container mx-auto px-6 py-8">
-    <h1 class="text-3xl font-bold text-primary-500 mb-6 text-center">
-        Gérer les sections pour {{ unit_display }}
-    </h1>
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-green-600">Gérer les sections pour {{ unit_display }}</h1>
+        </div>
 
-    <!-- Messages -->
-    {% if messages %}
-        <div class="mb-6">
-            {% for message in messages %}
-                <div class="bg-{{ message.tags }}-100 text-{{ message.tags }}-800 p-4 rounded-lg text-center">
-                    {{ message }}
+        <div class="max-w-4xl mx-auto">
+            <!-- Section d'information -->
+            <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-info-circle-fill text-blue-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-blue-800">Gestion des sections d'unité</h2>
                 </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- Liste des sections -->
-    {% if sections %}
-        <div class="grid grid-cols-1 gap-6 mb-8">
-            {% for section in sections %}
-                <div class="bg-white shadow-lg rounded-lg p-6 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-xl font-semibold text-primary-500">{{ section.title }}</h2>
-                        <p class="text-neutral-600">{{ section.content|truncatewords:20 }}</p>
-                    </div>
-                    <div class="flex space-x-4">
-                        <a href="{% url 'modifier_section' section.id %}" class="bg-primary-500 text-white px-4 py-2 rounded hover:bg-primary-600 transition-colors">
-                            Modifier
-                        </a>
-                        <form method="post" action="{% url 'gerer_sections_unite' unit=unit %}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette section ? Cette action est irréversible.');">
-                            {% csrf_token %}
-                            <input type="hidden" name="section_id" value="{{ section.id }}">
-                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">
-                                Supprimer
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="text-center text-neutral-600 mb-8">
-            <p>Aucune section définie pour {{ unit_display }}. Utilisez le formulaire ci-dessous pour en ajouter une.</p>
-        </div>
-    {% endif %}
-
-    <!-- Formulaire pour ajouter une nouvelle section -->
-    <div class="bg-white shadow-lg rounded-lg p-6">
-        <h2 class="text-2xl font-semibold text-primary-500 mb-4">Ajouter une nouvelle section</h2>
-        <form method="post" class="space-y-6">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="text-center">
-                <button type="submit" class="bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors">
-                    Ajouter la section
-                </button>
+                <p class="text-blue-700">
+                    Gérez les sections de l'unité <strong>{{ unit_display }}</strong>.
+                    Les modifications seront immédiatement visibles sur le site.
+                </p>
             </div>
-        </form>
-    </div>
-</div>
-{% endblock %}
 
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mb-6">
+                    {% for message in messages %}
+                        <div class="bg-green-50 border border-green-200 rounded p-4 text-green-800">
+                            <div class="flex items-center">
+                                <i class="bi bi-check-circle-fill text-green-500 text-xl mr-2"></i>
+                                {{ message }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Formulaire d'ajout EN PREMIER -->
+            <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-green-600 mb-4">Ajouter une nouvelle section</h2>
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Affichage des champs du formulaire avec le même style -->
+                    {% for field in form %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ field.label }}
+                                {% if field.field.required %}*{% endif %}
+                            </label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="mt-1 text-sm text-red-600">
+                                    {{ field.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="flex justify-center">
+                        <button type="submit" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold">
+                            <i class="bi bi-plus-lg mr-1"></i>
+                            Ajouter la section
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Liste des sections existantes EN SECOND -->
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-2xl font-semibold text-green-600 mb-4">Sections existantes</h2>
+
+                {% if sections %}
+                    <div class="space-y-4">
+                        {% for section in sections %}
+                            <div class="bg-gray-50 border border-gray-200 rounded p-4">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-semibold text-gray-800 mb-2">{{ section.title }}</h3>
+                                        <p class="text-gray-600">{{ section.content|truncatewords:20 }}</p>
+                                        <p class="text-sm text-gray-500 mt-2">Ordre : {{ section.order }}</p>
+                                    </div>
+                                    <div class="flex gap-2 ml-4">
+                                        <a href="{% url 'modifier_section' section.id %}"
+                                           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-sm">
+                                            <i class="bi bi-pencil mr-1"></i>
+                                            Modifier
+                                        </a>
+                                        <form method="post" action="{% url 'gerer_sections_unite' unit=unit %}"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette section ? Cette action est irréversible.');"
+                                              class="inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="section_id" value="{{ section.id }}">
+                                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors text-sm">
+                                                <i class="bi bi-trash mr-1"></i>
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <i class="bi bi-folder-x text-gray-400 text-4xl mb-2"></i>
+                        <p class="text-gray-500">Aucune section définie pour {{ unit_display }}.</p>
+                        <p class="text-gray-400 text-sm">Utilisez le formulaire ci-dessus pour en ajouter une.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Bouton de retour -->
+            <div class="flex justify-center mt-8">
+                <a href="{% url 'tableau_de_bord' %}"
+                   class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    <i class="bi bi-arrow-left mr-1"></i>
+                    Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
