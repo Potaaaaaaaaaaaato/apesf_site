@@ -468,13 +468,17 @@ def modifier_image(request, image_id):
 @login_required
 def supprimer_image(request, image_id):
     if request.user.userprofile.role not in ['superuser', 'admin']:
-        messages.error(request, "Vous n'avez pas les permissions nécessaires pour supprimer une image. Contactez un administrateur.")
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
         return redirect('tableau_de_bord')
 
     image = get_object_or_404(UploadedImage, id=image_id)
-    image.delete()
-    messages.success(request, "Image supprimée avec succès !")
-    return redirect('tableau_de_bord')
+
+    if request.method == 'POST':
+        image.delete()
+        messages.success(request, "Image supprimée avec succès !")
+        return redirect('tableau_de_bord')
+
+    return render(request, 'supprimer_image.html', {'image': image})
 
 # Nouvelle vue pour gérer les actualités (suppression et création)
 @login_required
@@ -920,3 +924,59 @@ def supprimer_fichier_arborescence(request):
     return render(request, 'supprimer_fichier_arborescence.html', {
         'arborescence': arborescence
     })
+
+@login_required
+def supprimer_actualite(request, news_id):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('tableau_de_bord')
+
+    actualite = get_object_or_404(News, id=news_id)
+
+    if request.method == 'POST':
+        actualite.delete()
+        messages.success(request, "Actualité supprimée avec succès !")
+        return redirect('gerer_actualites')
+
+    return render(request, 'supprimer_actualite.html', {'actualite': actualite})
+
+@login_required
+def supprimer_section(request, section_id):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('tableau_de_bord')
+
+    section = get_object_or_404(Section, id=section_id)
+
+    if request.method == 'POST':
+        # Déterminer l'URL de retour
+        if section.page:
+            redirect_url = 'gerer_sections'
+            redirect_args = [section.page.id]
+        elif section.unit:
+            redirect_url = 'gerer_sections_unite'
+            redirect_args = [section.unit]
+        else:
+            redirect_url = 'gerer_organigrammes'
+            redirect_args = []
+
+        section.delete()
+        messages.success(request, "Section supprimée avec succès !")
+        return redirect(redirect_url, *redirect_args)
+
+    return render(request, 'supprimer_section.html', {'section': section})
+
+@login_required
+def supprimer_offre_emploi(request, job_id):
+    if request.user.userprofile.role not in ['superuser', 'admin']:
+        messages.error(request, "Vous n'avez pas les permissions nécessaires.")
+        return redirect('tableau_de_bord')
+
+    offre = get_object_or_404(JobOffer, id=job_id)
+
+    if request.method == 'POST':
+        offre.delete()
+        messages.success(request, "Offre d'emploi supprimée avec succès !")
+        return redirect('gerer_offres_emplois')
+
+    return render(request, 'supprimer_offre_emploi.html', {'offre': offre})

@@ -1,10 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Supprimer la section{% endblock %}
+{% block content %}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-red-600">Supprimer la section</h1>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-red-50 border border-red-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-red-800">Attention - Action irréversible</h2>
+                </div>
+                <p class="text-red-700">
+                    Vous êtes sur le point de supprimer définitivement cette section et toutes ses images associées.
+                    Cette action ne peut pas être annulée.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-2">Section à supprimer :</h3>
+                <p><strong>Titre :</strong> {{ section.title }}</p>
+                <p><strong>Contenu :</strong> {{ section.content|truncatewords:20 }}</p>
+                <p><strong>Ordre :</strong> {{ section.order }}</p>
+                {% if section.images.all %}
+                    <div class="mt-3">
+                        <p class="font-medium text-gray-700 mb-2">Images qui seront supprimées :</p>
+                        <div class="flex flex-wrap gap-2">
+                            {% for image in section.images.all %}
+                                <img src="{{ image.image.url }}" alt="{{ section.title }}"
+                                     class="w-16 h-16 object-cover rounded-lg border">
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <form method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold">
+                        <i class="bi bi-trash mr-1"></i>
+                        Confirmer la suppression
+                    </button>
+                </form>
+                <a href="{% if section.page %}{% url 'gerer_sections' section.page.id %}{% elif section.unit %}{% url 'gerer_sections_unite' unit=section.unit %}{% else %}{% url 'gerer_organigrammes' %}{% endif %}"
+                   class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    <i class="bi bi-arrow-left mr-1"></i>
+                    Annuler
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

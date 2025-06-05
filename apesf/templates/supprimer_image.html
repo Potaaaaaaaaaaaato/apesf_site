@@ -1,10 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Supprimer l'image{% endblock %}
+{% block content %}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-red-600">Supprimer l'image</h1>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-red-50 border border-red-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-red-800">Attention - Action irréversible</h2>
+                </div>
+                <p class="text-red-700">
+                    Vous êtes sur le point de supprimer définitivement cette image.
+                    Cette action ne peut pas être annulée.
+                </p>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6 text-center">
+                <h3 class="font-semibold text-gray-800 mb-4">Image à supprimer :</h3>
+                <img src="{{ image.image.url }}" alt="Image à supprimer"
+                     class="max-w-full h-auto max-h-64 mx-auto rounded-lg shadow-sm mb-4">
+                <p><strong>Uploadée le :</strong> {{ image.uploaded_at|date:"d/m/Y à H:i" }}</p>
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <form method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold">
+                        <i class="bi bi-trash mr-1"></i>
+                        Confirmer la suppression
+                    </button>
+                </form>
+                <a href="{% url 'tableau_de_bord' %}"
+                   class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    <i class="bi bi-arrow-left mr-1"></i>
+                    Annuler
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
