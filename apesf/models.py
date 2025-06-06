@@ -90,7 +90,6 @@ class UserProfile(models.Model):
         ('viewer', 'Lecteur (Accès en lecture et modification mineure du texte. Aucun pouvoir sur la structure ou les utilisateurs.)'),
     ], verbose_name="Rôle")
 
-    # NOUVEAU CHAMP pour forcer le changement de mot de passe
     must_change_password = models.BooleanField(
         default=True,
         verbose_name="Doit changer le mot de passe",
