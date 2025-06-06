@@ -4,7 +4,6 @@
 {% block title %}Gestion du carrousel{% endblock %}
 
 {% block extra_head %}
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 {% endblock %}
 
@@ -28,33 +27,55 @@
         {% if carousel_images %}
             <div class="bg-white shadow-lg rounded-lg p-6">
                 <h2 class="text-2xl font-semibold text-primary-500 mb-4">Images du carrousel</h2>
+
+                <!-- Message d'aide déplacé en haut -->
+                <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <i class="bi bi-lightbulb text-blue-500 text-xl mr-3 mt-0.5"></i>
+                        <div>
+                            <h4 class="font-semibold text-blue-800">Comment réorganiser les images :</h4>
+                            <ul class="text-sm text-blue-700 mt-1 space-y-1">
+                                <li>• Cliquez et maintenez sur la poignée grise <i class="bi bi-grip-vertical"></i></li>
+                                <li>• Glissez l'image vers la position souhaitée</li>
+                                <li>• Relâchez pour confirmer le nouvel ordre</li>
+                                <li>• Les numéros bleus indiquent l'ordre d'affichage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <p class="text-neutral-600 mb-4">
                     <i class="bi bi-info-circle mr-1"></i>
-                    Glissez-déposez les images pour modifier leur ordre d'affichage
+                    <span id="drag-status" class="text-green-600">✅ Glisser-déposer activé ! Utilisez la poignée <i class="bi bi-grip-vertical"></i></span>
                 </p>
 
                 <div id="carousel-list" class="space-y-4">
                     {% for image in carousel_images %}
-                        <div class="carousel-item bg-gray-50 border rounded-lg p-4 cursor-move" data-id="{{ image.id }}">
+                        <div class="carousel-item bg-gray-50 border-2 border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-all duration-200" data-id="{{ image.id }}" draggable="false">
                             <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                                <!-- Numéro d'ordre visible -->
+                                <div class="order-number flex-shrink-0 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
+                                    {{ forloop.counter }}
+                                </div>
+
                                 <!-- Handle de déplacement -->
-                                <div class="drag-handle text-gray-400 hover:text-gray-600 cursor-move">
-                                    <i class="bi bi-grip-vertical text-xl"></i>
+                                <div class="drag-handle flex-shrink-0 text-gray-400 hover:text-blue-500 cursor-grab active:cursor-grabbing transition-colors duration-200 p-3 bg-gray-100 rounded border-2 border-dashed border-gray-300" draggable="true">
+                                    <i class="bi bi-grip-vertical text-2xl"></i>
                                 </div>
 
                                 <!-- Aperçu de l'image -->
                                 <div class="flex-shrink-0">
-                                    <img src="{{ image.image.url }}" alt="{{ image.title }}" class="w-20 h-20 object-cover rounded-lg shadow-sm">
+                                    <img src="{{ image.image.url }}" alt="{{ image.title }}" class="w-24 h-24 object-cover rounded-lg shadow-md border-2 border-gray-200" draggable="false">
                                 </div>
 
                                 <!-- Informations de l'image -->
                                 <div class="flex-grow">
-                                    <h3 class="font-semibold text-gray-800">{{ image.title }}</h3>
+                                    <h3 class="font-semibold text-gray-800 text-lg">{{ image.title }}</h3>
                                     {% if image.description %}
                                         <p class="text-sm text-gray-600 mt-1">{{ image.description|truncatechars:100 }}</p>
                                     {% endif %}
-                                    <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                                        <span>Ordre: {{ image.order }}</span>
+                                    <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
+                                        <span class="order-display bg-gray-200 px-2 py-1 rounded">Ordre: {{ image.order }}</span>
                                         <span class="flex items-center">
                                     {% if image.is_active %}
                                         <i class="bi bi-check-circle text-green-500 mr-1"></i>Active
@@ -67,11 +88,11 @@
                                 </div>
 
                                 <!-- Actions -->
-                                <div class="flex gap-2">
-                                    <a href="{% url 'edit_carousel_image' image.id %}" class="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition-colors" title="Modifier">
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <a href="{% url 'edit_carousel_image' image.id %}" class="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600 transition-colors text-center" title="Modifier">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <a href="{% url 'delete_carousel_image' image.id %}" class="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition-colors" title="Supprimer">
+                                    <a href="{% url 'delete_carousel_image' image.id %}" class="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition-colors text-center" title="Supprimer">
                                         <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
@@ -101,67 +122,242 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initialisation du glisser-déposer natif');
+
             const carouselList = document.getElementById('carousel-list');
+            const dragStatus = document.getElementById('drag-status');
 
-            if (carouselList && carouselList.children.length > 0) {
-                // Initialiser Sortable.js pour le glisser-déposer
-                const sortable = Sortable.create(carouselList, {
-                    animation: 150,
-                    ghostClass: 'sortable-ghost',
-                    handle: '.drag-handle',
-                    onEnd: function(evt) {
-                        // Récupérer le nouvel ordre des images
-                        const imageIds = Array.from(carouselList.children).map(item =>
-                            parseInt(item.getAttribute('data-id'))
-                        );
+            if (!carouselList || carouselList.children.length === 0) {
+                console.log('Pas d\'éléments à trier');
+                return;
+            }
 
-                        // Envoyer la nouvelle ordre au serveur
-                        fetch('{% url "reorder_carousel_images" %}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}'
-                            },
-                            body: JSON.stringify({
-                                image_ids: imageIds
-                            })
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    // Mettre à jour les numéros d'ordre affichés
-                                    carouselList.querySelectorAll('.carousel-item').forEach((item, index) => {
-                                        const orderSpan = item.querySelector('span');
-                                        if (orderSpan && orderSpan.textContent.startsWith('Ordre:')) {
-                                            orderSpan.textContent = `Ordre: ${index + 1}`;
-                                        }
-                                    });
-                                } else {
-                                    console.error('Erreur lors de la réorganisation:', data.error);
-                                    alert('Erreur lors de la réorganisation des images');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Erreur:', error);
-                                alert('Erreur lors de la réorganisation des images');
-                            });
+            let draggedElement = null;
+            let draggedOverElement = null;
+
+            // Ajouter les événements de drag & drop à chaque élément
+            Array.from(carouselList.children).forEach(item => {
+                const dragHandle = item.querySelector('.drag-handle');
+
+                // Événements sur la poignée
+                dragHandle.addEventListener('dragstart', function(e) {
+                    draggedElement = item;
+                    item.classList.add('dragging');
+
+                    if (dragStatus) {
+                        dragStatus.innerHTML = '<span class="text-blue-600">🔄 Déplacement en cours...</span>';
+                    }
+
+                    // Style fantôme pendant le drag
+                    setTimeout(() => {
+                        item.style.opacity = '0.4';
+                    }, 0);
+
+                    console.log('Début du drag:', item.getAttribute('data-id'));
+                });
+
+                dragHandle.addEventListener('dragend', function(e) {
+                    item.classList.remove('dragging');
+                    item.style.opacity = '';
+
+                    // Nettoyer tous les indicateurs visuels
+                    Array.from(carouselList.children).forEach(child => {
+                        child.classList.remove('drag-over-top', 'drag-over-bottom');
+                    });
+
+                    console.log('Fin du drag');
+                });
+
+                // Événements sur l'élément entier pour recevoir le drop
+                item.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+
+                    if (draggedElement === item) return;
+
+                    draggedOverElement = item;
+
+                    // Déterminer si on doit insérer avant ou après
+                    const rect = item.getBoundingClientRect();
+                    const y = e.clientY;
+                    const midpoint = rect.top + rect.height / 2;
+
+                    // Nettoyer les classes précédentes
+                    item.classList.remove('drag-over-top', 'drag-over-bottom');
+
+                    if (y < midpoint) {
+                        item.classList.add('drag-over-top');
+                    } else {
+                        item.classList.add('drag-over-bottom');
                     }
                 });
+
+                item.addEventListener('dragleave', function(e) {
+                    // Vérifier qu'on quitte vraiment l'élément
+                    if (!item.contains(e.relatedTarget)) {
+                        item.classList.remove('drag-over-top', 'drag-over-bottom');
+                    }
+                });
+
+                item.addEventListener('drop', function(e) {
+                    e.preventDefault();
+
+                    if (draggedElement === item) return;
+
+                    const rect = item.getBoundingClientRect();
+                    const y = e.clientY;
+                    const midpoint = rect.top + rect.height / 2;
+
+                    // Insérer l'élément
+                    if (y < midpoint) {
+                        carouselList.insertBefore(draggedElement, item);
+                    } else {
+                        carouselList.insertBefore(draggedElement, item.nextSibling);
+                    }
+
+                    // Nettoyer les classes
+                    item.classList.remove('drag-over-top', 'drag-over-bottom');
+
+                    // Mettre à jour l'affichage et sauvegarder
+                    updateOrderNumbers();
+                    saveNewOrder();
+                });
+            });
+
+            // Fonction pour mettre à jour les numéros visuels
+            function updateOrderNumbers() {
+                Array.from(carouselList.children).forEach((item, index) => {
+                    const orderNumber = item.querySelector('.order-number');
+                    const orderDisplay = item.querySelector('.order-display');
+
+                    if (orderNumber) {
+                        orderNumber.textContent = index + 1;
+                    }
+                    if (orderDisplay) {
+                        orderDisplay.textContent = `Ordre: ${index + 1}`;
+                    }
+                });
+            }
+
+            // Fonction pour sauvegarder le nouvel ordre
+            function saveNewOrder() {
+                if (dragStatus) {
+                    dragStatus.innerHTML = '<span class="text-orange-600">⏳ Sauvegarde...</span>';
+                }
+
+                const imageIds = Array.from(carouselList.children).map(item => {
+                    return parseInt(item.getAttribute('data-id'));
+                });
+
+                console.log('Sauvegarde du nouvel ordre:', imageIds);
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]') ?
+                    document.querySelector('[name=csrfmiddlewaretoken]').value :
+                    '{{ csrf_token }}';
+
+                fetch('{% url "reorder_carousel_images" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        image_ids: imageIds
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erreur HTTP: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Ordre sauvegardé avec succès');
+
+                            if (dragStatus) {
+                                dragStatus.innerHTML = '<span class="text-green-600">✅ Ordre sauvegardé !</span>';
+                                setTimeout(() => {
+                                    dragStatus.innerHTML = '<span class="text-green-600">✅ Glisser-déposer activé ! Utilisez la poignée <i class="bi bi-grip-vertical"></i></span>';
+                                }, 2000);
+                            }
+                        } else {
+                            throw new Error(data.error || 'Erreur inconnue');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        if (dragStatus) {
+                            dragStatus.innerHTML = '<span class="text-red-600">❌ Erreur de sauvegarde</span>';
+                        }
+                        alert('Erreur lors de la sauvegarde: ' + error.message);
+                        location.reload();
+                    });
             }
         });
     </script>
 
     <style>
-        .sortable-ghost {
+        .dragging {
             opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        .drag-over-top {
+            border-top: 4px solid #3b82f6 !important;
+            background-color: #dbeafe !important;
+        }
+
+        .drag-over-bottom {
+            border-bottom: 4px solid #3b82f6 !important;
+            background-color: #dbeafe !important;
+        }
+
+        .carousel-item {
+            transition: all 0.2s ease;
         }
 
         .carousel-item:hover {
-            background-color: #f3f4f6;
+            background-color: #f9fafb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .drag-handle {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .drag-handle:hover {
-            color: #4b5563;
+            color: #3b82f6 !important;
+            transform: scale(1.1);
+            background-color: #e5e7eb !important;
+            border-color: #3b82f6 !important;
+        }
+
+        .drag-handle:active {
+            cursor: grabbing !important;
+        }
+
+        .order-number {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Améliorer l'apparence sur mobile */
+        @media (max-width: 768px) {
+            .carousel-item {
+                padding: 1rem;
+            }
+
+            .drag-handle {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Empêcher la sélection de texte pendant le drag */
+        .drag-handle * {
+            pointer-events: none;
         }
     </style>
 {% endblock %}
