@@ -1,5 +1,4 @@
 import os
-
 from django.core.mail import EmailMessage
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -18,6 +17,10 @@ from .forms import CarouselImageForm, CarouselOrderForm
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.db import models
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.db import transaction
+from django.core.exceptions import ValidationError
 
 # Page d'accueil
 def accueil(request):
@@ -980,3 +983,169 @@ def supprimer_offre_emploi(request, job_id):
         return redirect('gerer_offres_emplois')
 
     return render(request, 'supprimer_offre_emploi.html', {'offre': offre})
+
+# Gestion des utilisateurs (superuser uniquement)
+@login_required
+def gestion_utilisateurs(request):
+    # Vérifier que l'utilisateur est un superuser
+    if request.user.userprofile.role != 'superuser':
+        messages.error(request, "Accès refusé. Seuls les super-utilisateurs peuvent gérer les utilisateurs.")
+        return redirect('tableau_de_bord')
+
+    users = UserProfile.objects.select_related('user').all().order_by('user__username')
+
+    return render(request, 'gestion_utilisateurs.html', {
+        'users': users,
+    })
+
+@login_required
+def creer_utilisateur(request):
+    # Vérifier que l'utilisateur est un superuser
+    if request.user.userprofile.role != 'superuser':
+        messages.error(request, "Accès refusé. Seuls les super-utilisateurs peuvent créer des utilisateurs.")
+        return redirect('tableau_de_bord')
+
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                # Récupérer les données du formulaire
+                username = request.POST.get('username')
+                email = request.POST.get('email')
+                first_name = request.POST.get('first_name', '')
+                last_name = request.POST.get('last_name', '')
+                password = request.POST.get('password')
+                role = request.POST.get('role')
+
+                # Validation basique
+                if not username or not email or not password or not role:
+                    messages.error(request, "Tous les champs obligatoires doivent être remplis.")
+                    return redirect('gestion_utilisateurs')
+
+                # Vérifier que le nom d'utilisateur n'existe pas déjà
+                if User.objects.filter(username=username).exists():
+                    messages.error(request, "Ce nom d'utilisateur existe déjà.")
+                    return redirect('gestion_utilisateurs')
+
+                # Vérifier que l'email n'existe pas déjà
+                if User.objects.filter(email=email).exists():
+                    messages.error(request, "Cette adresse email est déjà utilisée.")
+                    return redirect('gestion_utilisateurs')
+
+                # Créer l'utilisateur
+                user = User.objects.create(
+                    username=username,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=make_password(password)
+                )
+
+                # Créer ou mettre à jour le profil utilisateur
+                UserProfile.objects.update_or_create(
+                    user=user,
+                    defaults={
+                        'role': role,
+                        'must_change_password': True,  # L'utilisateur devra changer son mot de passe
+                        'first_login_completed': False
+                    }
+                )
+
+                messages.success(request, f"Utilisateur '{username}' créé avec succès. Il devra changer son mot de passe à sa première connexion.")
+
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la création de l'utilisateur : {str(e)}")
+
+    return redirect('gestion_utilisateurs')
+
+@login_required
+def modifier_utilisateur(request, user_id):
+    # Vérifier que l'utilisateur est un superuser
+    if request.user.userprofile.role != 'superuser':
+        messages.error(request, "Accès refusé. Seuls les super-utilisateurs peuvent modifier les utilisateurs.")
+        return redirect('tableau_de_bord')
+
+    user_to_modify = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                # Récupérer les données du formulaire
+                email = request.POST.get('email')
+                first_name = request.POST.get('first_name', '')
+                last_name = request.POST.get('last_name', '')
+                role = request.POST.get('role')
+                must_change_password = 'must_change_password' in request.POST
+
+                # Validation
+                if not email or not role:
+                    messages.error(request, "L'email et le rôle sont obligatoires.")
+                    return redirect('gestion_utilisateurs')
+
+                # Vérifier que l'email n'est pas déjà utilisé par un autre utilisateur
+                if User.objects.filter(email=email).exclude(id=user_id).exists():
+                    messages.error(request, "Cette adresse email est déjà utilisée par un autre utilisateur.")
+                    return redirect('gestion_utilisateurs')
+
+                # Mettre à jour l'utilisateur
+                user_to_modify.email = email
+                user_to_modify.first_name = first_name
+                user_to_modify.last_name = last_name
+                user_to_modify.save()
+
+                # Mettre à jour le profil
+                profile, created = UserProfile.objects.get_or_create(user=user_to_modify)
+                profile.role = role
+                profile.must_change_password = must_change_password
+                profile.save()
+
+                messages.success(request, f"Utilisateur '{user_to_modify.username}' modifié avec succès.")
+
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la modification : {str(e)}")
+
+    return redirect('gestion_utilisateurs')
+
+@login_required
+def supprimer_utilisateur(request, user_id):
+    # Vérifier que l'utilisateur est un superuser
+    if request.user.userprofile.role != 'superuser':
+        messages.error(request, "Accès refusé. Seuls les super-utilisateurs peuvent supprimer des utilisateurs.")
+        return redirect('tableau_de_bord')
+
+    # Empêcher la suppression de son propre compte
+    if request.user.id == user_id:
+        messages.error(request, "Vous ne pouvez pas supprimer votre propre compte.")
+        return redirect('gestion_utilisateurs')
+
+    user_to_delete = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        try:
+            username = user_to_delete.username
+            user_to_delete.delete()
+            messages.success(request, f"Utilisateur '{username}' supprimé avec succès.")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la suppression : {str(e)}")
+
+    return redirect('gestion_utilisateurs')
+
+@login_required
+def forcer_changement_mot_de_passe_admin(request, user_id):
+    # Vérifier que l'utilisateur est un superuser
+    if request.user.userprofile.role != 'superuser':
+        messages.error(request, "Accès refusé.")
+        return redirect('tableau_de_bord')
+
+    user_to_modify = get_object_or_404(User, id=user_id)
+
+    if request.method == 'POST':
+        try:
+            profile, created = UserProfile.objects.get_or_create(user=user_to_modify)
+            profile.must_change_password = True
+            profile.save()
+
+            messages.success(request, f"L'utilisateur '{user_to_modify.username}' devra changer son mot de passe à sa prochaine connexion.")
+        except Exception as e:
+            messages.error(request, f"Erreur : {str(e)}")
+
+    return redirect('gestion_utilisateurs')

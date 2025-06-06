@@ -44,4 +44,9 @@ urlpatterns = [
     path('supprimer-actualite/<int:news_id>/', views.supprimer_actualite, name='supprimer_actualite'),
     path('supprimer-section/<int:section_id>/', views.supprimer_section, name='supprimer_section'),
     path('supprimer-offre-emploi/<int:job_id>/', views.supprimer_offre_emploi, name='supprimer_offre_emploi'),
+    path('gestion-utilisateurs/', views.gestion_utilisateurs, name='gestion_utilisateurs'),
+    path('gestion-utilisateurs/creer/', views.creer_utilisateur, name='creer_utilisateur'),
+    path('gestion-utilisateurs/modifier/<int:user_id>/', views.modifier_utilisateur, name='modifier_utilisateur'),
+    path('gestion-utilisateurs/supprimer/<int:user_id>/', views.supprimer_utilisateur, name='supprimer_utilisateur'),
+    path('gestion-utilisateurs/forcer-changement-mdp/<int:user_id>/', views.forcer_changement_mot_de_passe_admin, name='forcer_changement_mot_de_passe_admin'),
 ]

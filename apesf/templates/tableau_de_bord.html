@@ -436,17 +436,17 @@
                             <p class="text-red-700 text-sm leading-relaxed">
                                 Cette section nécessite des connaissances techniques avancées.
                                 Toute modification doit être effectuée avec précaution car elle peut affecter
-                                l'accès des autres utilisateurs au système.
+                                l'accès des autres utilisateurs au système. Toute modification ou suppression de contenu est irréversible.
                             </p>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-center">
-                    <a href="{% url 'admin:apesf_userprofile_changelist' %}"
+                    <a href="{% url 'gestion_utilisateurs' %}"
                        class="bg-primary-500 hover:bg-primary-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3">
-                        <i class="bi bi-gear"></i>
-                        Interface d'administration Django
+                        <i class="bi bi-people"></i>
+                        Gérer les utilisateurs
                     </a>
                 </div>
             </div>

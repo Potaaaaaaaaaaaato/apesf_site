@@ -1,10 +1,312 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Gestion des utilisateurs{% endblock %}
+{% block extra_head %}
+    <meta name="description" content="Gestion des utilisateurs de l'APESF. Administration des comptes et permissions.">
+    <meta name="keywords" content="APESF, gestion utilisateurs, administration, Saint-Étienne">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="author" content="Association Pour l'Enfant et Sa Famille">
+{% endblock %}
+
+{% block content %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- En-tête -->
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-full mb-6">
+                <i class="bi bi-people text-3xl text-white"></i>
+            </div>
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent mb-4">
+                Gestion des utilisateurs
+            </h1>
+            <p class="text-xl text-neutral-600 max-w-2xl mx-auto">
+                Administration des comptes et permissions utilisateurs
+            </p>
+        </div>
+
+        <!-- Messages de retour -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-50 border-l-4 border-secondary-500 p-6 mb-8 rounded-r-lg shadow-sm">
+                    <div class="flex items-center">
+                        <i class="bi bi-check-circle-fill text-secondary-500 text-2xl mr-3"></i>
+                        <p class="text-neutral-600 font-medium">{{ message }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Bouton d'ajout d'utilisateur -->
+        <div class="mb-8">
+            <button onclick="showCreateForm()"
+                    class="bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center gap-3 mx-auto">
+                <i class="bi bi-person-plus"></i>
+                Créer un nouvel utilisateur
+            </button>
+        </div>
+
+        <!-- Formulaire de création d'utilisateur (masqué par défaut) -->
+        <div id="create-user-form" class="bg-white rounded-2xl shadow-lg border border-neutral-100 p-8 mb-8 hidden">
+            <h2 class="text-2xl font-bold text-neutral-600 mb-6 flex items-center gap-3">
+                <i class="bi bi-person-plus text-secondary-500"></i>
+                Créer un nouvel utilisateur
+            </h2>
+            <form method="post" action="{% url 'creer_utilisateur' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-neutral-700 mb-2">
+                            <i class="bi bi-person"></i> Nom d'utilisateur *
+                        </label>
+                        <input type="text" id="username" name="username" required
+                               class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                               placeholder="Nom d'utilisateur unique">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-neutral-700 mb-2">
+                            <i class="bi bi-envelope"></i> Email *
+                        </label>
+                        <input type="email" id="email" name="email" required
+                               class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                               placeholder="adresse@email.com">
+                    </div>
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-neutral-700 mb-2">
+                            <i class="bi bi-person-badge"></i> Prénom
+                        </label>
+                        <input type="text" id="first_name" name="first_name"
+                               class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                               placeholder="Prénom">
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-neutral-700 mb-2">
+                            <i class="bi bi-person-badge"></i> Nom
+                        </label>
+                        <input type="text" id="last_name" name="last_name"
+                               class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                               placeholder="Nom de famille">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-neutral-700 mb-2">
+                            <i class="bi bi-lock"></i> Mot de passe temporaire *
+                        </label>
+                        <input type="password" id="password" name="password" required
+                               class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                               placeholder="Mot de passe temporaire">
+                        <p class="text-sm text-neutral-500 mt-1">L'utilisateur devra changer ce mot de passe à sa première connexion</p>
+                    </div>
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-neutral-700 mb-2">
+                            <i class="bi bi-shield-check"></i> Rôle *
+                        </label>
+                        <select id="role" name="role" required
+                                class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="viewer">Lecteur (Accès en lecture et modification mineure)</option>
+                            <option value="admin">Administrateur (Peut créer, modifier et supprimer du contenu)</option>
+                            <option value="superuser">Super utilisateur (Accès total)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-8">
+                    <button type="button" onclick="hideCreateForm()"
+                            class="bg-neutral-500 hover:bg-neutral-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">
+                        Annuler
+                    </button>
+                    <button type="submit"
+                            class="bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-md">
+                        <i class="bi bi-plus-lg"></i>
+                        Créer l'utilisateur
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Liste des utilisateurs -->
+        <div class="bg-white rounded-2xl shadow-lg border border-neutral-100 p-8">
+            <h2 class="text-2xl font-bold text-neutral-600 mb-6 flex items-center gap-3">
+                <i class="bi bi-people text-primary-500"></i>
+                Utilisateurs existants ({{ users|length }})
+            </h2>
+
+            {% if users %}
+                <div class="space-y-4">
+                    {% for user_profile in users %}
+                        <div class="bg-neutral-50 border border-neutral-100 rounded-xl p-6 hover:bg-neutral-100 transition-colors">
+                            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="w-10 h-10 bg-primary-500 rounded-full flex items-center justify-center">
+                                            <i class="bi bi-person text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-semibold text-neutral-600 text-lg">
+                                                {{ user_profile.user.first_name }} {{ user_profile.user.last_name }}
+                                                {% if not user_profile.user.first_name and not user_profile.user.last_name %}
+                                                    {{ user_profile.user.username }}
+                                                {% endif %}
+                                            </h3>
+                                            <p class="text-neutral-500 text-sm">@{{ user_profile.user.username }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-neutral-600">
+                                        <div>
+                                            <strong>Email :</strong> {{ user_profile.user.email|default:"Non renseigné" }}
+                                        </div>
+                                        <div>
+                                            <strong>Rôle :</strong>
+                                            <span class="px-2 py-1 rounded-full text-xs font-medium
+                                                {% if user_profile.role == 'superuser' %}bg-red-100 text-red-800
+                                                {% elif user_profile.role == 'admin' %}bg-orange-100 text-orange-800
+                                                {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                                {% if user_profile.role == 'superuser' %}Super utilisateur
+                                                {% elif user_profile.role == 'admin' %}Administrateur
+                                                {% else %}Lecteur{% endif %}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <strong>Dernière connexion :</strong> {{ user_profile.user.last_login|default:"Jamais connecté" }}
+                                        </div>
+                                        <div>
+                                            <strong>Changement MDP :</strong>
+                                            {% if user_profile.must_change_password %}
+                                                <span class="text-red-600">Requis</span>
+                                            {% else %}
+                                                <span class="text-green-600">Non requis</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 justify-center lg:justify-end">
+                                    <button onclick="showEditForm({{ user_profile.user.id }})"
+                                            class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                                        <i class="bi bi-pencil"></i>
+                                        Modifier
+                                    </button>
+                                    <form method="post" action="{% url 'forcer_changement_mot_de_passe_admin' user_profile.user.id %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                                            <i class="bi bi-key"></i>
+                                            Changer MDP
+                                        </button>
+                                    </form>
+                                    {% if user_profile.user.id != user.id %}
+                                        <form method="post" action="{% url 'supprimer_utilisateur' user_profile.user.id %}" class="inline"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
+                                            {% csrf_token %}
+                                            <button type="submit"
+                                                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                                                <i class="bi bi-trash"></i>
+                                                Supprimer
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8 bg-neutral-50 rounded-xl border-2 border-dashed border-neutral-100">
+                    <i class="bi bi-people text-neutral-600 text-4xl mb-4"></i>
+                    <p class="text-neutral-600 text-lg">Aucun utilisateur trouvé</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Formulaire de modification (modal caché) -->
+        <div id="edit-user-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+            <div class="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+                <h2 class="text-2xl font-bold text-neutral-600 mb-6 flex items-center gap-3">
+                    <i class="bi bi-pencil text-primary-500"></i>
+                    Modifier l'utilisateur
+                </h2>
+                <form id="edit-user-form" method="post">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-700 mb-2">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                            <input type="email" name="email" id="edit-email"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-700 mb-2">
+                                <i class="bi bi-shield-check"></i> Rôle
+                            </label>
+                            <select name="role" id="edit-role"
+                                    class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                                <option value="viewer">Lecteur</option>
+                                <option value="admin">Administrateur</option>
+                                <option value="superuser">Super utilisateur</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-700 mb-2">
+                                <i class="bi bi-person-badge"></i> Prénom
+                            </label>
+                            <input type="text" name="first_name" id="edit-first-name"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-neutral-700 mb-2">
+                                <i class="bi bi-person-badge"></i> Nom
+                            </label>
+                            <input type="text" name="last_name" id="edit-last-name"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 mt-4">
+                        <input type="checkbox" name="must_change_password" id="edit-must-change-password" class="rounded">
+                        <label for="edit-must-change-password" class="text-sm text-neutral-700">
+                            Forcer le changement de mot de passe à la prochaine connexion
+                        </label>
+                    </div>
+                    <div class="flex justify-end gap-4 mt-8">
+                        <button type="button" onclick="hideEditForm()"
+                                class="bg-neutral-500 hover:bg-neutral-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">
+                            Annuler
+                        </button>
+                        <button type="submit"
+                                class="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105">
+                            <i class="bi bi-check-lg"></i>
+                            Enregistrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showCreateForm() {
+            document.getElementById('create-user-form').classList.remove('hidden');
+        }
+
+        function hideCreateForm() {
+            document.getElementById('create-user-form').classList.add('hidden');
+        }
+
+        function showEditForm(userId) {
+            // Récupérer les données de l'utilisateur et pré-remplir le formulaire
+            const modal = document.getElementById('edit-user-modal');
+            const form = document.getElementById('edit-user-form');
+
+            // Modifier l'action du formulaire pour inclure l'ID de l'utilisateur
+            form.action = `/gestion-utilisateurs/modifier/${userId}/`;
+
+            // Afficher la modal
+            modal.classList.remove('hidden');
+        }
+
+        function hideEditForm() {
+            document.getElementById('edit-user-modal').classList.add('hidden');
+        }
+
+        // Fermer la modal en cliquant sur l'arrière-plan
+        document.getElementById('edit-user-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideEditForm();
+            }
+        });
+    </script>
+{% endblock %}
