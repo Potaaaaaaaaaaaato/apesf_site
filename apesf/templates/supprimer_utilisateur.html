@@ -1,10 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Supprimer l'utilisateur{% endblock %}
+{% block content %}
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-red-600">Supprimer l'utilisateur</h1>
+        </div>
+
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <div class="bg-red-50 border border-red-200 rounded p-4 mb-6">
+                <div class="flex items-center mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-red-500 text-xl mr-2"></i>
+                    <h2 class="text-lg font-semibold text-red-800">Attention - Action irréversible</h2>
+                </div>
+                <p class="text-red-700">
+                    Vous êtes sur le point de supprimer définitivement ce compte utilisateur.
+                    Cette action ne peut pas être annulée et supprimera :
+                </p>
+                <ul class="text-red-700 mt-2 ml-4 list-disc">
+                    <li>Le compte utilisateur et ses informations</li>
+                    <li>L'accès à toutes les fonctionnalités du site</li>
+                    <li>L'historique des connexions</li>
+                </ul>
+            </div>
+
+            <div class="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+                <h3 class="font-semibold text-gray-800 mb-4">Utilisateur à supprimer :</h3>
+
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center">
+                        <i class="bi bi-person text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-lg">
+                            {% if user_to_delete.first_name or user_to_delete.last_name %}
+                                {{ user_to_delete.first_name }} {{ user_to_delete.last_name }}
+                            {% else %}
+                                {{ user_to_delete.username }}
+                            {% endif %}
+                        </h4>
+                        <p class="text-gray-600">@{{ user_to_delete.username }}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <strong>Email :</strong> {{ user_to_delete.email|default:"Non renseigné" }}
+                    </div>
+                    <div>
+                        <strong>Rôle :</strong>
+                        <span class="px-2 py-1 rounded-full text-xs font-medium
+                            {% if user_to_delete.userprofile.role == 'superuser' %}bg-red-100 text-red-800
+                            {% elif user_to_delete.userprofile.role == 'admin' %}bg-orange-100 text-orange-800
+                            {% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {% if user_to_delete.userprofile.role == 'superuser' %}Super utilisateur
+                            {% elif user_to_delete.userprofile.role == 'admin' %}Administrateur
+                            {% else %}Lecteur{% endif %}
+                        </span>
+                    </div>
+                    <div>
+                        <strong>Membre depuis :</strong> {{ user_to_delete.date_joined|date:"d/m/Y" }}
+                    </div>
+                    <div>
+                        <strong>Dernière connexion :</strong>
+                        {% if user_to_delete.last_login %}
+                            {{ user_to_delete.last_login|date:"d/m/Y à H:i" }}
+                        {% else %}
+                            <span class="text-gray-500">Jamais connecté</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if user_to_delete.userprofile.role == 'superuser' %}
+                <div class="bg-orange-50 border border-orange-200 rounded p-4 mb-6">
+                    <div class="flex items-center mb-2">
+                        <i class="bi bi-shield-exclamation text-orange-500 text-lg mr-2"></i>
+                        <h3 class="font-semibold text-orange-800">Avertissement spécial</h3>
+                    </div>
+                    <p class="text-orange-700 text-sm">
+                        Cet utilisateur est un <strong>super-utilisateur</strong> avec des privilèges administratifs complets.
+                        Sa suppression pourrait affecter la gestion du système. Veuillez vous assurer de bien avoir un <strong>second super-utilisateur</strong> de créer avant de supprimer celui-ci !
+                    </p>
+                </div>
+            {% endif %}
+
+            <div class="flex justify-center gap-4">
+                <form method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold"
+                            onclick="return confirm('Êtes-vous absolument certain de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
+                        <i class="bi bi-trash mr-1"></i>
+                        Confirmer la suppression
+                    </button>
+                </form>
+                <a href="{% url 'gestion_utilisateurs' %}"
+                   class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    <i class="bi bi-arrow-left mr-1"></i>
+                    Annuler
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

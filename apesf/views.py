@@ -1124,10 +1124,15 @@ def supprimer_utilisateur(request, user_id):
             username = user_to_delete.username
             user_to_delete.delete()
             messages.success(request, f"Utilisateur '{username}' supprimé avec succès.")
+            return redirect('gestion_utilisateurs')
         except Exception as e:
             messages.error(request, f"Erreur lors de la suppression : {str(e)}")
+            return redirect('gestion_utilisateurs')
 
-    return redirect('gestion_utilisateurs')
+    # Si GET, afficher la page de confirmation
+    return render(request, 'supprimer_utilisateur.html', {
+        'user_to_delete': user_to_delete,
+    })
 
 @login_required
 def forcer_changement_mot_de_passe_admin(request, user_id):

@@ -189,15 +189,11 @@
                                         </button>
                                     </form>
                                     {% if user_profile.user.id != user.id %}
-                                        <form method="post" action="{% url 'supprimer_utilisateur' user_profile.user.id %}" class="inline"
-                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">
-                                            {% csrf_token %}
-                                            <button type="submit"
-                                                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2">
-                                                <i class="bi bi-trash"></i>
-                                                Supprimer
-                                            </button>
-                                        </form>
+                                        <a href="{% url 'supprimer_utilisateur' user_profile.user.id %}"
+                                           class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center gap-2">
+                                            <i class="bi bi-trash"></i>
+                                            Supprimer
+                                        </a>
                                     {% endif %}
                                 </div>
                             </div>
