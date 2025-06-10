@@ -157,3 +157,11 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'tristandevaux6@gmail.com'  # Remplace par ton adresse Gmail
 EMAIL_HOST_PASSWORD = 'grjp xkes axrn zupj'  # Mot de passe application Gmail
 DEFAULT_FROM_EMAIL = 'tristandevaux6@gmail.com'  # Adresse d'envoi par défaut
+
+# Configuration des limites de fichiers
+# Taille maximale des fichiers uploadés (en bytes)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB en mémoire
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB au total
+
+# Taille maximale pour les requêtes (formulaires + fichiers)
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000  # Nombre max de champs dans un formulaire
