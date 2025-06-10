@@ -483,7 +483,7 @@ def supprimer_image(request, image_id):
 
     return render(request, 'supprimer_image.html', {'image': image})
 
-# Nouvelle vue pour gérer les actualités (suppression et création)
+# Vue pour gérer les actualités (suppression et création)
 @login_required
 def gerer_actualites(request):
     if request.user.userprofile.role not in ['superuser', 'admin']:

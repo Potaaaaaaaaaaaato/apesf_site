@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from PIL import Image
 import os
 
-# Modèle pour une page (ex. "Accueil", "Qui sommes-nous ?")
+# Modèle pour une page
 class PageContent(models.Model):
     title = models.CharField(max_length=200, verbose_name="Titre")
     slug = models.SlugField(unique=True, verbose_name="Slug (URL)")
@@ -189,7 +189,7 @@ class News(models.Model):
     def __str__(self):
         return self.title
     
-# Nouveau modèle pour les offres d'emploi
+# Modèle pour les offres d'emploi
 class JobOffer(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
